@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime, timezone
 
 import streamlit as st
 import yaml
@@ -32,7 +33,7 @@ def get_llm_config():
     base_url = st.secrets.get(
         "API_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1"
     )
-    model = st.secrets.get("MODEL", "qwen-plus")
+    model = st.secrets.get("MODEL", "qwen3.5-plus")
     return api_key, base_url, model
 
 
@@ -201,8 +202,6 @@ def render_feedback():
         }
         feedback_dir = os.path.join(os.path.dirname(__file__), "feedback")
         os.makedirs(feedback_dir, exist_ok=True)
-        from datetime import datetime, timezone
-
         ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
         feedback_path = os.path.join(feedback_dir, f"fb_{ts}.json")
         with open(feedback_path, "w", encoding="utf-8") as f:

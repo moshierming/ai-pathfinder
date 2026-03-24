@@ -65,7 +65,7 @@ streamlit run app.py
 |------|------|-------|
 | `DASHSCOPE_API_KEY` | 阿里云 DashScope Key | 必填 |
 | `API_BASE_URL` | API 地址 | DashScope |
-| `MODEL` | 模型名称 | `qwen-plus` |
+| `MODEL` | 模型名称 | `qwen3.5-plus` |
 
 ---
 
