@@ -799,6 +799,114 @@ def render_import_plan(resources: list):
             st.error(f"解析失败：{e}")
 
 
+# ─── 智能对话 ─────────────────────────────────────────────────────────────────
+
+CHAT_SYSTEM_PROMPT = """你是 AI Pathfinder 的学习助手。用户正在使用一个AI学习路径规划工具，你的职责是回答与 AI/ML 学习相关的问题。
+
+你可以帮助用户：
+- 解释学习路径中的概念（如 RAG、Agent、Transformer 等）
+- 对比不同资源/框架的优劣
+- 给出某个话题的快速入门建议
+- 解答学习过程中遇到的技术疑问
+
+规则：
+1. 回答简洁实用，避免长篇大论
+2. 如果用户有学习画像和路径，结合其水平、方向和进度回答
+3. 适当推荐资源库中的资源（用标题和链接）
+4. 代码示例用 markdown 代码块
+5. 用中文回答，除非用户用英文提问"""
+
+
+def _build_chat_context(resources: list) -> str:
+    """构建聊天上下文：用户画像 + 当前路径 + 可用资源摘要。"""
+    parts = []
+    profile = st.session_state.get("profile")
+    if profile:
+        parts.append(f"用户画像：水平={profile.get('level','?')}, 方向={profile.get('direction','?')}, "
+                      f"目标={profile.get('goal','?')}, 重心={profile.get('focus','?')}")
+    path_data = st.session_state.get("path")
+    if path_data:
+        parts.append(f"当前学习路径：{path_data.get('summary','(无)')}, 共{path_data.get('estimated_weeks','?')}周")
+        week_ids = []
+        for w in path_data.get("weeks", []):
+            week_ids.extend(w.get("resources", []))
+        if week_ids:
+            parts.append(f"路径中的资源ID：{', '.join(week_ids)}")
+
+    # 资源摘要（仅标题+类型+话题，控制 token）
+    summaries = [f"{r['id']}: {r['title']} ({r['type']}, {','.join(r.get('topics',[])[:3])})"
+                 for r in resources[:60]]
+    parts.append(f"资源库摘要（前60条）:\n" + "\n".join(summaries))
+    return "\n\n".join(parts)
+
+
+def render_chat(resources: list):
+    st.title("🧠 智能对话")
+    st.markdown("> 学习过程中遇到问题？随时问我。我了解你的学习画像和路径。")
+
+    if st.session_state.get("profile"):
+        p = st.session_state.profile
+        st.caption(f"当前画像：{p.get('level','')} · {p.get('direction','')} · {FOCUS_EMOJI.get(p.get('focus',''), '')}")
+    else:
+        st.caption("💡 还没有生成学习路径？先去「路径规划」生成一个，对话会更有针对性。")
+
+    st.divider()
+
+    # 初始化聊天历史
+    if "chat_messages" not in st.session_state:
+        st.session_state.chat_messages = []
+
+    # 渲染历史消息
+    for msg in st.session_state.chat_messages:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
+
+    # 用户输入
+    if user_input := st.chat_input("输入你的问题，例如「RAG 和 Fine-tuning 有什么区别？」"):
+        st.session_state.chat_messages.append({"role": "user", "content": user_input})
+        with st.chat_message("user"):
+            st.markdown(user_input)
+
+        # 调用 LLM
+        api_key, base_url, model = get_llm_config()
+        if not api_key:
+            with st.chat_message("assistant"):
+                st.error("请先在左侧边栏配置 API Key")
+            return
+
+        context = _build_chat_context(resources)
+
+        messages = [
+            {"role": "system", "content": CHAT_SYSTEM_PROMPT + "\n\n" + context},
+        ]
+        # 保留最近 20 轮对话（避免 token 爆炸）
+        recent = st.session_state.chat_messages[-20:]
+        messages.extend(recent)
+
+        with st.chat_message("assistant"):
+            with st.spinner("思考中..."):
+                try:
+                    client = OpenAI(api_key=api_key, base_url=base_url)
+                    resp = client.chat.completions.create(
+                        model=model,
+                        messages=messages,
+                        temperature=0.5,
+                        max_tokens=2000,
+                    )
+                    reply = resp.choices[0].message.content
+                    st.markdown(reply)
+                    st.session_state.chat_messages.append({"role": "assistant", "content": reply})
+                except Exception as e:
+                    st.error(f"请求失败：{e}")
+
+    # 清空对话按钮
+    if st.session_state.chat_messages:
+        st.divider()
+        if st.button("🗑️ 清空对话", use_container_width=True):
+            st.session_state.chat_messages = []
+            st.rerun()
+
+
 # ─── API 设置面板 ─────────────────────────────────────────────────────────────
 
 
@@ -853,7 +961,7 @@ def render_sidebar():
 
         page = st.radio(
             "导航",
-            ["🗺️ 路径规划", "📚 资源浏览", "🔥 趋势雷达", "📤 导入计划"],
+            ["🗺️ 路径规划", "🧠 智能对话", "📚 资源浏览", "🔥 趋势雷达", "📤 导入计划"],
             label_visibility="collapsed",
         )
 
@@ -910,6 +1018,10 @@ def main():
                 st.session_state.from_shared_url = True
 
     page = render_sidebar()
+
+    if "智能对话" in page:
+        render_chat(resources)
+        return
 
     if "资源浏览" in page:
         render_resource_browser(resources)
