@@ -4,12 +4,12 @@
 
 **个性化AI学习路径规划工具 — 开源免费**
 
-告诉我你现在的水平和目标，我帮你从 **90 条精选资源 · 15 个持续信息源**中规划最短最有效的学习路径。
+告诉我你现在的水平和目标，我帮你从 **105 条精选资源 · 15 个持续信息源**中规划最短最有效的学习路径。
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://ai-pathfinder.streamlit.app)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Resources](https://img.shields.io/badge/resources-90条-orange)
+![Resources](https://img.shields.io/badge/resources-105条-orange)
 
 </div>
 
@@ -33,7 +33,7 @@
 ## 核心功能
 
 ### 🗺️ 个性化路径规划
-填写学习画像（水平、目标、时间、方向、侧重），LLM 从 90 条资源中编排专属周计划，支持进度追踪。
+填写学习画像（水平、目标、时间、方向、侧重），LLM 从 105 条资源中编排专属周计划，支持进度追踪。
 
 ### ⚡ 预设模板快速开始
 不知道填什么？点击一个最接近你的方向，自动填入全部表单字段：
@@ -59,7 +59,7 @@
 生成学习路径后，地址栏自动更新为携带参数的 URL（如 `?p=eyJ...`），直接复制分享给朋友或保存为书签，下次打开即可恢复画像重新生成。
 
 ### 📚 资源浏览器
-独立页面浏览全部 90 条资源，支持 5 维筛选（话题/类型/难度/方向/侧重）+ 关键词搜索 + 统计概览。
+独立页面浏览全部 105 条资源，支持 5 维筛选（话题/类型/难度/方向/侧重）+ 关键词搜索 + 统计概览。
 
 ### ⚙️ 多供应商 API 支持
 在侧边栏直接切换：
@@ -167,24 +167,24 @@ GITHUB_TOKEN = "ghp_..."   # 可选，用于反馈收集
 
 ## 资源库
 
-当前收录 **90 条精选资源**（75 条学习资源 + 15 个持续信息源），覆盖 8 个方向，中英文兼顾：
+当前收录 **105 条精选资源**（90 条学习资源 + 15 个持续信息源），覆盖 8 个方向，中英文兼顾：
 
 | 类型 | 数量 | 说明 |
 |------|------|------|
-| 📖 课程 (course) | 24 | 系统化教程和实战营 |
-| 📝 文章 (article) | 27 | 技术博客、教程、指南 |
-| 🎬 视频 (video) | 7 | YouTube / B站视频系列 |
-| 📚 书籍 (book) | 4 | 经典教材 |
-| 💻 仓库 (repo) | 13 | GitHub 开源项目和工具 |
+| 📖 课程 (course) | 26 | 系统化教程和实战营 |
+| 📝 文章 (article) | 33 | 技术博客、教程、指南 |
+| 🎬 视频 (video) | 10 | YouTube / B站视频系列 |
+| 📚 书籍 (book) | 7 | 经典教材 |
+| 💻 仓库 (repo) | 14 | GitHub 开源项目和工具 |
 | 📡 信息源 (channel) | 15 | 博客/公众号/Newsletter/播客 |
 
 ### 侧重分布
 
 | 侧重 | 数量 | 说明 |
 |------|------|------|
-| 🧱 打基础 (foundational) | 24 | 理论、数学、基础概念 |
-| ⚖️ 理论+实战 (both) | 31 | 兼顾原理与实践 |
-| 🔧 重实战 (applied) | 35 | 项目驱动、动手为主 |
+| 🧱 打基础 (foundational) | 27 | 理论、数学、基础概念 |
+| ⚖️ 理论+实战 (both) | 34 | 兼顾原理与实践 |
+| 🔧 重实战 (applied) | 44 | 项目驱动、动手为主 |
 
 ### 方向覆盖
 
@@ -196,7 +196,7 @@ GITHUB_TOKEN = "ghp_..."   # 可选，用于反馈收集
 | 📊 机器学习 / 数据科学 | 吴恩达ML、d2l.ai、南瓜书 |
 | 🔬 AI 研究 / 论文方向 | CS224n、李沐精读论文、MiniMind |
 | 🔧 MLOps / AI 系统工程 | W&B、Self-LLM、Docker部署 |
-| 🎨 AIGC / 多模态 | Diffusion Models From Scratch |
+| 🎨 AIGC / 多模态 | Stable Diffusion, ComfyUI, Diffusers, DALL·E |
 | 🌐 通用基础 | Python、数学基础 |
 
 中文资源 26 条（含 6 个中文信息源），优先中文语言偏好时自动排前。
