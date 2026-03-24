@@ -1,4 +1,5 @@
 """Progress persistence: save / load learning progress across sessions."""
+from __future__ import annotations
 
 import json
 import os
@@ -19,14 +20,14 @@ _log = get_logger("progress")
 _PROGRESS_DIR = os.path.join(os.path.dirname(__file__), "..", "progress")
 
 
-def _ensure_dir():
+def _ensure_dir() -> None:
     os.makedirs(_PROGRESS_DIR, exist_ok=True)
 
 
 # ─── Collect / Restore ──────────────────────────────────────────────────────
 
 
-def collect_progress():
+def collect_progress() -> dict:
     """Gather all saveable state into a dict."""
     done = {}
     for k, v in st.session_state.items():
@@ -44,7 +45,7 @@ def collect_progress():
     }
 
 
-def restore_progress(data):
+def restore_progress(data: dict) -> bool:
     """Write saved state back into session_state. Returns True on success."""
     if not isinstance(data, dict):
         return False
@@ -71,7 +72,7 @@ def restore_progress(data):
 # ─── Local file persistence ────────────────────────────────────────────────
 
 
-def save_progress_local():
+def save_progress_local() -> str | None:
     """Save current progress to server-side file. Returns filepath or None."""
     data = collect_progress()
     if not data.get("profile") or not data.get("path"):
@@ -84,7 +85,7 @@ def save_progress_local():
     return filepath
 
 
-def load_progress_local():
+def load_progress_local() -> dict | None:
     """Load most recent saved progress. Returns dict or None."""
     filepath = os.path.join(_PROGRESS_DIR, "latest.json")
     if not os.path.exists(filepath):
@@ -96,7 +97,7 @@ def load_progress_local():
         return None
 
 
-def progress_to_json(data=None):
+def progress_to_json(data: dict | None = None) -> str:
     """Serialize progress to downloadable JSON string."""
     if data is None:
         data = collect_progress()
@@ -106,7 +107,7 @@ def progress_to_json(data=None):
 # ─── UI helpers ─────────────────────────────────────────────────────────────
 
 
-def render_progress_save():
+def render_progress_save() -> None:
     """Render save-progress section (call from path view)."""
     L = _lang()
 
@@ -139,7 +140,7 @@ def render_progress_save():
         )
 
 
-def render_progress_restore():
+def render_progress_restore() -> bool:
     """Render restore section in sidebar. Returns True if user restores."""
     L = _lang()
     saved = load_progress_local()

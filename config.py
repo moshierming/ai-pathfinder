@@ -1,4 +1,5 @@
 """Constants and configuration for AI Pathfinder."""
+from __future__ import annotations
 
 PROVIDER_PRESETS = {
     "DashScope (阿里云百炼)": {

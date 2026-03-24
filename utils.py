@@ -1,4 +1,5 @@
 """Pure utility functions: profile encoding, resource filtering, export."""
+from __future__ import annotations
 
 import base64
 import json
@@ -10,7 +11,7 @@ import yaml
 from config import DIRECTION_TO_DOMAIN, TYPE_EMOJI
 
 
-def load_resources():
+def load_resources() -> list[dict]:
     """Load resources from resources.yaml."""
     path = os.path.join(os.path.dirname(__file__), "resources.yaml")
     with open(path, "r", encoding="utf-8") as f:
@@ -23,7 +24,7 @@ def encode_profile(profile: dict) -> str:
     return base64.urlsafe_b64encode(raw.encode()).decode()
 
 
-def decode_profile(s: str):
+def decode_profile(s: str) -> dict | None:
     """Decode base64 string to profile dict, or None on failure."""
     if not s or len(s) > 50000:
         return None
@@ -37,7 +38,7 @@ def decode_profile(s: str):
         return None
 
 
-def filter_resources_for_direction(resources: list, direction: str, language: str, focus: str = "both") -> list:
+def filter_resources_for_direction(resources: list[dict], direction: str, language: str, focus: str = "both") -> list[dict]:
     """Pre-filter resources by direction + language + focus, capped at 50."""
     domains = DIRECTION_TO_DOMAIN.get(direction, [])
     if domains:
@@ -66,7 +67,7 @@ def filter_resources_for_direction(resources: list, direction: str, language: st
     return filtered[:35]
 
 
-def export_plan_markdown(path_data: dict, profile: dict, resources: list) -> str:
+def export_plan_markdown(path_data: dict, profile: dict, resources: list[dict]) -> str:
     """Export learning path as readable Markdown."""
     ridx = {r["id"]: r for r in resources}
     lines = [
@@ -112,3 +113,4 @@ def export_plan_markdown(path_data: dict, profile: dict, resources: list) -> str
 def export_plan_json(path_data: dict, profile: dict) -> str:
     """Export learning path as importable JSON."""
     return json.dumps({"profile": profile, "path": path_data}, ensure_ascii=False, indent=2)
+

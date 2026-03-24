@@ -1,4 +1,5 @@
 """Form view: user profile input."""
+from __future__ import annotations
 
 import streamlit as st
 
@@ -10,7 +11,7 @@ from i18n import t
 from views import _lang
 
 
-def render_form():
+def render_form() -> tuple[bool, dict]:
     L = _lang()
     st.title(t("form_title", L))
     st.markdown(t("form_subtitle", L))
@@ -26,21 +27,29 @@ def render_form():
         "🤖 AI Agent 开发": "LangChain + LangGraph 多工具 Agent 实战",
         "💬 LLM 应用入门": "Prompt → RAG → 向量数据库 → 部署",
         "📊 ML / 数据科学": "数学基础 → sklearn → 特征工程 → 端到端项目",
+        "🎨 AIGC / 多模态创作": "Stable Diffusion + ComfyUI 全流程",
+        "🔧 MLOps / AI 工程化": "模型部署/实验管理/生产化",
+        "🔬 AI 研究 / 论文方向": "论文阅读 + 复现，读研准备",
+        "🌱 零基础入门 AI": "从Python开始，半年建立AI框架",
     }
-    preset_cols = st.columns(len(PRESET_PROFILES))
-    for i, (name, preset_data) in enumerate(PRESET_PROFILES.items()):
-        with preset_cols[i]:
-            st.markdown(
-                f"<div style='text-align:center;padding:8px 4px;border:1px solid #e2e8f0;"
-                f"border-radius:10px;margin-bottom:4px;min-height:60px;'>"
-                f"<div style='font-size:0.85rem;font-weight:600;'>{name}</div>"
-                f"<div style='font-size:0.7rem;color:#718096;margin-top:4px;'>"
-                f"{PRESET_DESCRIPTIONS.get(name, '')}</div></div>",
-                unsafe_allow_html=True,
-            )
-            if st.button(t("form_select", L), use_container_width=True, key=f"preset_{i}"):
-                st.session_state.preset_profile = preset_data
-                st.rerun()
+    preset_items = list(PRESET_PROFILES.items())
+    rows = [preset_items[i:i + 4] for i in range(0, len(preset_items), 4)]
+    for row in rows:
+        preset_cols = st.columns(4)
+        for col_idx, (name, preset_data) in enumerate(row):
+            with preset_cols[col_idx]:
+                st.markdown(
+                    f"<div style='text-align:center;padding:10px 8px;border:1px solid #e2e8f0;"
+                    f"border-radius:10px;margin-bottom:4px;height:80px;display:flex;"
+                    f"flex-direction:column;justify-content:center;'>"
+                    f"<div style='font-size:0.85rem;font-weight:600;color:#1e293b;'>{name}</div>"
+                    f"<div style='font-size:0.75rem;color:#334155;margin-top:4px;line-height:1.3;'>"
+                    f"{PRESET_DESCRIPTIONS.get(name, '')}</div></div>",
+                    unsafe_allow_html=True,
+                )
+                if st.button(t("form_select", L), use_container_width=True, key=f"preset_{name}"):
+                    st.session_state.preset_profile = preset_data
+                    st.rerun()
     st.divider()
 
     p = st.session_state.get("preset_profile", {})

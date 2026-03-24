@@ -1,4 +1,5 @@
 """Internationalization (i18n) support for AI Pathfinder."""
+from __future__ import annotations
 
 TRANSLATIONS = {
     # ─── Navigation ───

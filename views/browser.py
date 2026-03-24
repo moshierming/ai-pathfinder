@@ -1,4 +1,5 @@
 """Resource browser view."""
+from __future__ import annotations
 
 from collections import Counter
 
@@ -9,7 +10,7 @@ from i18n import t
 from views import _lang
 
 
-def render_resource_browser(resources: list):
+def render_resource_browser(resources: list[dict]) -> None:
     L = _lang()
     st.title(t("browser_title", L))
     st.caption(t("browser_hint", L))
@@ -24,7 +25,7 @@ def render_resource_browser(resources: list):
             f"<div style='flex:1;min-width:110px;text-align:center;padding:14px 8px;"
             f"border-radius:12px;background:{bg};'>"
             f"<div style='font-size:1.4rem;font-weight:700;color:{fg};'>{val}</div>"
-            f"<div style='font-size:0.75rem;color:#718096;margin-top:2px;'>{label}</div></div>"
+            f"<div style='font-size:0.78rem;color:#334155;margin-top:2px;'>{label}</div></div>"
             for label, val, bg, fg in [
                 (t("browser_total", L), len(resources), "#eef2ff", "#4338ca"),
                 (t("browser_chinese", L), lang_counts.get("zh", 0), "#fef3c7", "#92400e"),

@@ -1,4 +1,5 @@
 """Import plan view."""
+from __future__ import annotations
 
 import json
 
@@ -9,7 +10,7 @@ from utils import encode_profile
 from views import _lang
 
 
-def render_import_plan(resources: list):
+def render_import_plan(resources: list[dict]) -> None:
     L = _lang()
     st.title(t("import_title", L))
     st.markdown(t("import_subtitle", L))

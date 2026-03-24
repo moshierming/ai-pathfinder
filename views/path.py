@@ -1,4 +1,5 @@
 """Path display and analytics views."""
+from __future__ import annotations
 
 from collections import Counter
 from html import escape as html_escape
@@ -12,15 +13,15 @@ from views import _lang
 from views.progress import render_progress_save
 
 
-def render_path(path_data: dict, resources: list):
+def render_path(path_data: dict, resources: list[dict]) -> None:
     L = _lang()
     ridx = {r["id"]: r for r in resources}
 
     st.markdown(
         f"<div style='padding:20px 24px;background:linear-gradient(135deg,#eef2ff 0%,#e0e7ff 100%);"
         f"border-radius:14px;margin-bottom:16px;'>"
-        f"<div style='font-size:1.1rem;font-weight:600;color:#4338ca;'>🧭 {html_escape(str(path_data.get('summary', '')))}</div>"
-        f"<div style='font-size:0.85rem;color:#6366f1;margin-top:6px;'>"
+        f"<div style='font-size:1.1rem;font-weight:600;color:#3730a3;'>🧭 {html_escape(str(path_data.get('summary', '')))}</div>"
+        f"<div style='font-size:0.85rem;color:#4338ca;margin-top:6px;'>"
         f"{t('path_weeks', L)} <b>{html_escape(str(path_data.get('estimated_weeks', '?')))}</b> {t('path_weeks_unit', L)}</div></div>",
         unsafe_allow_html=True,
     )
@@ -108,7 +109,7 @@ def render_path(path_data: dict, resources: list):
     render_path_analytics(path_data, resources)
 
 
-def render_path_analytics(path_data: dict, resources: list):
+def render_path_analytics(path_data: dict, resources: list[dict]) -> None:
     """渲染学习路径的可视化分析面板。"""
     ridx = {r["id"]: r for r in resources}
     weeks = path_data.get("weeks", [])
@@ -165,9 +166,9 @@ def render_path_analytics(path_data: dict, resources: list):
                     f"<div style='display:flex;align-items:center;margin-bottom:6px;'>"
                     f"<div style='width:100px;font-size:0.82rem;'>{emoji} {typ}</div>"
                     f"<div style='flex:1;background:#f1f5f9;border-radius:6px;height:22px;position:relative;'>"
-                    f"<div style='width:{bar_width}%;background:linear-gradient(90deg,#667eea,#764ba2);"
+                    f"<div style='width:{bar_width}%;background:linear-gradient(90deg,#4f46e5,#6d28d9);"
                     f"border-radius:6px;height:100%;'></div>"
-                    f"<span style='position:absolute;right:8px;top:2px;font-size:0.72rem;color:#475569;'>"
+                    f"<span style='position:absolute;right:8px;top:2px;font-size:0.72rem;color:#1e293b;'>"
                     f"{cnt} ({pct:.0f}%)</span></div></div>",
                     unsafe_allow_html=True,
                 )
@@ -184,7 +185,7 @@ def render_path_analytics(path_data: dict, resources: list):
                     f"<div style='width:120px;font-size:0.82rem;'>{label}</div>"
                     f"<div style='flex:1;background:#f1f5f9;border-radius:6px;height:22px;position:relative;'>"
                     f"<div style='width:{bar_width}%;background:{color};border-radius:6px;height:100%;'></div>"
-                    f"<span style='position:absolute;right:8px;top:2px;font-size:0.72rem;color:#475569;'>"
+                    f"<span style='position:absolute;right:8px;top:2px;font-size:0.72rem;color:#334155;'>"
                     f"{cnt} ({pct:.0f}%)</span></div></div>",
                     unsafe_allow_html=True,
                 )
@@ -206,11 +207,11 @@ def render_path_analytics(path_data: dict, resources: list):
             hour_bar = min(int(w_hours / 0.5), 250)
             st.markdown(
                 f"<div style='display:flex;align-items:center;gap:8px;margin-bottom:6px;'>"
-                f"<div style='width:70px;font-weight:600;font-size:0.82rem;color:#334155;'>{'第' + str(w['week']) + '周' if L == 'zh' else 'Wk ' + str(w['week'])}</div>"
+                f"<div style='width:70px;font-weight:600;font-size:0.82rem;color:#1e293b;'>{'第' + str(w['week']) + '周' if L == 'zh' else 'Wk ' + str(w['week'])}</div>"
                 f"<div style='flex:1;background:#f1f5f9;border-radius:6px;height:26px;position:relative;'>"
                 f"<div style='width:{hour_bar}px;background:linear-gradient(90deg,#34d399,#059669);"
                 f"border-radius:6px;height:100%;'></div>"
-                f"<span style='position:absolute;left:8px;top:4px;font-size:0.72rem;color:#1e293b;'>"
+                f"<span style='position:absolute;left:8px;top:4px;font-size:0.72rem;color:#0f172a;'>"
                 f"{w_hours}h · {w_count} {'资源' if L == 'zh' else 'items'} · {avg_label}</span></div></div>",
                 unsafe_allow_html=True,
             )
@@ -224,10 +225,10 @@ def render_path_analytics(path_data: dict, resources: list):
                 pct = cnt / max_count * 100
                 st.markdown(
                     f"<div style='display:flex;align-items:center;margin-bottom:4px;'>"
-                    f"<div style='width:130px;font-size:0.8rem;color:#475569;'><code>{topic}</code></div>"
+                    f"<div style='width:130px;font-size:0.8rem;color:#334155;'><code>{topic}</code></div>"
                     f"<div style='flex:1;background:#f1f5f9;border-radius:4px;height:18px;'>"
                     f"<div style='width:{pct:.0f}%;background:linear-gradient(90deg,#fbbf24,#f59e0b);"
                     f"border-radius:4px;height:100%;'></div></div>"
-                    f"<div style='width:30px;text-align:right;font-size:0.75rem;color:#64748b;'>{cnt}</div></div>",
+                    f"<div style='width:30px;text-align:right;font-size:0.75rem;color:#475569;'>{cnt}</div></div>",
                     unsafe_allow_html=True,
                 )

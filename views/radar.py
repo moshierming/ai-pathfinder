@@ -1,4 +1,5 @@
 """Trend radar view — insights + sources."""
+from __future__ import annotations
 
 from html import escape as html_escape
 
@@ -9,7 +10,7 @@ from llm import generate_trend_insights
 from views import _lang
 
 
-def _render_insights_section(channels, L):
+def _render_insights_section(channels: list[dict], L: str) -> None:
     """Render AI trend insights panel with LLM-generated daily analysis."""
 
     col_title, col_btn = st.columns([4, 1])
@@ -21,9 +22,14 @@ def _render_insights_section(channels, L):
 
     if force or "insights_data" not in st.session_state:
         with st.status(t("radar_insights_loading", L), expanded=True) as status:
-            data = generate_trend_insights(channels, force_refresh=force)
-            st.session_state["insights_data"] = data
-            status.update(label=t("radar_insights_title", L), state="complete")
+            try:
+                data = generate_trend_insights(channels, force_refresh=force)
+                st.session_state["insights_data"] = data
+                status.update(label=t("radar_insights_title", L), state="complete")
+            except Exception:
+                data = {}
+                st.session_state["insights_data"] = data
+                status.update(label=t("radar_insights_title", L), state="error")
     else:
         data = st.session_state.get("insights_data", {})
 
@@ -32,33 +38,39 @@ def _render_insights_section(channels, L):
         return
 
     # Overview
-    if data.get("overview"):
+    overview = data.get("overview", "")
+    if overview and isinstance(overview, str):
         st.markdown(
             f"<div style='padding:14px 18px;background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%);"
             f"border-radius:12px;margin-bottom:16px;border-left:4px solid #f59e0b;'>"
             f"<div style='font-weight:600;color:#92400e;font-size:0.95rem;'>"
             f"\ud83c\udf1f {t('radar_insights_overview', L)}</div>"
             f"<div style='color:#78350f;font-size:0.88rem;margin-top:6px;'>"
-            f"{html_escape(data['overview'])}</div></div>",
+            f"{html_escape(overview)}</div></div>",
             unsafe_allow_html=True,
         )
 
     # Insight cards
     for i, ins in enumerate(data.get("insights", [])):
+        if not isinstance(ins, dict):
+            continue
+        tags = ins.get("tags", [])
+        if not isinstance(tags, list):
+            tags = []
         tags_html = " ".join(
             f"<span style='background:#e0e7ff;color:#4338ca;font-size:0.7rem;"
-            f"padding:2px 8px;border-radius:10px;'>{html_escape(tag)}</span>"
-            for tag in ins.get("tags", [])
+            f"padding:2px 8px;border-radius:10px;'>{html_escape(str(tag))}</span>"
+            for tag in tags
         )
         st.markdown(
             f"<div style='padding:14px 18px;background:#f8fafc;border-radius:10px;"
             f"border:1px solid #e2e8f0;margin-bottom:10px;'>"
             f"<div style='font-weight:600;color:#1e293b;font-size:0.92rem;'>"
-            f"\ud83d\udca1 {html_escape(ins.get('title', ''))}</div>"
-            f"<div style='color:#475569;font-size:0.84rem;margin-top:5px;'>"
-            f"{html_escape(ins.get('summary', ''))}</div>"
-            f"<div style='color:#059669;font-size:0.82rem;margin-top:5px;font-weight:500;'>"
-            f"\u2705 {html_escape(ins.get('action', ''))}</div>"
+            f"\ud83d\udca1 {html_escape(str(ins.get('title', '')))}</div>"
+            f"<div style='color:#334155;font-size:0.84rem;margin-top:5px;'>"
+            f"{html_escape(str(ins.get('summary', '')))}</div>"
+            f"<div style='color:#047857;font-size:0.82rem;margin-top:5px;font-weight:500;'>"
+            f"\u2705 {html_escape(str(ins.get('action', '')))}</div>"
             f"<div style='margin-top:6px;display:flex;gap:4px;'>{tags_html}</div></div>",
             unsafe_allow_html=True,
         )
@@ -68,7 +80,7 @@ def _render_insights_section(channels, L):
         st.caption(t("radar_insights_date", L, date=date_str))
 
 
-def render_trend_radar(resources: list):
+def render_trend_radar(resources: list[dict]) -> None:
     L = _lang()
     st.title(t("radar_title", L))
     st.markdown(t("radar_subtitle", L))
@@ -96,7 +108,7 @@ def render_trend_radar(resources: list):
                 f"border-radius:0 8px 8px 0;margin-bottom:8px;'>"
                 f"<a href=\"{r['url']}\" target=\"_blank\" style='text-decoration:none;font-weight:600;"
                 f"color:#92400e;'>📡 {r['title']}</a>"
-                f"<div style='font-size:0.78rem;color:#78716c;margin-top:3px;'>{r.get('description', '')}</div>"
+                f"<div style='font-size:0.78rem;color:#57534e;margin-top:3px;'>{r.get('description', '')}</div>"
                 f"</div>", unsafe_allow_html=True,
             )
     with col2:
@@ -107,7 +119,7 @@ def render_trend_radar(resources: list):
                 f"border-radius:0 8px 8px 0;margin-bottom:8px;'>"
                 f"<a href=\"{r['url']}\" target=\"_blank\" style='text-decoration:none;font-weight:600;"
                 f"color:#4338ca;'>📡 {r['title']}</a>"
-                f"<div style='font-size:0.78rem;color:#78716c;margin-top:3px;'>{r.get('description', '')}</div>"
+                f"<div style='font-size:0.78rem;color:#57534e;margin-top:3px;'>{r.get('description', '')}</div>"
                 f"</div>", unsafe_allow_html=True,
             )
 
@@ -162,7 +174,7 @@ def render_trend_radar(resources: list):
             f"<a href='{url}' target='_blank' style='text-decoration:none;flex:1;min-width:160px;"
             f"padding:14px 16px;background:{bg};border-radius:10px;'>"
             f"<div style='font-weight:600;color:{fg};font-size:0.9rem;'>{label}</div>"
-            f"<div style='font-size:0.72rem;color:#64748b;margin-top:3px;'>{desc}</div></a>"
+            f"<div style='font-size:0.78rem;color:#334155;margin-top:3px;'>{desc}</div></a>"
         )
     link_html += "</div>"
     st.markdown(link_html, unsafe_allow_html=True)

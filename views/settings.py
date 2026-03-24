@@ -1,4 +1,5 @@
 """API settings panel view."""
+from __future__ import annotations
 
 import streamlit as st
 
@@ -7,7 +8,7 @@ from i18n import t
 from views import _lang
 
 
-def render_settings():
+def render_settings() -> None:
     """侧边栏 API 设置面板"""
     L = _lang()
     with st.expander(t("settings_title", L), expanded=False):
