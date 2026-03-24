@@ -1,5 +1,7 @@
 import json
 import os
+import urllib.request
+import urllib.error
 from datetime import datetime, timezone
 
 import streamlit as st
@@ -211,6 +213,55 @@ def render_path(path_data: dict, resources: list):
 # ─── 反馈收集 ────────────────────────────────────────────────────────────────
 
 
+def submit_feedback(feedback: dict) -> str:
+    """保存反馈：本地文件（始终尝试）+ GitHub Issues（有 token 时）。返回 'github' 或 'local'。"""
+    # 1. 尝试本地文件（本地开发有效；Streamlit Cloud 为临时文件系统，数据会丢失）
+    try:
+        feedback_dir = os.path.join(os.path.dirname(__file__), "feedback")
+        os.makedirs(feedback_dir, exist_ok=True)
+        ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        with open(os.path.join(feedback_dir, f"fb_{ts}.json"), "w", encoding="utf-8") as f:
+            json.dump(feedback, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+
+    # 2. 尝试 GitHub Issues（需在 Streamlit Cloud secrets 里配置 GITHUB_TOKEN）
+    token = st.secrets.get("GITHUB_TOKEN", "") or os.environ.get("GITHUB_TOKEN", "")
+    if not token:
+        return "local"
+
+    profile = feedback.get("profile", {})
+    body = (
+        f"**评分**: {feedback['rating']}\n\n"
+        f"**意见**: {feedback.get('comment') or '（无）'}\n\n"
+        f"**方向**: {profile.get('direction', '-')}\n"
+        f"**水平**: {profile.get('level', '-')}\n"
+        f"**时间**: {profile.get('hours_per_week', '-')}h/周\n"
+        f"**语言**: {profile.get('language', '-')}\n\n"
+        f"**目标**:\n> {profile.get('goal', '-')}"
+    )
+    payload = json.dumps({
+        "title": f"用户反馈 {datetime.now(timezone.utc).strftime('%Y-%m-%d')}",
+        "body": body,
+        "labels": ["feedback"],
+    }).encode("utf-8")
+    req = urllib.request.Request(
+        "https://api.github.com/repos/moshierming/ai-pathfinder/issues",
+        data=payload,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+        },
+    )
+    try:
+        urllib.request.urlopen(req, timeout=5)
+        return "github"
+    except Exception:
+        return "local"
+
+
 def render_feedback():
     st.divider()
     st.subheader("📝 学习反馈")
@@ -230,19 +281,16 @@ def render_feedback():
         submitted = st.form_submit_button("提交反馈")
 
     if submitted:
-        # 将反馈保存到本地 JSON（后续可接 GitHub Issue / 数据库）
         feedback = {
             "rating": rating,
             "comment": comment,
             "profile": st.session_state.get("profile", {}),
         }
-        feedback_dir = os.path.join(os.path.dirname(__file__), "feedback")
-        os.makedirs(feedback_dir, exist_ok=True)
-        ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
-        feedback_path = os.path.join(feedback_dir, f"fb_{ts}.json")
-        with open(feedback_path, "w", encoding="utf-8") as f:
-            json.dump(feedback, f, ensure_ascii=False, indent=2)
-        st.success("感谢反馈！🙏")
+        result = submit_feedback(feedback)
+        if result == "github":
+            st.success("感谢反馈！已记录到 GitHub Issues 🙏")
+        else:
+            st.success("感谢反馈！🙏")
 
 
 # ─── 输入表单 ────────────────────────────────────────────────────────────────
@@ -269,6 +317,40 @@ DIRECTIONS = [
     "🔬 AI 研究 / 论文方向",
     "🌐 其他 / 尚未确定",
 ]
+
+DIRECTION_TO_DOMAIN: dict[str, list[str]] = {
+    "🤖 AI Agent / 多智能体系统": ["ai-agent", "llm-app"],
+    "🧪 AI 辅助软件测试 / 质量保障": ["software-testing", "llm-app"],
+    "💬 LLM 应用开发 / RAG": ["llm-app", "ai-agent"],
+    "📊 机器学习 / 数据科学": ["data-science"],
+    "🎨 AIGC / 多模态生成": ["aigc", "data-science"],
+    "🔧 MLOps / AI 系统工程": ["mlops", "llm-app"],
+    "🔬 AI 研究 / 论文方向": ["research", "data-science"],
+    "🌐 其他 / 尚未确定": [],
+}
+
+
+def filter_resources_for_direction(resources: list, direction: str, language: str) -> list:
+    """LLM 调用前预筛选：按方向+语言排序，限制在 40 条以内。"""
+    domains = DIRECTION_TO_DOMAIN.get(direction, [])
+    if domains:
+        matched = [r for r in resources if any(d in r.get("domain", ["general"]) for d in domains)]
+        seen = {r["id"] for r in matched}
+        general = [r for r in resources if r["id"] not in seen and r.get("domain", ["general"]) == ["general"]]
+        filtered = matched + general
+    else:
+        filtered = list(resources)
+
+    if "中文" in language:
+        preferred = [r for r in filtered if r.get("language") == "zh"]
+        others = [r for r in filtered if r.get("language") != "zh"]
+        filtered = preferred + others
+    elif "英文" in language:
+        preferred = [r for r in filtered if r.get("language") == "en"]
+        others = [r for r in filtered if r.get("language") != "en"]
+        filtered = preferred + others
+
+    return filtered[:40]
 
 
 def render_form():
@@ -324,13 +406,17 @@ def render_resource_browser(resources: list):
     all_types = sorted({r["type"] for r in resources})
     all_levels = sorted({r["level"] for r in resources})
 
-    c1, c2, c3 = st.columns(3)
+    all_domains = sorted({d for r in resources for d in r.get("domain", ["general"])})
+
+    c1, c2, c3, c4 = st.columns(4)
     with c1:
         selected_topics = st.multiselect("主题", all_topics)
     with c2:
         selected_types = st.multiselect("类型", all_types)
     with c3:
         selected_levels = st.multiselect("难度", all_levels)
+    with c4:
+        selected_domains = st.multiselect("方向领域", all_domains)
 
     filtered = resources
     if selected_topics:
@@ -339,6 +425,8 @@ def render_resource_browser(resources: list):
         filtered = [r for r in filtered if r["type"] in selected_types]
     if selected_levels:
         filtered = [r for r in filtered if r["level"] in selected_levels]
+    if selected_domains:
+        filtered = [r for r in filtered if any(d in r.get("domain", ["general"]) for d in selected_domains)]
 
     st.caption(f"显示 {len(filtered)} / {len(resources)} 条")
     st.divider()
@@ -465,7 +553,10 @@ def main():
                 return
             with st.spinner("🤔 正在为你规划学习路径，约需 10-20 秒..."):
                 try:
-                    path_data = generate_path(profile, resources)
+                    filtered = filter_resources_for_direction(
+                        resources, profile.get("direction", ""), profile.get("language", "")
+                    )
+                    path_data = generate_path(profile, filtered)
                     st.session_state.path = path_data
                     st.session_state.profile = profile
                     st.rerun()
