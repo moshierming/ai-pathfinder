@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "ai-pathfinder"
+version = "0.1.0"
+description = "个性化AI学习路径规划，开源免费"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = [
+    "streamlit>=1.32.0",
+    "openai>=1.14.0",
+    "pyyaml>=6.0",
+]
