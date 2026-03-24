@@ -126,6 +126,42 @@ PRESET_PROFILES = {
         "direction": "📊 机器学习 / 数据科学",
         "focus": "🧱 侧重打基础（数学/原理/论文）",
     },
+    "🎨 AIGC / 多模态创作": {
+        "level": "📗 会Python，了解基本ML概念",
+        "goal": "掌握 Stable Diffusion / ComfyUI 工作流，理解 Diffusion 模型原理，能独立完成从文生图到 LoRA 微调的全流程",
+        "hours_per_week": 8,
+        "preference": "💻 项目实战为主",
+        "language": "🌍 不限语言",
+        "direction": "🎨 AIGC / 多模态生成",
+        "focus": "🔧 侧重实战（项目/部署/工具）",
+    },
+    "🔧 MLOps / AI 工程化": {
+        "level": "📘 能跑通基础模型（sklearn/transformers）",
+        "goal": "学会模型部署、实验管理、数据版本控制和监控，能将 ML 模型从 Notebook 推到生产环境",
+        "hours_per_week": 10,
+        "preference": "💻 项目实战为主",
+        "language": "🌍 不限语言",
+        "direction": "🔧 MLOps / AI 系统工程",
+        "focus": "🔧 侧重实战（项目/部署/工具）",
+    },
+    "🔬 AI 研究 / 论文方向": {
+        "level": "📘 能跑通基础模型（sklearn/transformers）",
+        "goal": "系统阅读经典论文（Attention/GPT/Diffusion），掌握论文复现能力，为发表论文或读研做准备",
+        "hours_per_week": 12,
+        "preference": "� 文档/教程为主",
+        "language": "🌍 不限语言",
+        "direction": "🔬 AI 研究 / 论文方向",
+        "focus": "🧱 侧重打基础（数学/原理/论文）",
+    },
+    "🌱 零基础入门 AI": {
+        "level": "🔰 完全零基础（不会Python）",
+        "goal": "从 Python 基础开始，6 个月内建立 AI 概念框架，能用 sklearn 跑通简单项目",
+        "hours_per_week": 6,
+        "preference": "🎬 视频课程为主",
+        "language": "🇨🇳 优先中文资源",
+        "direction": "🌐 其他 / 尚未确定",
+        "focus": "🧱 侧重打基础（数学/原理/论文）",
+    },
 }
 
 PRESET_DESCRIPTIONS = {
@@ -133,6 +169,10 @@ PRESET_DESCRIPTIONS = {
     "🤖 AI Agent 开发": "搭建多工具调用的智能体",
     "💬 LLM 应用入门": "从零到RAG问答系统部署",
     "📊 ML / 数据科学": "系统学习机器学习理论与实践",
+    "🎨 AIGC / 多模态创作": "Stable Diffusion + ComfyUI 全流程",
+    "🔧 MLOps / AI 工程化": "模型部署/实验管理/生产化",
+    "🔬 AI 研究 / 论文方向": "论文阅读 + 复现，读研准备",
+    "🌱 零基础入门 AI": "从Python开始，半年建立AI框架",
 }
 
 SYSTEM_PROMPT = """你是一位专业的AI学习路径规划师。根据用户的背景和目标，从给定的资源库中，为用户规划个性化学习路径。
