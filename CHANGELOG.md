@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.5.0] — 2026-03-24
+
+### Changed
+- **路径生成速度优化**：全链路提速，目标 <30s 完成
+  - 资源过滤：35 → 20 条 (-43% input tokens)
+  - SYSTEM_PROMPT：796 → 396 chars (-50%)，合并冗余规则
+  - max_tokens：2500 → 1500 (-40% output tokens)
+  - temperature：0.3 → 0.15，更确定性输出
+  - compact 格式：去除 domain 字段，topics 3→2，进一步压缩
+- **路径缓存**：基于画像+资源 SHA256 哈希的 session 级缓存，相同画像再次生成秒回
+- **超时保护**：OpenAI client 25s hard timeout，防止无限等待
+- **流式进度反馈**：生成过程中实时显示已接收字符数，改善等待体验
+
 ## [1.4.0] — 2026-03-24
 
 ### Changed
