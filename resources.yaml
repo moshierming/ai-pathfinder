@@ -851,3 +851,63 @@ resources:
     description: "DataWhale出品，主流开源大模型（Llama/Qwen/ChatGLM等）本地部署与调用中文实战教程"
     language: zh
     free: true
+
+  - id: r071
+    title: "OpenAI Cookbook：可运行的LLM实战配方"
+    url: "https://github.com/openai/openai-cookbook"
+    type: repo
+    topics: [llm, rag, fine-tuning, embedding, function-calling]
+    domain: [llm-app, ai-agent]
+    level: beginner-to-intermediate
+    duration_hours: 20
+    description: "OpenAI官方实战案例库，涵盖RAG/嵌入/函数调用/微调，每个示例均可直接运行，软件工程师入门LLM应用的最佳实验场"
+    language: en
+    free: true
+
+  - id: r072
+    title: "面向开发者的LLM入门（吴恩达×OpenAI中文版）"
+    url: "https://github.com/datawhalechina/prompt-engineering-for-developers"
+    type: repo
+    topics: [prompting, llm, rag, fine-tuning]
+    domain: [llm-app]
+    level: beginner
+    duration_hours: 10
+    description: "DataWhale将吴恩达×OpenAI系列课翻译为中文Jupyter Notebook，边读边跑，从Prompt工程到RAG/Fine-tuning完整覆盖"
+    language: zh
+    free: true
+
+  - id: r073
+    title: "awesome-llm-apps：开箱即跑的LLM应用合集"
+    url: "https://github.com/Shubhamsaboo/awesome-llm-apps"
+    type: repo
+    topics: [llm, rag, agent, tool-use, multimodal]
+    domain: [llm-app, ai-agent]
+    level: intermediate
+    duration_hours: 15
+    description: "100+ 可直接运行的LLM应用示例（RAG、Agent、多模态），配套代码和教程，软件工程师动手学习LLM的项目素材库"
+    language: en
+    free: true
+
+  - id: r074
+    title: "30天Python AI工程师实战挑战（GenAI Cohort）"
+    url: "https://github.com/krishnaik06/30-Days-Gen-AI-Study-Plan"
+    type: repo
+    topics: [llm, rag, agent, langchain, deployment]
+    domain: [llm-app, ai-agent]
+    level: intermediate
+    duration_hours: 30
+    description: "30天结构化学习计划，每天一个可运行项目，从Prompt到RAG到Agent部署，有Python基础的工程师快速入门GenAI工程"
+    language: en
+    free: true
+
+  - id: r075
+    title: "AI辅助软件测试实战：Playwright MCP Server"
+    url: "https://github.com/microsoft/playwright-mcp"
+    type: repo
+    topics: [testing, ai-agent, automation, browser, mcp]
+    domain: [software-testing, ai-agent]
+    level: intermediate
+    duration_hours: 8
+    description: "微软官方 Playwright MCP Server，让AI Agent直接控制浏览器执行E2E测试，测试工程师接入AI能力的最短路径"
+    language: en
+    free: true
