@@ -42,6 +42,12 @@ def render_import_plan(resources: list):
                 st.write(f"**目标**: {profile.get('goal', '-')}")
                 st.write(f"**时间**: {profile.get('hours_per_week', '-')}h/{'wk' if L == 'en' else '周'}")
 
+            # Show progress info if present
+            done_data = data.get("done", {})
+            chat_data = data.get("chat_messages", [])
+            if done_data or chat_data:
+                st.info(t("progress_import_restored", L, done=len(done_data), chat=len(chat_data)))
+
             with st.expander(t("import_path_preview", L)):
                 st.write(f"**总结**: {path_data.get('summary', '-')}")
                 st.write(f"**周数**: {path_data.get('estimated_weeks', '?')}")
@@ -52,6 +58,12 @@ def render_import_plan(resources: list):
                 st.session_state.path = path_data
                 st.session_state.profile = profile
                 st.query_params["p"] = encode_profile(profile)
+                # Restore progress data if present
+                for k, v in done_data.items():
+                    if isinstance(k, str) and k.startswith("done_"):
+                        st.session_state[k] = v
+                if chat_data:
+                    st.session_state.chat_messages = chat_data
                 st.rerun()
 
         except json.JSONDecodeError:

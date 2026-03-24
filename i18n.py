@@ -191,6 +191,22 @@ TRANSLATIONS = {
     "settings_custom_url": {"zh": "API Base URL", "en": "API Base URL"},
     "settings_custom_model": {"zh": "模型名称", "en": "Model Name"},
     "settings_key": {"zh": "API Key", "en": "API Key"},
+    # ─── Progress Persistence ───
+    "progress_save_title": {"zh": "💾 保存学习进度", "en": "💾 Save Learning Progress"},
+    "progress_save_hint": {
+        "zh": "保存后刷新页面或下次打开可恢复进度（含勾选状态和对话记录）",
+        "en": "Save to restore progress after refresh or next visit (includes checkboxes & chat)",
+    },
+    "progress_save_server": {"zh": "💾 保存到服务器", "en": "💾 Save to Server"},
+    "progress_download": {"zh": "⬇️ 下载进度文件", "en": "⬇️ Download Progress"},
+    "progress_saved_ok": {"zh": "✅ 进度已保存！下次打开时可恢复", "en": "✅ Progress saved! Restorable on next visit"},
+    "progress_save_empty": {"zh": "⚠️ 还没有可保存的学习进度", "en": "⚠️ No progress to save yet"},
+    "progress_found": {
+        "zh": "💾 发现上次进度（{time}，{direction}，已完成 {done} 项）",
+        "en": "💾 Saved progress found ({time}, {direction}, {done} done)",
+    },
+    "progress_restore": {"zh": "🔄 恢复上次进度", "en": "🔄 Restore Progress"},
+    "progress_import_restored": {"zh": "✅ 已恢复 {done} 项完成记录和 {chat} 条对话", "en": "✅ Restored {done} completed items and {chat} chat messages"},
     # ─── Errors ───
     "error_generate": {"zh": "生成失败：", "en": "Generation failed: "},
     "error_api_hint": {

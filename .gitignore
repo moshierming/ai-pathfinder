@@ -6,6 +6,7 @@ __pycache__/
 dist/
 *.egg-info/
 feedback/
+progress/
 .pytest_cache/
 *.bak
 .DS_Store

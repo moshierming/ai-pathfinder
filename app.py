@@ -12,6 +12,7 @@ from views.feedback import render_feedback
 from views.form import render_form
 from views.import_plan import render_import_plan
 from views.path import render_path
+from views.progress import render_progress_restore
 from views.radar import render_trend_radar
 from views.settings import render_settings
 
@@ -119,6 +120,9 @@ def render_sidebar():
                 st.session_state.profile = None
                 st.query_params.clear()
                 st.rerun()
+
+        if not st.session_state.get("path"):
+            render_progress_restore()
 
         st.divider()
         render_settings()

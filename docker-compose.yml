@@ -8,4 +8,5 @@ services:
       - GITHUB_TOKEN=${GITHUB_TOKEN:-}
     volumes:
       - ./feedback:/app/feedback
+      - ./progress:/app/progress
     restart: unless-stopped
