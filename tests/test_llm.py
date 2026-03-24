@@ -84,6 +84,14 @@ class TestGetLlmConfig:
             assert model in preset["models"], f"Provider {name} model {model} not in presets"
 
 
+def _mock_stream(content_str):
+    """Create a mock streaming response from a content string."""
+    chunk = MagicMock()
+    chunk.choices = [MagicMock()]
+    chunk.choices[0].delta.content = content_str
+    return [chunk]
+
+
 class TestGeneratePath:
     """Test generate_path() with mocked OpenAI client."""
 
@@ -104,10 +112,7 @@ class TestGeneratePath:
     @patch("llm.OpenAI")
     def test_returns_parsed_json(self, MockOpenAI):
         expected = {"summary": "Test Path", "estimated_weeks": 4, "weeks": []}
-        mock_resp = MagicMock()
-        mock_resp.choices = [MagicMock()]
-        mock_resp.choices[0].message.content = json.dumps(expected)
-        MockOpenAI.return_value.chat.completions.create.return_value = mock_resp
+        MockOpenAI.return_value.chat.completions.create.return_value = _mock_stream(json.dumps(expected))
 
         from llm import generate_path
         result = generate_path(
@@ -122,10 +127,7 @@ class TestGeneratePath:
 
     @patch("llm.OpenAI")
     def test_passes_correct_model(self, MockOpenAI):
-        mock_resp = MagicMock()
-        mock_resp.choices = [MagicMock()]
-        mock_resp.choices[0].message.content = '{"weeks":[]}'
-        MockOpenAI.return_value.chat.completions.create.return_value = mock_resp
+        MockOpenAI.return_value.chat.completions.create.return_value = _mock_stream('{"weeks":[]}')
 
         mock_st.session_state = {
             "settings_api_key": "sk-test",
@@ -140,10 +142,7 @@ class TestGeneratePath:
 
     @patch("llm.OpenAI")
     def test_user_message_contains_profile(self, MockOpenAI):
-        mock_resp = MagicMock()
-        mock_resp.choices = [MagicMock()]
-        mock_resp.choices[0].message.content = '{"weeks":[]}'
-        MockOpenAI.return_value.chat.completions.create.return_value = mock_resp
+        MockOpenAI.return_value.chat.completions.create.return_value = _mock_stream('{"weeks":[]}')
 
         from llm import generate_path
         generate_path(

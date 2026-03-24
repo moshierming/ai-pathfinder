@@ -8,6 +8,7 @@ dist/
 feedback/
 progress/
 logs/
+insights_cache.json
 .pytest_cache/
 *.bak
 .DS_Store

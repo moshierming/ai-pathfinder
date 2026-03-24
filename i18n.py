@@ -137,6 +137,12 @@ TRANSLATIONS = {
         "en": "> AI moves fast — **tracking trends** is just as important as finishing a course.",
     },
     "radar_sources": {"zh": "📡 推荐信息源", "en": "📡 Recommended Sources"},
+    "radar_insights_title": {"zh": "🔮 今日 AI 趋势洞察", "en": "🔮 Today's AI Trend Insights"},
+    "radar_insights_refresh": {"zh": "🔄 刷新", "en": "🔄 Refresh"},
+    "radar_insights_loading": {"zh": "正在分析 AI 趋势...", "en": "Analyzing AI trends..."},
+    "radar_insights_empty": {"zh": "暂无洞察数据，请配置 API Key 后点击刷新", "en": "No insights yet. Configure API Key and click Refresh."},
+    "radar_insights_overview": {"zh": "趋势总览", "en": "Trend Overview"},
+    "radar_insights_date": {"zh": "📅 洞察生成日期：{date}（每日自动更新）", "en": "📅 Generated: {date} (daily auto-refresh)"},
     "radar_sources_hint": {
         "zh": "这些是经过筛选的高质量持续学习渠道，建议每周花 1-2 小时浏览",
         "en": "Curated high-quality channels — spend 1-2 hours per week browsing",

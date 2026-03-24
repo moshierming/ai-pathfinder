@@ -63,7 +63,7 @@ def filter_resources_for_direction(resources: list, direction: str, language: st
         others = [r for r in filtered if r.get("language") != "en"]
         filtered = preferred + others
 
-    return filtered[:50]
+    return filtered[:35]
 
 
 def export_plan_markdown(path_data: dict, profile: dict, resources: list) -> str:

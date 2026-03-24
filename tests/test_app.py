@@ -158,7 +158,7 @@ class TestFilterResources:
             for i in range(60)
         ]
         result = filter_resources_for_direction(many, "🌐 其他 / 尚未确定", "🌍 不限语言")
-        assert len(result) == 50
+        assert len(result) == 35
 
     def test_direction_includes_general(self):
         """Resources with domain=general should be included even with specific direction."""
