@@ -1183,3 +1183,202 @@ resources:
     language: zh
     free: true
     focus: applied
+
+  # ── AIGC / 多模态 补充 ──────────────────────────────────────────────────────
+  - id: r091
+    title: "Stable Diffusion WebUI 新手指南"
+    url: "https://stable-diffusion-art.com/beginners-guide/"
+    type: article
+    topics: [stable-diffusion, image-generation, aigc]
+    domain: [aigc]
+    level: beginner
+    duration_hours: 4
+    description: "从安装到出图的完整入门教程，零基础友好"
+    language: en
+    free: true
+    focus: applied
+
+  - id: r092
+    title: "Practical Deep Learning for Coders — Diffusion Models"
+    url: "https://course.fast.ai/Lessons/part2.html"
+    type: course
+    topics: [diffusion, deep-learning, generation, aigc]
+    domain: [aigc, research]
+    level: intermediate
+    duration_hours: 25
+    description: "fast.ai Part 2 课程，从零实现 Diffusion Model，理论与实战并重"
+    language: en
+    free: true
+    focus: both
+
+  - id: r093
+    title: "Hugging Face Diffusers 官方文档"
+    url: "https://huggingface.co/docs/diffusers"
+    type: article
+    topics: [diffusers, stable-diffusion, image-generation, fine-tuning]
+    domain: [aigc, llm-app]
+    level: intermediate
+    duration_hours: 10
+    description: "Diffusers 库官方教程，覆盖推理、训练、LoRA 微调到部署"
+    language: en
+    free: true
+    focus: applied
+
+  - id: r094
+    title: "OpenAI DALL·E & GPT-4V API 实战"
+    url: "https://cookbook.openai.com/articles/related_resources"
+    type: article
+    topics: [multimodal, vision, image-generation, api]
+    domain: [aigc, llm-app]
+    level: intermediate
+    duration_hours: 6
+    description: "OpenAI Cookbook 中多模态相关实战案例集，含图像生成、理解和视觉问答"
+    language: en
+    free: true
+    focus: applied
+
+  - id: r095
+    title: "AI 绘画从入门到精通（B站系列）"
+    url: "https://www.bilibili.com/video/BV1As4y127HW"
+    type: video
+    topics: [stable-diffusion, midjourney, aigc, prompt-engineering]
+    domain: [aigc]
+    level: beginner
+    duration_hours: 8
+    description: "中文 AI 绘画系统教程，Stable Diffusion + Midjourney + ComfyUI"
+    language: zh
+    free: true
+    focus: applied
+
+  - id: r096
+    title: "ComfyUI 工作流教程"
+    url: "https://github.com/comfyanonymous/ComfyUI"
+    type: repo
+    topics: [comfyui, stable-diffusion, workflow, aigc]
+    domain: [aigc]
+    level: intermediate
+    duration_hours: 12
+    description: "节点式 AI 图像生成工具，灵活组合生成工作流"
+    language: en
+    free: true
+    focus: applied
+
+  # ── MLOps / AI 系统工程 补充 ────────────────────────────────────────────────
+  - id: r097
+    title: "Made With ML — MLOps 课程"
+    url: "https://madewithml.com"
+    type: course
+    topics: [mlops, deployment, testing, monitoring]
+    domain: [mlops, data-science]
+    level: intermediate
+    duration_hours: 30
+    description: "端到端 MLOps 实战：数据→训练→部署→监控，配套代码和项目"
+    language: en
+    free: true
+    focus: applied
+
+  - id: r098
+    title: "MLflow 官方教程"
+    url: "https://mlflow.org/docs/latest/tutorials-and-examples/index.html"
+    type: article
+    topics: [mlflow, experiment-tracking, model-registry, mlops]
+    domain: [mlops, data-science]
+    level: intermediate
+    duration_hours: 8
+    description: "MLflow 实验追踪、模型注册、部署全流程文档"
+    language: en
+    free: true
+    focus: applied
+
+  - id: r099
+    title: "DVC (Data Version Control) 入门"
+    url: "https://dvc.org/doc/start"
+    type: article
+    topics: [dvc, data-versioning, pipeline, mlops]
+    domain: [mlops]
+    level: beginner-to-intermediate
+    duration_hours: 5
+    description: "数据版本控制工具入门，轻量级 ML Pipeline 管理"
+    language: en
+    free: true
+    focus: applied
+
+  - id: r100
+    title: "BentoML 模型部署实战"
+    url: "https://docs.bentoml.com/en/latest/get-started/quickstart.html"
+    type: article
+    topics: [bentoml, model-serving, deployment, mlops]
+    domain: [mlops, llm-app]
+    level: intermediate
+    duration_hours: 6
+    description: "BentoML 快速上手，将模型打包为 API 服务并容器化部署"
+    language: en
+    free: true
+    focus: applied
+
+  # ── 经典书籍补充 ───────────────────────────────────────────────────────────
+  - id: r101
+    title: "Designing Machine Learning Systems (Chip Huyen)"
+    url: "https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/"
+    type: book
+    topics: [ml-system, design, mlops, deployment]
+    domain: [mlops, data-science]
+    level: intermediate-to-advanced
+    duration_hours: 25
+    description: "ML 系统设计经典，覆盖数据工程、特征存储、部署监控等生产级话题"
+    language: en
+    free: false
+    focus: both
+
+  - id: r102
+    title: "Build a Large Language Model (From Scratch)"
+    url: "https://www.manning.com/books/build-a-large-language-model-from-scratch"
+    type: book
+    topics: [llm, transformer, pretraining, fine-tuning]
+    domain: [research, llm-app]
+    level: intermediate-to-advanced
+    duration_hours: 35
+    description: "从零构建 LLM 全过程：Tokenizer→Transformer→预训练→微调→RLHF"
+    language: en
+    free: false
+    focus: foundational
+
+  - id: r103
+    title: "机器学习实战（第3版）"
+    url: "https://github.com/ageron/handson-ml3"
+    type: book
+    topics: [sklearn, tensorflow, machine-learning, deep-learning]
+    domain: [data-science, general]
+    level: beginner-to-intermediate
+    duration_hours: 40
+    description: "Hands-On ML 经典教材，配套 Jupyter Notebook，理论实践并重"
+    language: en
+    free: true
+    focus: both
+
+  # ── 视频补充 ───────────────────────────────────────────────────────────────
+  - id: r104
+    title: "Andrej Karpathy: Let's build GPT from scratch"
+    url: "https://www.youtube.com/watch?v=kCc8FmEb1nY"
+    type: video
+    topics: [gpt, transformer, llm, from-scratch]
+    domain: [research, llm-app]
+    level: intermediate
+    duration_hours: 2
+    description: "Karpathy 手把手从零实现 GPT，最受欢迎的 LLM 入门视频"
+    language: en
+    free: true
+    focus: foundational
+
+  - id: r105
+    title: "吴恩达 × DeepLearning.AI 短课合集"
+    url: "https://www.deeplearning.ai/short-courses/"
+    type: video
+    topics: [llm, rag, fine-tuning, langchain, prompt-engineering]
+    domain: [llm-app, ai-agent]
+    level: beginner-to-intermediate
+    duration_hours: 15
+    description: "与 OpenAI/LangChain/AWS 等联合出品的 1 小时短课，覆盖 LLM 全栈"
+    language: en
+    free: true
+    focus: both
