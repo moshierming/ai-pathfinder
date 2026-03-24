@@ -4,12 +4,40 @@ build-backend = "setuptools.backends._legacy:_Backend"
 
 [project]
 name = "ai-pathfinder"
-version = "0.1.0"
-description = "个性化AI学习路径规划，开源免费"
-requires-python = ">=3.10"
+version = "1.0.0"
+description = "个性化AI学习路径规划工具 — 开源免费"
+readme = "README.md"
+requires-python = ">=3.9"
 license = "MIT"
+authors = [{ name = "moshierming" }]
+keywords = ["ai", "learning-path", "streamlit", "llm", "education"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Education",
+]
 dependencies = [
     "streamlit>=1.32.0",
     "openai>=1.14.0",
     "pyyaml>=6.0",
 ]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.urls]
+Homepage = "https://github.com/moshierming/ai-pathfinder"
+Repository = "https://github.com/moshierming/ai-pathfinder"
+Issues = "https://github.com/moshierming/ai-pathfinder/issues"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.setuptools]
+packages = ["views"]
