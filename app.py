@@ -181,8 +181,9 @@ def main():
             if len(goal_text) > 1000:
                 st.error(t("form_goal_too_long", L))
                 return
-            with st.spinner(t("form_generating", L)):
+            with st.status(t("form_generating", L), expanded=True) as status:
                 try:
+                    status.update(label=t("form_generating", L), state="running")
                     filtered = filter_resources_for_direction(
                         resources, profile.get("direction", ""), profile.get("language", ""),
                         profile.get("focus", "both"),
@@ -192,10 +193,12 @@ def main():
                     st.session_state.profile = profile
                     st.query_params["p"] = encode_profile(profile)
                     get_logger().info("path_generated direction=%s level=%s", profile.get('direction', ''), profile.get('level', ''))
+                    status.update(label=t("form_generating", L), state="complete")
                     st.rerun()
                 except Exception as e:
                     err = str(e)
                     get_logger().error("path_generation_failed: %s", err)
+                    status.update(label=t("form_generating", L), state="error")
                     st.error(f"{t('error_generate', L)}{err}")
                     if "api_key" in err.lower() or "apikey" in err.lower() or "请配置" in err:
                         st.info(t("error_api_hint", L))
