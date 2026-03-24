@@ -6,10 +6,15 @@
 
 告诉我你现在的水平和目标，我帮你从 **105 条精选资源 · 15 个持续信息源**中规划最短最有效的学习路径。
 
+[![CI](https://github.com/moshierming/ai-pathfinder/actions/workflows/ci.yml/badge.svg)](https://github.com/moshierming/ai-pathfinder/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/moshierming/ai-pathfinder)](https://github.com/moshierming/ai-pathfinder/releases/latest)
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://ai-pathfinder.streamlit.app)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 ![Resources](https://img.shields.io/badge/resources-105条-orange)
+![Tests](https://img.shields.io/badge/tests-138-brightgreen)
+![Providers](https://img.shields.io/badge/LLM_providers-9-blueviolet)
+[![Docker](https://img.shields.io/badge/docker-ready-2496ED?logo=docker&logoColor=white)](Dockerfile)
 
 </div>
 
@@ -242,8 +247,10 @@ ai-pathfinder/
 ├── llm.py              # LLM 客户端：配置获取 + 路径生成
 ├── utils.py            # 工具函数：资源加载/编码/筛选/导出
 ├── i18n.py             # 国际化：中英文 170+ 翻译条目
-├── resources.yaml      # 资源库：90 条精选学习资源
-├── views/              # 视图模块（8 个独立文件）
+├── logging_config.py   # 日志配置：RotatingFileHandler
+├── resources.yaml      # 资源库：105 条精选学习资源
+├── views/              # 视图模块（9 个独立文件）
+│   ├── __init__.py     #   共享工具函数 (_lang)
 │   ├── path.py         #   路径展示 + 可视化分析
 │   ├── form.py         #   学习画像表单
 │   ├── browser.py      #   资源浏览器
@@ -251,14 +258,19 @@ ai-pathfinder/
 │   ├── chat.py         #   AI 对话
 │   ├── feedback.py     #   反馈收集
 │   ├── import_plan.py  #   导入学习计划
+│   ├── progress.py     #   进度持久化
 │   └── settings.py     #   API 供应商设置
-└── tests/              # 测试套件（113 个测试）
+└── tests/              # 测试套件（128 单元 + 10 E2E = 138 个测试）
     ├── test_app.py         # 核心功能：编码/筛选/导出/常量
     ├── test_config.py      # 配置完整性：Presets/Emoji/方向映射
     ├── test_i18n.py        # 国际化：翻译覆盖/格式化/回退
     ├── test_llm.py         # LLM 客户端：API Key/Provider/Mock调用
+    ├── test_progress.py    # 进度持久化：保存/恢复/本地文件/JSON
     ├── test_utils_extended.py  # 工具边界：编码/筛选/导出边界用例
-    └── test_views.py       # 视图逻辑：Chat上下文/反馈/模块导入
+    ├── test_views.py       # 视图逻辑：Chat上下文/反馈/模块导入
+    └── e2e/                # E2E 测试 (Playwright)
+        ├── conftest.py         # Streamlit 服务器 fixture
+        └── test_core_flows.py  # 导航/资源/语言/预设 核心流程
 ```
 
 ## 运行测试
@@ -267,8 +279,12 @@ ai-pathfinder/
 # 安装依赖
 pip install -r requirements.txt
 
-# 运行全部 113 个测试
-python -m pytest tests/ -v
+# 运行全部 128 个单元测试
+python -m pytest tests/ -v -m "not e2e"
+
+# 运行 E2E 测试（需要 Python 3.8+ 和 Playwright）
+pip install pytest-playwright && playwright install chromium
+python -m pytest tests/e2e/ -v
 
 # 运行单个测试文件
 python -m pytest tests/test_config.py -v
