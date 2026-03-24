@@ -353,6 +353,42 @@ def filter_resources_for_direction(resources: list, direction: str, language: st
     return filtered[:40]
 
 
+PRESET_PROFILES = {
+    "💻 软测 → AI 转型": {
+        "level": "📗 会Python，了解基本ML概念",
+        "goal": "3-6个月内学会用AI工具提升测试效率，包括AI辅助用例生成、智能回归测试和基础Agent搭建",
+        "hours_per_week": 8,
+        "preference": "⚖️ 均衡搭配",
+        "language": "🇨🇳 优先中文资源",
+        "direction": "🧪 AI 辅助软件测试 / 质量保障",
+    },
+    "🤖 AI Agent 开发": {
+        "level": "📘 能跑通基础模型（sklearn/transformers）",
+        "goal": "掌握LangChain/LangGraph等Agent框架，能独立开发多工具调用的AI Agent并部署上线",
+        "hours_per_week": 10,
+        "preference": "💻 项目实战为主",
+        "language": "🌍 不限语言",
+        "direction": "🤖 AI Agent / 多智能体系统",
+    },
+    "💬 LLM 应用入门": {
+        "level": "📗 会Python，了解基本ML概念",
+        "goal": "能独立开发RAG问答系统，掌握Prompt工程、向量数据库和LLM API调用，完成一个可部署的LLM应用",
+        "hours_per_week": 8,
+        "preference": "⚖️ 均衡搭配",
+        "language": "🌍 不限语言",
+        "direction": "💬 LLM 应用开发 / RAG",
+    },
+    "📊 ML / 数据科学": {
+        "level": "📗 会Python，了解基本ML概念",
+        "goal": "系统学习机器学习理论和实践，完成端到端ML项目，掌握数据处理、特征工程和基础模型部署",
+        "hours_per_week": 10,
+        "preference": "⚖️ 均衡搭配",
+        "language": "🌍 不限语言",
+        "direction": "📊 机器学习 / 数据科学",
+    },
+}
+
+
 def render_form():
     st.title("🧭 AI Pathfinder")
     st.markdown(
@@ -360,29 +396,51 @@ def render_form():
     )
     st.divider()
 
+    # ── 预设模板快速填写 ──────────────────────────────────────────────────────
+    st.subheader("⚡ 快速开始")
+    st.caption("选一个最接近你方向的模板，一键填入表单，之后仍可修改")
+    preset_cols = st.columns(len(PRESET_PROFILES))
+    for i, (name, preset_data) in enumerate(PRESET_PROFILES.items()):
+        with preset_cols[i]:
+            if st.button(name, use_container_width=True, key=f"preset_{i}"):
+                st.session_state.preset_profile = preset_data
+                st.rerun()
+    st.divider()
+
+    # 读取预设值（用户点了模板按钮后）
+    p = st.session_state.get("preset_profile", {})
+
     with st.form("profile_form"):
         c1, c2 = st.columns(2)
         with c1:
-            level = st.selectbox("📊 当前水平", LEVELS)
-            hours = st.slider("⏰ 每周可投入（小时）", 2, 30, 8)
+            level_idx = LEVELS.index(p["level"]) if p.get("level") in LEVELS else 0
+            level = st.selectbox("📊 当前水平", LEVELS, index=level_idx)
+            hours = st.slider("⏰ 每周可投入（小时）", 2, 30, p.get("hours_per_week", 8))
 
         with c2:
             goal = st.text_area(
                 "🎯 你的目标（越具体越好）",
+                value=p.get("goal", ""),
                 placeholder="例：3个月内能搭建一个RAG问答系统并部署上线，已有Python基础",
                 height=100,
             )
-            preference = st.selectbox("🎨 偏好学习方式", PREFERENCES)
+            pref_idx = PREFERENCES.index(p["preference"]) if p.get("preference") in PREFERENCES else 0
+            preference = st.selectbox("🎨 偏好学习方式", PREFERENCES, index=pref_idx)
 
         c3, c4 = st.columns(2)
         with c3:
-            direction = st.selectbox("🎯 目标方向", DIRECTIONS)
+            dir_idx = DIRECTIONS.index(p["direction"]) if p.get("direction") in DIRECTIONS else 0
+            direction = st.selectbox("🎯 目标方向", DIRECTIONS, index=dir_idx)
         with c4:
-            language = st.selectbox("🌐 语言偏好", LANGUAGES)
+            lang_idx = LANGUAGES.index(p["language"]) if p.get("language") in LANGUAGES else 0
+            language = st.selectbox("🌐 语言偏好", LANGUAGES, index=lang_idx)
 
         submitted = st.form_submit_button(
             "🚀 生成我的学习路径", type="primary", use_container_width=True
         )
+
+    if submitted:
+        st.session_state.pop("preset_profile", None)
 
     return submitted, {
         "level": level,
