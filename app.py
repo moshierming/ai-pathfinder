@@ -1,3 +1,4 @@
+import base64
 import json
 import os
 import urllib.request
@@ -23,6 +24,19 @@ def load_resources():
     path = os.path.join(os.path.dirname(__file__), "resources.yaml")
     with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)["resources"]
+
+
+def encode_profile(profile: dict) -> str:
+    raw = json.dumps(profile, ensure_ascii=False, separators=(",", ":"))
+    return base64.urlsafe_b64encode(raw.encode()).decode()
+
+
+def decode_profile(s: str) -> dict | None:
+    try:
+        raw = base64.urlsafe_b64decode(s.encode()).decode()
+        return json.loads(raw)
+    except Exception:
+        return None
 
 
 # ─── LLM 客户端 ──────────────────────────────────────────────────────────────
@@ -407,8 +421,10 @@ def render_form():
                 st.rerun()
     st.divider()
 
-    # 读取预设值（用户点了模板按钮后）
+    # 读取预设值（用户点了模板按钮 或 从分享链接恢复）
     p = st.session_state.get("preset_profile", {})
+    if st.session_state.pop("from_shared_url", False):
+        st.info("📎 已从分享链接恢复用户画像，确认无误后点击下方生成按钮")
 
     with st.form("profile_form"):
         c1, c2 = st.columns(2)
@@ -569,10 +585,12 @@ def render_sidebar():
             goal_display = p["goal"][:50] + ("..." if len(p["goal"]) > 50 else "")
             st.write(f"**目标**: {goal_display}")
             st.write(f"**时间**: {p['hours_per_week']}h/周")
+            st.caption("🔗 路径已编码到地址栏，可直接复制分享")
             st.divider()
             if st.button("🔄 重新规划", use_container_width=True):
                 st.session_state.path = None
                 st.session_state.profile = None
+                st.query_params.clear()
                 st.rerun()
 
         st.divider()
@@ -596,6 +614,16 @@ def main():
     if "profile" not in st.session_state:
         st.session_state.profile = None
 
+    # 从分享链接恢复画像（仅首次加载时读取 URL 参数）
+    if "url_param_loaded" not in st.session_state:
+        st.session_state.url_param_loaded = True
+        param = st.query_params.get("p", "")
+        if param and not st.session_state.get("preset_profile"):
+            restored = decode_profile(param)
+            if restored:
+                st.session_state.preset_profile = restored
+                st.session_state.from_shared_url = True
+
     page = render_sidebar()
 
     if "资源浏览" in page:
@@ -617,6 +645,7 @@ def main():
                     path_data = generate_path(profile, filtered)
                     st.session_state.path = path_data
                     st.session_state.profile = profile
+                    st.query_params["p"] = encode_profile(profile)
                     st.rerun()
                 except Exception as e:
                     err = str(e)
