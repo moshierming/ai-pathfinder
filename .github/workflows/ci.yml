@@ -48,7 +48,12 @@ jobs:
               for e in errors:
                   print(f'ERROR: {e}')
               sys.exit(1)
-          print(f'OK: {len(resources)} resources, all valid')
+          # 统计 domain 覆盖情况
+          testing = [r for r in resources if 'software-testing' in r.get('domain', [])]
+          agent = [r for r in resources if 'ai-agent' in r.get('domain', [])]
+          total_hours = sum(r['duration_hours'] for r in resources)
+          print(f'OK: {len(resources)} resources, {total_hours}h total')
+          print(f'   software-testing: {len(testing)} | ai-agent: {len(agent)}')
           "
 
       - name: Check imports
