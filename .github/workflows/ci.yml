@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  lint-and-validate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate Python syntax
+        run: python -m py_compile app.py
+
+      - name: Validate resources.yaml
+        run: |
+          python -c "
+          import yaml, sys
+          with open('resources.yaml') as f:
+              data = yaml.safe_load(f)
+          resources = data['resources']
+          ids = [r['id'] for r in resources]
+          required = ['id','title','url','type','topics','level','duration_hours','description','language','free']
+          errors = []
+          for r in resources:
+              for k in required:
+                  if k not in r:
+                      errors.append(f'{r.get(\"id\",\"?\")} missing {k}')
+          dups = [i for i in ids if ids.count(i) > 1]
+          if dups:
+              errors.append(f'Duplicate ids: {set(dups)}')
+          if errors:
+              for e in errors:
+                  print(f'ERROR: {e}')
+              sys.exit(1)
+          print(f'OK: {len(resources)} resources, all valid')
+          "
+
+      - name: Check imports
+        run: |
+          python -c "
+          import streamlit
+          import openai
+          import yaml
+          print('All imports OK')
+          "
+
+  notify-failure:
+    needs: lint-and-validate
+    if: failure() && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create failure issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --title "CI failed on $(date -u +%Y-%m-%d)" \
+            --body "CI pipeline failed on commit ${{ github.sha }}. [View run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" \
+            --label "ci-failure"
