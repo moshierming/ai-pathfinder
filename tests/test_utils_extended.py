@@ -60,6 +60,14 @@ class TestEncodeDecodeEdge:
     def test_decode_non_base64_chars(self):
         assert decode_profile("!!!###$$$") is None
 
+    def test_decode_none_input(self):
+        assert decode_profile(None) is None
+
+    def test_decode_non_dict_json(self):
+        """JSON that decodes to a list should return None."""
+        raw = base64.urlsafe_b64encode(b'[1,2,3]').decode()
+        assert decode_profile(raw) is None
+
     def test_numeric_values(self):
         p = {"hours": 10, "score": 3.14, "ok": True, "nothing": None}
         assert decode_profile(encode_profile(p)) == p
