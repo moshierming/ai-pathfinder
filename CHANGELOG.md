@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.4.0] — 2026-03-24
+
+### Changed
+- **Type Hints 现代化**：全部 16 个源文件、24 个函数签名升级为 `dict[str, object]` / `list[dict[str, object]]` 精确类型注解，替代原有的裸 `dict` / `list[dict]`
+- **类型风格统一**：配合 `from __future__ import annotations` 使用 PEP 604 `X | None` 语法，零 `typing` 模块导入
+
 ## [1.3.0] — 2026-03-24
 
 ### Fixed
