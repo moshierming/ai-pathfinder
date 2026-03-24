@@ -16,6 +16,72 @@ st.set_page_config(
     menu_items={"About": "开源免费的AI学习路径规划工具"},
 )
 
+# ─── 全局样式 ─────────────────────────────────────────────────────────────────
+
+st.markdown("""<style>
+/* ── 渐变标题 ── */
+h1 {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+}
+/* ── 统计指标卡片 ── */
+[data-testid="stMetric"] {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 12px;
+    padding: 12px 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+[data-testid="stMetric"] [data-testid="stMetricValue"] {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #4a5568;
+}
+/* ── Expander 美化 ── */
+[data-testid="stExpander"] {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+/* ── 按钮美化 ── */
+.stButton > button[kind="primary"] {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+}
+/* ── 侧边栏 ── */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+}
+[data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+    background: none;
+    -webkit-text-fill-color: #e2e8f0;
+}
+/* ── 进度条 ── */
+[data-testid="stProgress"] > div > div {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+}
+/* ── 聊天消息 ── */
+[data-testid="stChatMessage"] {
+    border-radius: 12px;
+    margin-bottom: 4px;
+}
+/* ── 下载按钮 ── */
+.stDownloadButton > button {
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s;
+}
+.stDownloadButton > button:hover {
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    transform: translateY(-1px);
+}
+</style>""", unsafe_allow_html=True)
+
 # ─── 资源库 ──────────────────────────────────────────────────────────────────
 
 
@@ -192,8 +258,14 @@ FOCUS_EMOJI = {
 def render_path(path_data: dict, resources: list):
     ridx = {r["id"]: r for r in resources}
 
-    st.success(f"✅ {path_data.get('summary', '')}", icon="🧭")
-    st.caption(f"预计完成：约 **{path_data.get('estimated_weeks', '?')}** 周")
+    st.markdown(
+        f"<div style='padding:20px 24px;background:linear-gradient(135deg,#eef2ff 0%,#e0e7ff 100%);"
+        f"border-radius:14px;margin-bottom:16px;'>"
+        f"<div style='font-size:1.1rem;font-weight:600;color:#4338ca;'>🧭 {path_data.get('summary', '')}</div>"
+        f"<div style='font-size:0.85rem;color:#6366f1;margin-top:6px;'>"
+        f"预计完成：约 <b>{path_data.get('estimated_weeks', '?')}</b> 周</div></div>",
+        unsafe_allow_html=True,
+    )
     st.divider()
 
     total_resources = 0
@@ -246,8 +318,14 @@ def render_path(path_data: dict, resources: list):
 
     # 导出学习计划
     st.divider()
-    st.subheader("💾 保存学习计划")
-    st.caption("导出后可离线查看、打印、或下次导入恢复")
+    st.markdown(
+        "<div style='padding:16px 20px;background:#f8fafc;border-radius:12px;"
+        "border:1px solid #e2e8f0;margin-bottom:12px;'>"
+        "<div style='font-size:1rem;font-weight:600;color:#334155;'>💾 保存学习计划</div>"
+        "<div style='font-size:0.78rem;color:#64748b;margin-top:4px;'>"
+        "导出后可离线查看、打印、或下次导入恢复</div></div>",
+        unsafe_allow_html=True,
+    )
     dl_cols = st.columns(2)
     with dl_cols[0]:
         profile = st.session_state.get("profile", {})
@@ -479,10 +557,25 @@ def render_form():
     # ── 预设模板快速填写 ──────────────────────────────────────────────────────
     st.subheader("⚡ 快速开始")
     st.caption("选一个最接近你方向的模板，一键填入表单，之后仍可修改")
+
+    PRESET_DESCRIPTIONS = {
+        "💻 软测 → AI 转型": "AI 辅助用例生成、智能回归测试、Agent搭建",
+        "🤖 AI Agent 开发": "LangChain + LangGraph 多工具 Agent 实战",
+        "💬 LLM 应用入门": "Prompt → RAG → 向量数据库 → 部署",
+        "📊 ML / 数据科学": "数学基础 → sklearn → 特征工程 → 端到端项目",
+    }
     preset_cols = st.columns(len(PRESET_PROFILES))
     for i, (name, preset_data) in enumerate(PRESET_PROFILES.items()):
         with preset_cols[i]:
-            if st.button(name, use_container_width=True, key=f"preset_{i}"):
+            st.markdown(
+                f"<div style='text-align:center;padding:8px 4px;border:1px solid #e2e8f0;"
+                f"border-radius:10px;margin-bottom:4px;min-height:60px;'>"
+                f"<div style='font-size:0.85rem;font-weight:600;'>{name}</div>"
+                f"<div style='font-size:0.7rem;color:#718096;margin-top:4px;'>"
+                f"{PRESET_DESCRIPTIONS.get(name, '')}</div></div>",
+                unsafe_allow_html=True,
+            )
+            if st.button("选择", use_container_width=True, key=f"preset_{i}"):
                 st.session_state.preset_profile = preset_data
                 st.rerun()
     st.divider()
@@ -556,19 +649,33 @@ def render_form():
 
 def render_resource_browser(resources: list):
     st.title("📚 资源库")
+    st.caption("浏览全部资源 · 5 维筛选 · 关键词搜索")
 
     # 统计概览
     from collections import Counter
     type_counts = Counter(r["type"] for r in resources)
     focus_counts = Counter(r.get("focus", "both") for r in resources)
     lang_counts = Counter(r.get("language", "?") for r in resources)
-    stat_cols = st.columns(6)
-    stat_cols[0].metric("总资源", len(resources))
-    stat_cols[1].metric("🇨🇳 中文", lang_counts.get("zh", 0))
-    stat_cols[2].metric("📡 信息源", type_counts.get("channel", 0))
-    stat_cols[3].metric("💻 实战项目", type_counts.get("repo", 0))
-    stat_cols[4].metric("🧱 打基础", focus_counts.get("foundational", 0))
-    stat_cols[5].metric("🔧 重实战", focus_counts.get("applied", 0))
+
+    st.markdown(
+        "<div style='display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;'>"
+        + "".join(
+            f"<div style='flex:1;min-width:110px;text-align:center;padding:14px 8px;"
+            f"border-radius:12px;background:{bg};'>"
+            f"<div style='font-size:1.4rem;font-weight:700;color:{fg};'>{val}</div>"
+            f"<div style='font-size:0.75rem;color:#718096;margin-top:2px;'>{label}</div></div>"
+            for label, val, bg, fg in [
+                ("总资源", len(resources), "#eef2ff", "#4338ca"),
+                ("🇨🇳 中文", lang_counts.get("zh", 0), "#fef3c7", "#92400e"),
+                ("📡 信息源", type_counts.get("channel", 0), "#dbeafe", "#1e40af"),
+                ("💻 实战项目", type_counts.get("repo", 0), "#dcfce7", "#166534"),
+                ("🧱 打基础", focus_counts.get("foundational", 0), "#f3e8ff", "#6b21a8"),
+                ("🔧 重实战", focus_counts.get("applied", 0), "#ffe4e6", "#9f1239"),
+            ]
+        )
+        + "</div>",
+        unsafe_allow_html=True,
+    )
     st.divider()
 
     # 搜索框
@@ -709,13 +816,25 @@ def render_trend_radar(resources: list):
     with col1:
         st.markdown("**🇨🇳 中文信息源**")
         for r in zh_channels:
-            st.markdown(f"- 📡 [{r['title']}]({r['url']})")
-            st.caption(f"  {r.get('description', '')}")
+            st.markdown(
+                f"<div style='padding:10px 14px;border-left:3px solid #f59e0b;background:#fffbeb;"
+                f"border-radius:0 8px 8px 0;margin-bottom:8px;'>"
+                f"<a href=\"{r['url']}\" target=\"_blank\" style='text-decoration:none;font-weight:600;"
+                f"color:#92400e;'>📡 {r['title']}</a>"
+                f"<div style='font-size:0.78rem;color:#78716c;margin-top:3px;'>{r.get('description', '')}</div>"
+                f"</div>", unsafe_allow_html=True,
+            )
     with col2:
         st.markdown("**🇬🇧 英文信息源**")
         for r in en_channels:
-            st.markdown(f"- 📡 [{r['title']}]({r['url']})")
-            st.caption(f"  {r.get('description', '')}")
+            st.markdown(
+                f"<div style='padding:10px 14px;border-left:3px solid #6366f1;background:#eef2ff;"
+                f"border-radius:0 8px 8px 0;margin-bottom:8px;'>"
+                f"<a href=\"{r['url']}\" target=\"_blank\" style='text-decoration:none;font-weight:600;"
+                f"color:#4338ca;'>📡 {r['title']}</a>"
+                f"<div style='font-size:0.78rem;color:#78716c;margin-top:3px;'>{r.get('description', '')}</div>"
+                f"</div>", unsafe_allow_html=True,
+            )
 
     st.divider()
 
@@ -737,13 +856,23 @@ def render_trend_radar(resources: list):
 
     # 3. 本周值得关注
     st.subheader("🔗 快速跳转")
-    st.markdown("""
-- 🔥 [GitHub Trending (Python)](https://github.com/trending/python?since=weekly) — 本周最热 Python 项目
-- 🔥 [Hacker News AI 热帖](https://hn.algolia.com/?q=AI+LLM+agent&type=story&sort=byPopularity&dateRange=pastMonth) — 技术社区讨论
-- 🔥 [Product Hunt AI](https://www.producthunt.com/topics/artificial-intelligence) — 最新 AI 产品
-- 🔥 [Papers With Code](https://paperswithcode.com/trending) — 本周热门论文 + 代码
-- 🔥 [Hugging Face Daily Papers](https://huggingface.co/papers) — 每日论文精选
-    """)
+    links = [
+        ("🔥 GitHub Trending", "https://github.com/trending/python?since=weekly", "本周最热 Python 项目", "#dcfce7", "#166534"),
+        ("🔥 Hacker News AI", "https://hn.algolia.com/?q=AI+LLM+agent&type=story&sort=byPopularity&dateRange=pastMonth", "技术社区 AI 热帖", "#dbeafe", "#1e40af"),
+        ("🔥 Product Hunt AI", "https://www.producthunt.com/topics/artificial-intelligence", "最新 AI 产品", "#ffe4e6", "#9f1239"),
+        ("🔥 Papers With Code", "https://paperswithcode.com/trending", "热门论文 + 代码", "#f3e8ff", "#6b21a8"),
+        ("🔥 HF Daily Papers", "https://huggingface.co/papers", "每日论文精选", "#fef3c7", "#92400e"),
+    ]
+    link_html = "<div style='display:flex;gap:10px;flex-wrap:wrap;'>"
+    for label, url, desc, bg, fg in links:
+        link_html += (
+            f"<a href='{url}' target='_blank' style='text-decoration:none;flex:1;min-width:160px;"
+            f"padding:14px 16px;background:{bg};border-radius:10px;'>"
+            f"<div style='font-weight:600;color:{fg};font-size:0.9rem;'>{label}</div>"
+            f"<div style='font-size:0.72rem;color:#64748b;margin-top:3px;'>{desc}</div></a>"
+        )
+    link_html += "</div>"
+    st.markdown(link_html, unsafe_allow_html=True)
 
 
 # ─── 导入学习计划 ─────────────────────────────────────────────────────────────
