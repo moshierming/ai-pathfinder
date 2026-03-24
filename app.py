@@ -202,7 +202,13 @@ def main() -> None:
                         resources, profile.get("direction", ""), profile.get("language", ""),
                         profile.get("focus", "both"),
                     )
-                    path_data = generate_path(profile, filtered)
+                    progress_placeholder = st.empty()
+
+                    def _show_progress(chars: int) -> None:
+                        progress_placeholder.caption(f"⏳ 已接收 {chars} 字符…")
+
+                    path_data = generate_path(profile, filtered, on_progress=_show_progress)
+                    progress_placeholder.empty()
                     st.session_state.path = path_data
                     st.session_state.profile = profile
                     st.query_params["p"] = encode_profile(profile)

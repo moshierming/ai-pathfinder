@@ -69,7 +69,7 @@ def filter_resources_for_direction(
         others = [r for r in filtered if r.get("language") != "en"]
         filtered = preferred + others
 
-    return filtered[:35]
+    return filtered[:20]
 
 
 def export_plan_markdown(
