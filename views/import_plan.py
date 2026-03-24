@@ -26,7 +26,11 @@ def render_import_plan(resources: list):
 
     if uploaded is not None:
         try:
-            data = json.loads(uploaded.read().decode("utf-8"))
+            raw = uploaded.read()
+            if len(raw) > 2 * 1024 * 1024:  # 2 MB
+                st.error(t("import_too_large", L))
+                return
+            data = json.loads(raw.decode("utf-8"))
             profile = data.get("profile")
             path_data = data.get("path")
             if not profile or not path_data:

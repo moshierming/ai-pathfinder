@@ -1,6 +1,7 @@
 """Path display and analytics views."""
 
 from collections import Counter
+from html import escape as html_escape
 
 import streamlit as st
 
@@ -21,9 +22,9 @@ def render_path(path_data: dict, resources: list):
     st.markdown(
         f"<div style='padding:20px 24px;background:linear-gradient(135deg,#eef2ff 0%,#e0e7ff 100%);"
         f"border-radius:14px;margin-bottom:16px;'>"
-        f"<div style='font-size:1.1rem;font-weight:600;color:#4338ca;'>🧭 {path_data.get('summary', '')}</div>"
+        f"<div style='font-size:1.1rem;font-weight:600;color:#4338ca;'>🧭 {html_escape(str(path_data.get('summary', '')))}</div>"
         f"<div style='font-size:0.85rem;color:#6366f1;margin-top:6px;'>"
-        f"{t('path_weeks', L)} <b>{path_data.get('estimated_weeks', '?')}</b> {t('path_weeks_unit', L)}</div></div>",
+        f"{t('path_weeks', L)} <b>{html_escape(str(path_data.get('estimated_weeks', '?')))}</b> {t('path_weeks_unit', L)}</div></div>",
         unsafe_allow_html=True,
     )
     st.divider()
