@@ -1,7 +1,12 @@
 __pycache__/
 *.pyc
+*.pyo
 .streamlit/secrets.toml
 .venv/
 dist/
 *.egg-info/
 feedback/
+.pytest_cache/
+*.bak
+.DS_Store
+*.log
