@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.2.0] — 2026-03-24
+
+### Added
+- **趋势雷达 AI 洞察**：LLM 生成每日 AI 趋势报告（5-7 条结构化洞察 + 行动建议），本地 JSON 缓存每日刷新，支持手动刷新
+- **SECURITY.md**：安全策略文档 — 漏洞报告流程 + 已实施的安全措施
+- **FUNDING.yml**：GitHub Sponsors 赞助配置
+
+### Changed
+- **路径生成性能优化**：资源格式从 JSON indent=2 切换为管道分隔紧凑格式（token 减少 ~60%），启用 streaming 流式输出，资源上限 50→35
+- **README 徽章升级**：新增 CI 状态 / Release 版本 / Docker / 测试数量 / LLM 提供商数量共 6 个徽章
+- **README 架构图更新**：补全 logging_config / progress / e2e 等新模块，测试数 113→138
+- **进度指示器**：`st.spinner` → `st.status`，显示运行状态
+
 ## [1.1.0] — 2025-07-17
 
 ### Added
