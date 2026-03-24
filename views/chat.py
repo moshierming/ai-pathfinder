@@ -6,6 +6,9 @@ from openai import OpenAI
 from config import CHAT_SYSTEM_PROMPT, FOCUS_EMOJI
 from i18n import t
 from llm import get_llm_config
+from logging_config import get_logger
+
+_log = get_logger("chat")
 
 
 def _lang():
@@ -88,6 +91,7 @@ def render_chat(resources: list):
                     st.markdown(reply)
                     st.session_state.chat_messages.append({"role": "assistant", "content": reply})
                 except Exception as e:
+                    _log.error("chat_error: %s", e)
                     st.error(f"{t('chat_error', L)}{e}")
 
     if st.session_state.chat_messages:

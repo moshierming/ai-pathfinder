@@ -5,6 +5,7 @@ import streamlit as st
 from config import FOCUS_EMOJI
 from i18n import t
 from llm import generate_path
+from logging_config import get_logger
 from utils import load_resources as _load_resources_uncached, decode_profile, encode_profile, filter_resources_for_direction
 from views.browser import render_resource_browser
 from views.chat import render_chat
@@ -189,9 +190,11 @@ def main():
                     st.session_state.path = path_data
                     st.session_state.profile = profile
                     st.query_params["p"] = encode_profile(profile)
+                    get_logger().info("path_generated direction=%s level=%s", profile.get('direction', ''), profile.get('level', ''))
                     st.rerun()
                 except Exception as e:
                     err = str(e)
+                    get_logger().error("path_generation_failed: %s", err)
                     st.error(f"{t('error_generate', L)}{err}")
                     if "api_key" in err.lower() or "apikey" in err.lower() or "请配置" in err:
                         st.info(t("error_api_hint", L))

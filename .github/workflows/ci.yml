@@ -31,6 +31,7 @@ jobs:
           python -m py_compile llm.py
           python -m py_compile utils.py
           python -m py_compile i18n.py
+          python -m py_compile logging_config.py
           for f in views/*.py; do python -m py_compile "$f"; done
 
       - name: Validate resources.yaml

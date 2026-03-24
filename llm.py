@@ -7,6 +7,9 @@ import streamlit as st
 from openai import OpenAI
 
 from config import PROVIDER_PRESETS, SYSTEM_PROMPT
+from logging_config import get_logger
+
+_log = get_logger("llm")
 
 
 def get_llm_config():
@@ -25,7 +28,7 @@ def get_llm_config():
         )
         model = (
             st.session_state.get("settings_model_text", "")
-            or st.secrets.get("MODEL", "qwen-plus")
+            or st.secrets.get("MODEL", "qwen3.5-plus")
         )
     else:
         base_url = preset["base_url"]
@@ -71,6 +74,8 @@ def generate_path(profile: dict, resources: list) -> dict:
 
 请生成个性化学习路径。"""
 
+    _log.info("generate_path model=%s resources=%d direction=%s", model, len(resources), profile.get('direction', ''))
+
     resp = client.chat.completions.create(
         model=model,
         messages=[
@@ -81,4 +86,6 @@ def generate_path(profile: dict, resources: list) -> dict:
         temperature=0.3,
         max_tokens=3000,
     )
-    return json.loads(resp.choices[0].message.content)
+    result = json.loads(resp.choices[0].message.content)
+    _log.info("generate_path completed weeks=%d", len(result.get('weeks', [])))
+    return result

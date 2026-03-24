@@ -8,6 +8,9 @@ from datetime import datetime, timezone
 import streamlit as st
 
 from i18n import t
+from logging_config import get_logger
+
+_log = get_logger("feedback")
 
 
 def _lang():
@@ -57,8 +60,10 @@ def submit_feedback(feedback: dict) -> str:
     )
     try:
         urllib.request.urlopen(req, timeout=5)
+        _log.info("feedback_github_submitted")
         return "github"
-    except Exception:
+    except Exception as e:
+        _log.warning("feedback_github_failed: %s", e)
         return "local"
 
 
