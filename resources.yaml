@@ -1,0 +1,451 @@
+resources:
+  # ── Python & 数学基础 ──────────────────────────────────────────────────────
+  - id: r001
+    title: "Python for Everybody (Dr. Chuck)"
+    url: "https://www.py4e.com"
+    type: course
+    topics: [python, fundamentals]
+    level: beginner
+    duration_hours: 20
+    description: "零基础入门Python，交互式练习"
+    language: en
+    free: true
+
+  - id: r002
+    title: "Python 官方教程（中文版）"
+    url: "https://docs.python.org/zh-cn/3/tutorial/"
+    type: article
+    topics: [python, fundamentals]
+    level: beginner
+    duration_hours: 8
+    description: "官方文档，最权威的Python入门"
+    language: zh
+    free: true
+
+  - id: r003
+    title: "3Blue1Brown：线性代数的本质"
+    url: "https://www.bilibili.com/video/BV1ys411472E"
+    type: video
+    topics: [math, linear-algebra]
+    level: beginner
+    duration_hours: 5
+    description: "可视化理解线性代数，ML必备数学基础"
+    language: zh
+    free: true
+
+  - id: r004
+    title: "Khan Academy 微积分"
+    url: "https://zh.khanacademy.org/math/calculus-1"
+    type: course
+    topics: [math, calculus]
+    level: beginner
+    duration_hours: 15
+    description: "梯度下降的数学基础"
+    language: zh
+    free: true
+
+  # ── ML 基础 ───────────────────────────────────────────────────────────────
+  - id: r005
+    title: "吴恩达 Machine Learning Specialization"
+    url: "https://www.coursera.org/specializations/machine-learning-introduction"
+    type: course
+    topics: [machine-learning, fundamentals]
+    level: beginner
+    duration_hours: 60
+    description: "全球最受欢迎的ML入门课，可免费旁听"
+    language: en
+    free: true
+
+  - id: r006
+    title: "sklearn 官方教程"
+    url: "https://scikit-learn.org/stable/tutorial/index.html"
+    type: article
+    topics: [machine-learning, sklearn]
+    level: beginner-to-intermediate
+    duration_hours: 10
+    description: "动手跑ML模型，sklearn是ML工程必备"
+    language: en
+    free: true
+
+  - id: r007
+    title: "StatQuest：机器学习可视化讲解（B站）"
+    url: "https://space.bilibili.com/528127428"
+    type: video
+    topics: [machine-learning, statistics]
+    level: beginner
+    duration_hours: 20
+    description: "用极简可视化讲清楚每个ML算法原理"
+    language: en
+    free: true
+
+  # ── 深度学习 ──────────────────────────────────────────────────────────────
+  - id: r008
+    title: "fast.ai：实用深度学习"
+    url: "https://course.fast.ai"
+    type: course
+    topics: [deep-learning, vision, nlp]
+    level: intermediate
+    duration_hours: 40
+    description: "自顶向下，以实战驱动，最实用的深度学习课"
+    language: en
+    free: true
+
+  - id: r009
+    title: "Andrej Karpathy：Neural Networks: Zero to Hero"
+    url: "https://karpathy.ai/zero-to-hero.html"
+    type: course
+    topics: [deep-learning, llm, from-scratch]
+    level: intermediate
+    duration_hours: 25
+    description: "从零手写GPT，理解LLM底层原理的最佳资源"
+    language: en
+    free: true
+
+  - id: r010
+    title: "动手学深度学习（d2l.ai 中文版）"
+    url: "https://zh.d2l.ai"
+    type: book
+    topics: [deep-learning, nlp, vision]
+    level: intermediate
+    duration_hours: 60
+    description: "李沐主导，中文深度学习教科书，附代码"
+    language: zh
+    free: true
+
+  - id: r011
+    title: "李沐论文精读系列"
+    url: "https://space.bilibili.com/1567748478/channel/collectiondetail?sid=32744"
+    type: video
+    topics: [deep-learning, research, paper-reading]
+    level: intermediate-to-advanced
+    duration_hours: 30
+    description: "手把手带读经典论文，培养阅读论文能力"
+    language: zh
+    free: true
+
+  # ── NLP & Transformers ────────────────────────────────────────────────────
+  - id: r012
+    title: "HuggingFace NLP Course"
+    url: "https://huggingface.co/learn/nlp-course"
+    type: course
+    topics: [nlp, transformers, huggingface]
+    level: intermediate
+    duration_hours: 20
+    description: "官方Transformers教程，理论+实战，必学"
+    language: en
+    free: true
+
+  - id: r013
+    title: "The Illustrated Transformer"
+    url: "https://jalammar.github.io/illustrated-transformer/"
+    type: article
+    topics: [transformers, attention, nlp]
+    level: intermediate
+    duration_hours: 2
+    description: "最好的Transformer可视化解释，必读"
+    language: en
+    free: true
+
+  - id: r014
+    title: "Stanford CS224n：NLP with Deep Learning"
+    url: "https://web.stanford.edu/class/cs224n/"
+    type: course
+    topics: [nlp, deep-learning, research]
+    level: advanced
+    duration_hours: 50
+    description: "斯坦福NLP旗舰课，讲义+视频全公开"
+    language: en
+    free: true
+
+  # ── LLM 应用 ──────────────────────────────────────────────────────────────
+  - id: r015
+    title: "吴恩达 Prompt Engineering for Developers"
+    url: "https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/"
+    type: course
+    topics: [llm, prompt-engineering]
+    level: beginner-to-intermediate
+    duration_hours: 3
+    description: "1小时速成Prompt Engineering，LLM应用起点"
+    language: en
+    free: true
+
+  - id: r016
+    title: "LangChain 官方文档"
+    url: "https://python.langchain.com/docs/introduction/"
+    type: article
+    topics: [llm, langchain, rag]
+    level: intermediate
+    duration_hours: 15
+    description: "LLM应用开发框架，RAG/Agent必备"
+    language: en
+    free: true
+
+  - id: r017
+    title: "吴恩达 Building Systems with the ChatGPT API"
+    url: "https://www.deeplearning.ai/short-courses/building-systems-with-chatgpt/"
+    type: course
+    topics: [llm, system-design]
+    level: intermediate
+    duration_hours: 3
+    description: "用LLM构建完整系统，从单prompt到pipeline"
+    language: en
+    free: true
+
+  - id: r018
+    title: "吴恩达 LangChain for LLM Application Development"
+    url: "https://www.deeplearning.ai/short-courses/langchain-for-llm-application-development/"
+    type: course
+    topics: [llm, langchain]
+    level: intermediate
+    duration_hours: 3
+    description: "LangChain官方合作课，快速上手"
+    language: en
+    free: true
+
+  # ── RAG ───────────────────────────────────────────────────────────────────
+  - id: r019
+    title: "吴恩达 Building and Evaluating Advanced RAG"
+    url: "https://www.deeplearning.ai/short-courses/building-evaluating-advanced-rag/"
+    type: course
+    topics: [rag, llm, vector-db]
+    level: intermediate
+    duration_hours: 3
+    description: "RAG进阶：评估、优化、高级检索策略"
+    language: en
+    free: true
+
+  - id: r020
+    title: "LlamaIndex 官方文档"
+    url: "https://docs.llamaindex.ai/en/stable/"
+    type: article
+    topics: [rag, llm, llamaindex]
+    level: intermediate
+    duration_hours: 10
+    description: "RAG专门框架，比LangChain更专注于索引检索"
+    language: en
+    free: true
+
+  - id: r021
+    title: "Pinecone：向量数据库学习中心"
+    url: "https://www.pinecone.io/learn/"
+    type: article
+    topics: [rag, vector-db, embeddings]
+    level: intermediate
+    duration_hours: 8
+    description: "向量检索原理与实践，RAG基础设施"
+    language: en
+    free: true
+
+  - id: r022
+    title: "RAG from Scratch（LangChain官方系列）"
+    url: "https://github.com/langchain-ai/rag-from-scratch"
+    type: repo
+    topics: [rag, langchain, from-scratch]
+    level: intermediate
+    duration_hours: 10
+    description: "从零实现RAG的完整代码仓库，附视频"
+    language: en
+    free: true
+
+  # ── Agent ─────────────────────────────────────────────────────────────────
+  - id: r023
+    title: "吴恩达 AI Agents in LangGraph"
+    url: "https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/"
+    type: course
+    topics: [agent, langgraph, llm]
+    level: intermediate-to-advanced
+    duration_hours: 4
+    description: "用LangGraph构建可靠的AI Agent"
+    language: en
+    free: true
+
+  - id: r024
+    title: "HuggingFace Agents Course"
+    url: "https://huggingface.co/learn/agents-course"
+    type: course
+    topics: [agent, llm, tools]
+    level: intermediate
+    duration_hours: 15
+    description: "HuggingFace官方Agent课程，含smolagents框架"
+    language: en
+    free: true
+
+  # ── 微调 Fine-tuning ──────────────────────────────────────────────────────
+  - id: r025
+    title: "吴恩达 Finetuning Large Language Models"
+    url: "https://www.deeplearning.ai/short-courses/finetuning-large-language-models/"
+    type: course
+    topics: [fine-tuning, llm]
+    level: intermediate-to-advanced
+    duration_hours: 3
+    description: "LLM微调原理与实践"
+    language: en
+    free: true
+
+  - id: r026
+    title: "HuggingFace PEFT 文档"
+    url: "https://huggingface.co/docs/peft"
+    type: article
+    topics: [fine-tuning, lora, peft]
+    level: advanced
+    duration_hours: 8
+    description: "LoRA/QLoRA等参数高效微调的官方指南"
+    language: en
+    free: true
+
+  - id: r027
+    title: "Unsloth：快速LLM微调教程"
+    url: "https://github.com/unslothai/unsloth"
+    type: repo
+    topics: [fine-tuning, lora, efficiency]
+    level: intermediate
+    duration_hours: 5
+    description: "2x速度、70%内存的开源微调框架，Colab可直接运行"
+    language: en
+    free: true
+
+  # ── 模型部署 ─────────────────────────────────────────────────────────────
+  - id: r028
+    title: "FastAPI 官方教程"
+    url: "https://fastapi.tiangolo.com/zh/"
+    type: article
+    topics: [deployment, api, fastapi]
+    level: intermediate
+    duration_hours: 10
+    description: "Python最快的API框架，模型服务化标配"
+    language: zh
+    free: true
+
+  - id: r029
+    title: "Docker 官方入门教程"
+    url: "https://docs.docker.com/get-started/"
+    type: article
+    topics: [deployment, docker, mlops]
+    level: intermediate
+    duration_hours: 6
+    description: "容器化部署，让模型到处能跑"
+    language: en
+    free: true
+
+  - id: r030
+    title: "Streamlit 官方文档"
+    url: "https://docs.streamlit.io"
+    type: article
+    topics: [deployment, streamlit, demo]
+    level: beginner
+    duration_hours: 4
+    description: "最快速构建ML演示应用，从想法到Demo只需1小时"
+    language: en
+    free: true
+
+  # ── 实战项目 ──────────────────────────────────────────────────────────────
+  - id: r031
+    title: "Build a Large Language Model From Scratch（书）"
+    url: "https://github.com/rasbt/LLMs-from-scratch"
+    type: book
+    topics: [llm, from-scratch, deep-learning]
+    level: intermediate-to-advanced
+    duration_hours: 40
+    description: "Sebastian Raschka著，从零实现GPT，代码全开源"
+    language: en
+    free: true
+
+  - id: r032
+    title: "Full Stack LLM Bootcamp"
+    url: "https://fullstackdeeplearning.com/llm-bootcamp/"
+    type: course
+    topics: [llm, full-stack, deployment]
+    level: intermediate
+    duration_hours: 20
+    description: "工程师视角的LLM全栈开发，从prompt到生产"
+    language: en
+    free: true
+
+  - id: r033
+    title: "Weights & Biases MLOps Course"
+    url: "https://www.wandb.courses/courses/mlops-zoomcamp"
+    type: course
+    topics: [mlops, experiment-tracking, deployment]
+    level: intermediate
+    duration_hours: 20
+    description: "MLOps实践，实验追踪+模型管理+监控"
+    language: en
+    free: true
+
+  - id: r034
+    title: "Kaggle Learn"
+    url: "https://www.kaggle.com/learn"
+    type: course
+    topics: [machine-learning, deep-learning, nlp, practice]
+    level: beginner-to-intermediate
+    duration_hours: 25
+    description: "Kaggle官方微课，每门1-3小时，边学边做"
+    language: en
+    free: true
+
+  # ── 中文资源 ──────────────────────────────────────────────────────────────
+  - id: r035
+    title: "智谱AI大模型技术课（B站）"
+    url: "https://space.bilibili.com/1920972958"
+    type: video
+    topics: [llm, chinese, fine-tuning]
+    level: intermediate
+    duration_hours: 15
+    description: "国内LLM技术课，涵盖GLM系列模型使用与微调"
+    language: zh
+    free: true
+
+  - id: r036
+    title: "魔搭社区（ModelScope）教程"
+    url: "https://modelscope.cn/docs"
+    type: article
+    topics: [llm, chinese, fine-tuning, deployment]
+    level: intermediate
+    duration_hours: 10
+    description: "阿里达摩院开源社区，国内模型首发地，含实战教程"
+    language: zh
+    free: true
+
+  - id: r037
+    title: "吃瓜教程：机器学习白板推导"
+    url: "https://space.bilibili.com/327617676"
+    type: video
+    topics: [machine-learning, math, theory]
+    level: intermediate
+    duration_hours: 30
+    description: "用数学公式推导ML算法，适合想深入理论的同学"
+    language: zh
+    free: true
+
+  - id: r038
+    title: "HuggingFace Diffusion Models Course"
+    url: "https://huggingface.co/learn/diffusion-course"
+    type: course
+    topics: [diffusion, image-generation, stable-diffusion]
+    level: intermediate
+    duration_hours: 15
+    description: "扩散模型官方课程，图像生成方向必学"
+    language: en
+    free: true
+
+  - id: r039
+    title: "Andrej Karpathy：Intro to Large Language Models（讲座）"
+    url: "https://www.youtube.com/watch?v=zjkBMFhNj_g"
+    type: video
+    topics: [llm, overview, intuition]
+    level: beginner
+    duration_hours: 1
+    description: "1小时直觉理解LLM，最好的LLM科普"
+    language: en
+    free: true
+
+  - id: r040
+    title: "吴恩达 MLOps Specialization"
+    url: "https://www.coursera.org/specializations/machine-learning-engineering-for-production-mlops"
+    type: course
+    topics: [mlops, deployment, monitoring]
+    level: intermediate-to-advanced
+    duration_hours: 40
+    description: "ML系统工程化全流程，从实验到生产"
+    language: en
+    free: true
