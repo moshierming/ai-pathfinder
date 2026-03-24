@@ -7,6 +7,9 @@ from datetime import datetime, timezone
 import streamlit as st
 
 from i18n import t
+from logging_config import get_logger
+
+_log = get_logger("progress")
 
 
 def _lang():
@@ -79,6 +82,7 @@ def save_progress_local():
     filepath = os.path.join(_PROGRESS_DIR, "latest.json")
     with open(filepath, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+    _log.info("progress_saved done=%d", len(data.get("done", {})))
     return filepath
 
 
