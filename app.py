@@ -5,7 +5,7 @@ import streamlit as st
 from config import FOCUS_EMOJI
 from i18n import t
 from llm import generate_path
-from utils import load_resources, decode_profile, encode_profile, filter_resources_for_direction
+from utils import load_resources as _load_resources_uncached, decode_profile, encode_profile, filter_resources_for_direction
 from views.browser import render_resource_browser
 from views.chat import render_chat
 from views.feedback import render_feedback
@@ -14,6 +14,12 @@ from views.import_plan import render_import_plan
 from views.path import render_path
 from views.radar import render_trend_radar
 from views.settings import render_settings
+
+
+@st.cache_data(show_spinner=False, ttl=3600)
+def load_resources():
+    """Cached wrapper — YAML is parsed once, refreshed every hour."""
+    return _load_resources_uncached()
 
 
 def _lang():
