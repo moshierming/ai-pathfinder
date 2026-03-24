@@ -208,6 +208,49 @@ GITHUB_TOKEN = "ghp_..."   # 可选，用于反馈收集
 
 ---
 
+## 项目架构
+
+```
+ai-pathfinder/
+├── app.py              # 入口：CSS + 侧边栏 + 页面路由（196行）
+├── config.py           # 常量/预设：Provider、Emoji、方向、模板
+├── llm.py              # LLM 客户端：配置获取 + 路径生成
+├── utils.py            # 工具函数：资源加载/编码/筛选/导出
+├── i18n.py             # 国际化：中英文 170+ 翻译条目
+├── resources.yaml      # 资源库：90 条精选学习资源
+├── views/              # 视图模块（8 个独立文件）
+│   ├── path.py         #   路径展示 + 可视化分析
+│   ├── form.py         #   学习画像表单
+│   ├── browser.py      #   资源浏览器
+│   ├── radar.py        #   趋势雷达
+│   ├── chat.py         #   AI 对话
+│   ├── feedback.py     #   反馈收集
+│   ├── import_plan.py  #   导入学习计划
+│   └── settings.py     #   API 供应商设置
+└── tests/              # 测试套件（113 个测试）
+    ├── test_app.py         # 核心功能：编码/筛选/导出/常量
+    ├── test_config.py      # 配置完整性：Presets/Emoji/方向映射
+    ├── test_i18n.py        # 国际化：翻译覆盖/格式化/回退
+    ├── test_llm.py         # LLM 客户端：API Key/Provider/Mock调用
+    ├── test_utils_extended.py  # 工具边界：编码/筛选/导出边界用例
+    └── test_views.py       # 视图逻辑：Chat上下文/反馈/模块导入
+```
+
+## 运行测试
+
+```bash
+# 安装依赖
+pip install -r requirements.txt
+
+# 运行全部 113 个测试
+python -m pytest tests/ -v
+
+# 运行单个测试文件
+python -m pytest tests/test_config.py -v
+```
+
+---
+
 ## License
 
 MIT
