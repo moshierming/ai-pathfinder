@@ -10,7 +10,7 @@ from i18n import t
 from views import _lang
 
 
-def render_resource_browser(resources: list[dict]) -> None:
+def render_resource_browser(resources: list[dict[str, object]]) -> None:
     L = _lang()
     st.title(t("browser_title", L))
     st.caption(t("browser_hint", L))

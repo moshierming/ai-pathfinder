@@ -13,7 +13,7 @@ from views import _lang
 from views.progress import render_progress_save
 
 
-def render_path(path_data: dict, resources: list[dict]) -> None:
+def render_path(path_data: dict[str, object], resources: list[dict[str, object]]) -> None:
     L = _lang()
     ridx = {r["id"]: r for r in resources}
 
@@ -109,7 +109,7 @@ def render_path(path_data: dict, resources: list[dict]) -> None:
     render_path_analytics(path_data, resources)
 
 
-def render_path_analytics(path_data: dict, resources: list[dict]) -> None:
+def render_path_analytics(path_data: dict[str, object], resources: list[dict[str, object]]) -> None:
     """渲染学习路径的可视化分析面板。"""
     ridx = {r["id"]: r for r in resources}
     weeks = path_data.get("weeks", [])

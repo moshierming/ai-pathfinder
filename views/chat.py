@@ -14,7 +14,7 @@ from views import _lang
 _log = get_logger("chat")
 
 
-def _build_chat_context(resources: list[dict]) -> str:
+def _build_chat_context(resources: list[dict[str, object]]) -> str:
     """Build chat context: user profile + current path + resource summary."""
     parts = []
     profile = st.session_state.get("profile")
@@ -36,7 +36,7 @@ def _build_chat_context(resources: list[dict]) -> str:
     return "\n\n".join(parts)
 
 
-def render_chat(resources: list[dict]) -> None:
+def render_chat(resources: list[dict[str, object]]) -> None:
     L = _lang()
     st.title(t("chat_title", L))
     st.markdown(t("chat_subtitle", L))

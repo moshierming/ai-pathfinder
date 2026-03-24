@@ -10,7 +10,7 @@ from utils import encode_profile
 from views import _lang
 
 
-def render_import_plan(resources: list[dict]) -> None:
+def render_import_plan(resources: list[dict[str, object]]) -> None:
     L = _lang()
     st.title(t("import_title", L))
     st.markdown(t("import_subtitle", L))

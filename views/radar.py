@@ -10,7 +10,7 @@ from llm import generate_trend_insights
 from views import _lang
 
 
-def _render_insights_section(channels: list[dict], L: str) -> None:
+def _render_insights_section(channels: list[dict[str, object]], L: str) -> None:
     """Render AI trend insights panel with LLM-generated daily analysis."""
 
     col_title, col_btn = st.columns([4, 1])
@@ -80,7 +80,7 @@ def _render_insights_section(channels: list[dict], L: str) -> None:
         st.caption(t("radar_insights_date", L, date=date_str))
 
 
-def render_trend_radar(resources: list[dict]) -> None:
+def render_trend_radar(resources: list[dict[str, object]]) -> None:
     L = _lang()
     st.title(t("radar_title", L))
     st.markdown(t("radar_subtitle", L))
