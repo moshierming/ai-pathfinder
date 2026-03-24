@@ -25,9 +25,14 @@ def encode_profile(profile: dict) -> str:
 
 def decode_profile(s: str):
     """Decode base64 string to profile dict, or None on failure."""
+    if not s or len(s) > 50000:
+        return None
     try:
         raw = base64.urlsafe_b64decode(s.encode()).decode()
-        return json.loads(raw)
+        data = json.loads(raw)
+        if not isinstance(data, dict):
+            return None
+        return data
     except Exception:
         return None
 

@@ -61,6 +61,7 @@ TRANSLATIONS = {
     },
     "form_submit": {"zh": "🚀 生成我的学习路径", "en": "🚀 Generate My Learning Path"},
     "form_empty_goal": {"zh": "请填写学习目标", "en": "Please enter a learning goal"},
+    "form_goal_too_long": {"zh": "学习目标最长 1000 字", "en": "Goal text must be under 1000 characters"},
     "form_generating": {
         "zh": "🤔 正在为你规划学习路径，约需 10-20 秒...",
         "en": "🤔 Planning your learning path, ~10-20 seconds...",
@@ -165,6 +166,7 @@ TRANSLATIONS = {
     "import_path_preview": {"zh": "📊 路径预览", "en": "📊 Path Preview"},
     "import_load": {"zh": "🚀 加载此计划", "en": "🚀 Load This Plan"},
     "import_json_error": {"zh": "文件不是有效的 JSON 格式", "en": "File is not valid JSON"},
+    "import_too_large": {"zh": "文件过大，请上传 2MB 以内的文件", "en": "File too large, max 2MB"},
     "import_parse_error": {"zh": "解析失败：", "en": "Parse error: "},
     # ─── Chat ───
     "chat_title": {"zh": "🧠 智能对话", "en": "🧠 AI Chat"},

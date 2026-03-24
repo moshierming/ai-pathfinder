@@ -177,8 +177,12 @@ def main():
     if st.session_state.path is None:
         submitted, profile = render_form()
         if submitted:
-            if not profile["goal"].strip():
+            goal_text = profile["goal"].strip()
+            if not goal_text:
                 st.error(t("form_empty_goal", L))
+                return
+            if len(goal_text) > 1000:
+                st.error(t("form_goal_too_long", L))
                 return
             with st.spinner(t("form_generating", L)):
                 try:
