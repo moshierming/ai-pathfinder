@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.3.0] — 2026-03-24
+
+### Fixed
+- **趋势洞察崩溃防护** (Issue #2)：`generate_trend_insights()` 全函数 try/except 包裹，防止 `get_llm_config()` 异常导致整页崩溃；LLM 返回 JSON 增加 isinstance 类型校验；radar 视图增加异常捕获 + error state
+- **UI 颜色对比度** (Issue #1)：h1 渐变色、Metric 值、侧边栏文字等 7 处颜色对比度修复，全部达到 WCAG AA 标准 (4.5:1+)
+- **UI 对齐问题** (Issue #1)：预设模板卡片改为固定高度 80px，消除内容长度差异导致的高度不一致
+
+### Changed
+- **Python 最低版本**：`requires-python` 从 `>=3.9` 提升到 `>=3.10`，新增 Python 3.13 classifier
+- **现代化注解**：全部 16 个源文件添加 `from __future__ import annotations`
+- **文字可读性**：小字体从 0.72/0.75rem 提升到 0.78rem，低对比度颜色全部替换为更深色值
+
 ## [1.2.0] — 2026-03-24
 
 ### Added
