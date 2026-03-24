@@ -1,15 +1,11 @@
-"""Tests for core app functions (profile encoding, resource filtering, exports)."""
+"""Tests for core functions (profile encoding, resource filtering, exports, constants)."""
 
 import sys, os, json, base64
-from unittest.mock import MagicMock, patch
-
-# Mock streamlit before importing app
-sys.modules["streamlit"] = MagicMock()
-sys.modules["openai"] = MagicMock()
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-import app
+from config import PROVIDER_PRESETS, DIRECTION_TO_DOMAIN, PRESET_PROFILES
+from utils import encode_profile, decode_profile, filter_resources_for_direction, export_plan_markdown, export_plan_json
 
 
 # ─── Sample data ──────────────────────────────────────────────────────────────
@@ -74,33 +70,33 @@ SAMPLE_PATH = {
 
 class TestEncodeProfile:
     def test_roundtrip(self):
-        encoded = app.encode_profile(SAMPLE_PROFILE)
-        decoded = app.decode_profile(encoded)
+        encoded = encode_profile(SAMPLE_PROFILE)
+        decoded = decode_profile(encoded)
         assert decoded == SAMPLE_PROFILE
 
     def test_encode_returns_base64_string(self):
-        encoded = app.encode_profile({"level": "beginner"})
+        encoded = encode_profile({"level": "beginner"})
         assert isinstance(encoded, str)
         # Should be valid base64
         raw = base64.urlsafe_b64decode(encoded.encode()).decode()
         assert json.loads(raw) == {"level": "beginner"}
 
     def test_decode_invalid_returns_none(self):
-        assert app.decode_profile("not-valid-base64!!!") is None
+        assert decode_profile("not-valid-base64!!!") is None
 
     def test_decode_non_json_returns_none(self):
         encoded = base64.urlsafe_b64encode(b"not json").decode()
-        assert app.decode_profile(encoded) is None
+        assert decode_profile(encoded) is None
 
     def test_empty_profile(self):
-        encoded = app.encode_profile({})
-        decoded = app.decode_profile(encoded)
+        encoded = encode_profile({})
+        decoded = decode_profile(encoded)
         assert decoded == {}
 
     def test_unicode_profile(self):
         profile = {"goal": "学习AI的数学基础 📊"}
-        encoded = app.encode_profile(profile)
-        decoded = app.decode_profile(encoded)
+        encoded = encode_profile(profile)
+        decoded = decode_profile(encoded)
         assert decoded == profile
 
 
@@ -109,7 +105,7 @@ class TestEncodeProfile:
 
 class TestFilterResources:
     def test_direction_filter_llm_app(self):
-        result = app.filter_resources_for_direction(
+        result = filter_resources_for_direction(
             SAMPLE_RESOURCES, "💬 LLM 应用开发 / RAG", "🌍 不限语言"
         )
         ids = [r["id"] for r in result]
@@ -118,26 +114,26 @@ class TestFilterResources:
         assert "r004" in ids
 
     def test_direction_filter_unknown_returns_all(self):
-        result = app.filter_resources_for_direction(
+        result = filter_resources_for_direction(
             SAMPLE_RESOURCES, "🌐 其他 / 尚未确定", "🌍 不限语言"
         )
         assert len(result) == len(SAMPLE_RESOURCES)
 
     def test_language_preference_zh(self):
-        result = app.filter_resources_for_direction(
+        result = filter_resources_for_direction(
             SAMPLE_RESOURCES, "🌐 其他 / 尚未确定", "🇨🇳 优先中文资源"
         )
         # First resource should be zh-language
         assert result[0]["language"] == "zh"
 
     def test_language_preference_en(self):
-        result = app.filter_resources_for_direction(
+        result = filter_resources_for_direction(
             SAMPLE_RESOURCES, "🌐 其他 / 尚未确定", "🇬🇧 优先英文资源"
         )
         assert result[0]["language"] == "en"
 
     def test_focus_foundational(self):
-        result = app.filter_resources_for_direction(
+        result = filter_resources_for_direction(
             SAMPLE_RESOURCES, "🌐 其他 / 尚未确定", "🌍 不限语言", focus="foundational"
         )
         # Foundational resources should come first
@@ -146,7 +142,7 @@ class TestFilterResources:
             assert r["id"] in foundational_ids or r.get("focus") == "both"
 
     def test_focus_applied(self):
-        result = app.filter_resources_for_direction(
+        result = filter_resources_for_direction(
             SAMPLE_RESOURCES, "🌐 其他 / 尚未确定", "🌍 不限语言", focus="applied"
         )
         # Applied resources first
@@ -161,12 +157,12 @@ class TestFilterResources:
              "language": "en", "free": True, "focus": "both"}
             for i in range(60)
         ]
-        result = app.filter_resources_for_direction(many, "🌐 其他 / 尚未确定", "🌍 不限语言")
+        result = filter_resources_for_direction(many, "🌐 其他 / 尚未确定", "🌍 不限语言")
         assert len(result) == 50
 
     def test_direction_includes_general(self):
         """Resources with domain=general should be included even with specific direction."""
-        result = app.filter_resources_for_direction(
+        result = filter_resources_for_direction(
             SAMPLE_RESOURCES, "📊 机器学习 / 数据科学", "🌍 不限语言"
         )
         ids = [r["id"] for r in result]
@@ -181,46 +177,46 @@ class TestFilterResources:
 
 class TestExportMarkdown:
     def test_contains_profile_info(self):
-        md = app.export_plan_markdown(SAMPLE_PATH, SAMPLE_PROFILE, SAMPLE_RESOURCES)
+        md = export_plan_markdown(SAMPLE_PATH, SAMPLE_PROFILE, SAMPLE_RESOURCES)
         assert "学会RAG问答系统" in md
         assert "📗 会Python" in md
 
     def test_contains_week_headers(self):
-        md = app.export_plan_markdown(SAMPLE_PATH, SAMPLE_PROFILE, SAMPLE_RESOURCES)
+        md = export_plan_markdown(SAMPLE_PATH, SAMPLE_PROFILE, SAMPLE_RESOURCES)
         assert "第 1 周" in md
         assert "第 4 周" in md
 
     def test_contains_resource_titles(self):
-        md = app.export_plan_markdown(SAMPLE_PATH, SAMPLE_PROFILE, SAMPLE_RESOURCES)
+        md = export_plan_markdown(SAMPLE_PATH, SAMPLE_PROFILE, SAMPLE_RESOURCES)
         assert "Python Basics" in md
         assert "LangChain实战" in md
 
     def test_contains_checkbox_format(self):
-        md = app.export_plan_markdown(SAMPLE_PATH, SAMPLE_PROFILE, SAMPLE_RESOURCES)
+        md = export_plan_markdown(SAMPLE_PATH, SAMPLE_PROFILE, SAMPLE_RESOURCES)
         assert "- [ ]" in md
 
     def test_missing_resource_skipped(self):
         path = {"summary": "test", "estimated_weeks": 1,
                 "weeks": [{"week": 1, "goal": "g", "resources": ["nonexistent"]}]}
-        md = app.export_plan_markdown(path, SAMPLE_PROFILE, SAMPLE_RESOURCES)
+        md = export_plan_markdown(path, SAMPLE_PROFILE, SAMPLE_RESOURCES)
         assert "nonexistent" not in md
 
 
 class TestExportJson:
     def test_valid_json(self):
-        result = app.export_plan_json(SAMPLE_PATH, SAMPLE_PROFILE)
+        result = export_plan_json(SAMPLE_PATH, SAMPLE_PROFILE)
         data = json.loads(result)
         assert "profile" in data
         assert "path" in data
 
     def test_roundtrip(self):
-        result = app.export_plan_json(SAMPLE_PATH, SAMPLE_PROFILE)
+        result = export_plan_json(SAMPLE_PATH, SAMPLE_PROFILE)
         data = json.loads(result)
         assert data["profile"] == SAMPLE_PROFILE
         assert data["path"] == SAMPLE_PATH
 
     def test_unicode_preserved(self):
-        result = app.export_plan_json(SAMPLE_PATH, SAMPLE_PROFILE)
+        result = export_plan_json(SAMPLE_PATH, SAMPLE_PROFILE)
         assert "学会RAG问答系统" in result  # ensure_ascii=False
 
 
@@ -229,16 +225,16 @@ class TestExportJson:
 
 class TestConstants:
     def test_provider_presets_have_required_keys(self):
-        for name, preset in app.PROVIDER_PRESETS.items():
+        for name, preset in PROVIDER_PRESETS.items():
             assert "base_url" in preset, f"{name} missing base_url"
             assert "models" in preset, f"{name} missing models"
 
     def test_direction_domains_are_lists(self):
-        for direction, domains in app.DIRECTION_TO_DOMAIN.items():
+        for direction, domains in DIRECTION_TO_DOMAIN.items():
             assert isinstance(domains, list), f"{direction} domains should be list"
 
     def test_preset_profiles_have_required_fields(self):
         required = {"level", "goal", "hours_per_week", "preference", "language", "direction", "focus"}
-        for name, profile in app.PRESET_PROFILES.items():
+        for name, profile in PRESET_PROFILES.items():
             for field in required:
                 assert field in profile, f"Preset '{name}' missing field '{field}'"
