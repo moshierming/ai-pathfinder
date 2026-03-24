@@ -157,8 +157,52 @@ class TestGeneratePath:
         assert "学深度学习" in user_msg
         assert "15" in user_msg
 
+    @patch("llm.OpenAI")
+    def test_strips_thinking_tags(self, MockOpenAI):
+        """Qwen-3 may emit <think>…</think> — must be stripped before JSON parse."""
+        raw = '<think>long reasoning</think>{"summary":"ok","weeks":[]}'
+        MockOpenAI.return_value.chat.completions.create.return_value = _mock_stream(raw)
 
-class TestCompactResources:
+        from llm import generate_path
+        result = generate_path(
+            {"level": "a", "goal": "b", "hours_per_week": 5, "preference": "c", "language": "d"},
+            [],
+        )
+        assert result == {"summary": "ok", "weeks": []}
+
+    @patch("llm.OpenAI")
+    def test_passes_enable_thinking_false(self, MockOpenAI):
+        MockOpenAI.return_value.chat.completions.create.return_value = _mock_stream('{"weeks":[]}')
+
+        from llm import generate_path
+        generate_path({"level": "a", "goal": "b", "hours_per_week": 5, "preference": "c", "language": "d"}, [])
+
+        call_args = MockOpenAI.return_value.chat.completions.create.call_args
+        assert call_args[1]["extra_body"] == {"enable_thinking": False}
+
+
+class TestHelpers:
+    """Test _strip_thinking and _sanitize_text."""
+
+    def test_strip_thinking_basic(self):
+        from llm import _strip_thinking
+        assert _strip_thinking('<think>abc</think>hello') == 'hello'
+
+    def test_strip_thinking_multiline(self):
+        from llm import _strip_thinking
+        assert _strip_thinking('<think>line1\nline2</think>\n{"ok":1}') == '{"ok":1}'
+
+    def test_strip_thinking_no_tags(self):
+        from llm import _strip_thinking
+        assert _strip_thinking('just text') == 'just text'
+
+    def test_sanitize_text_removes_nul(self):
+        from llm import _sanitize_text
+        assert _sanitize_text('a\x00b') == 'ab'
+
+    def test_sanitize_text_preserves_normal(self):
+        from llm import _sanitize_text
+        assert _sanitize_text('hello 你好') == 'hello 你好'
     """Test _compact_resources() formatting."""
 
     def test_single_resource(self):

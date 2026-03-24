@@ -4,6 +4,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
+import time
 from collections.abc import Callable
 from datetime import datetime
 
@@ -16,6 +18,17 @@ from logging_config import get_logger
 _log = get_logger("llm")
 
 _PATH_TIMEOUT = 25  # seconds – hard cap for path generation API call
+_TOTAL_TIME_LIMIT = 90  # seconds – absolute wall-clock cap for streaming
+
+
+def _strip_thinking(text: str) -> str:
+    """Remove <think>…</think> blocks that Qwen-3 thinking mode may emit."""
+    return re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL).strip()
+
+
+def _sanitize_text(text: str) -> str:
+    """Remove surrogates and NUL that break protobuf / Streamlit encoding."""
+    return re.sub(r"[\ud800-\udfff\x00]", "", text)
 
 
 def get_llm_config() -> tuple[str, str, str]:
@@ -113,6 +126,7 @@ def generate_path(
 
     _log.info("generate_path model=%s resources=%d direction=%s", model, len(resources), profile.get('direction', ''))
 
+    t0 = time.monotonic()
     stream = client.chat.completions.create(
         model=model,
         messages=[
@@ -123,20 +137,25 @@ def generate_path(
         temperature=0.15,
         max_tokens=1500,
         stream=True,
+        extra_body={"enable_thinking": False},
     )
     chunks: list[str] = []
     char_count = 0
     for chunk in stream:
+        if time.monotonic() - t0 > _TOTAL_TIME_LIMIT:
+            _log.warning("generate_path aborted: exceeded %ds wall-clock", _TOTAL_TIME_LIMIT)
+            break
         delta = chunk.choices[0].delta if chunk.choices else None
         if delta and delta.content:
             chunks.append(delta.content)
             char_count += len(delta.content)
             if on_progress is not None:
                 on_progress(char_count)
-    full = "".join(chunks)
+    full = _strip_thinking("".join(chunks))
     result = json.loads(full)
     path_cache[cache_key] = result
-    _log.info("generate_path completed weeks=%d chars=%d", len(result.get('weeks', [])), char_count)
+    elapsed = time.monotonic() - t0
+    _log.info("generate_path completed weeks=%d chars=%d elapsed=%.1fs", len(result.get('weeks', [])), char_count, elapsed)
     return result
 
 
@@ -205,7 +224,7 @@ def generate_trend_insights(channels: list[dict[str, object]], force_refresh: bo
         if not api_key:
             return {}
 
-        client = OpenAI(api_key=api_key, base_url=base_url)
+        client = OpenAI(api_key=api_key, base_url=base_url, timeout=_PATH_TIMEOUT)
 
         source_list = "\n".join(
             f"- {ch['title']} ({ch.get('language','')}) — {ch.get('description','')}"
@@ -214,6 +233,7 @@ def generate_trend_insights(channels: list[dict[str, object]], force_refresh: bo
 
         _log.info("generate_trend_insights model=%s sources=%d", model, len(channels))
 
+        t0 = time.monotonic()
         stream = client.chat.completions.create(
             model=model,
             messages=[
@@ -224,13 +244,17 @@ def generate_trend_insights(channels: list[dict[str, object]], force_refresh: bo
             temperature=0.5,
             max_tokens=2000,
             stream=True,
+            extra_body={"enable_thinking": False},
         )
         chunks = []
         for chunk in stream:
+            if time.monotonic() - t0 > _TOTAL_TIME_LIMIT:
+                _log.warning("trend_insights aborted: exceeded %ds wall-clock", _TOTAL_TIME_LIMIT)
+                break
             delta = chunk.choices[0].delta if chunk.choices else None
             if delta and delta.content:
                 chunks.append(delta.content)
-        result = json.loads("".join(chunks))
+        result = json.loads(_strip_thinking("".join(chunks)))
         if not isinstance(result, dict):
             result = {}
         if not isinstance(result.get("insights"), list):
