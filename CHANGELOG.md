@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.1.0] — 2025-07-17
+
+### Added
+- **LLM 提供商扩展**：从 4 家扩展到 9 家（新增 Google Gemini / SiliconFlow / Moonshot / ZhipuAI / Ollama）
+- **监控日志系统**：RotatingFileHandler（5MB×3），关键路径日志覆盖 LLM / Chat / Feedback / Progress
+- **E2E 测试框架**：Playwright + 10 个核心流程测试（导航/资源/语言/预设），CI 独立 Job
+- **进度持久化**：保存/恢复学习进度（勾选+对话），服务端存储+下载，侧边栏自动恢复
+
+### Changed
+- **代码精炼**：`_lang()` 统一到 `views/__init__.py`，消除 10 处重复定义，净减 20 行
+
+### Security
+- **XSS 防护**：LLM 输出 `html_escape` 转义
+- **输入校验**：目标文本上限 1000 字符，导入文件上限 2MB，Profile 解码上限 50KB
+
 ## [1.0.0] — 2025-01-26
 
 ### Added
