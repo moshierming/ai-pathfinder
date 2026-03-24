@@ -9,6 +9,13 @@ import streamlit as st
 import yaml
 from openai import OpenAI
 
+from i18n import t
+
+
+def _lang() -> str:
+    """Get current UI language from session state."""
+    return st.session_state.get("ui_lang", "zh")
+
 st.set_page_config(
     page_title="AI 学习路径规划",
     page_icon="🧭",
@@ -256,6 +263,7 @@ FOCUS_EMOJI = {
 
 
 def render_path(path_data: dict, resources: list):
+    L = _lang()
     ridx = {r["id"]: r for r in resources}
 
     st.markdown(
@@ -263,7 +271,7 @@ def render_path(path_data: dict, resources: list):
         f"border-radius:14px;margin-bottom:16px;'>"
         f"<div style='font-size:1.1rem;font-weight:600;color:#4338ca;'>🧭 {path_data.get('summary', '')}</div>"
         f"<div style='font-size:0.85rem;color:#6366f1;margin-top:6px;'>"
-        f"预计完成：约 <b>{path_data.get('estimated_weeks', '?')}</b> 周</div></div>",
+        f"{t('path_weeks', L)} <b>{path_data.get('estimated_weeks', '?')}</b> {t('path_weeks_unit', L)}</div></div>",
         unsafe_allow_html=True,
     )
     st.divider()
@@ -274,7 +282,7 @@ def render_path(path_data: dict, resources: list):
     for week in path_data.get("weeks", []):
         expanded = week["week"] <= 2
         with st.expander(
-            f"📅 第 {week['week']} 周 — {week['goal']}", expanded=expanded
+            t("path_week", L, n=week['week']) + week['goal'], expanded=expanded
         ):
             if week.get("tip"):
                 st.info(f"💡 {week['tip']}")
@@ -287,17 +295,17 @@ def render_path(path_data: dict, resources: list):
                 total_resources += 1
                 lvl_emoji = LEVEL_EMOJI.get(r["level"], "⚪")
                 typ_emoji = TYPE_EMOJI.get(r["type"], "🔗")
-                lang_tag = "🇨🇳 中文" if r.get("language") == "zh" else "🇬🇧 英文"
+                lang_tag = "🇨🇳 中文" if r.get("language") == "zh" else "🇬🇧 EN"
                 is_channel = r.get("type") == "channel"
 
                 cols = st.columns([5, 2, 2, 1])
                 title_text = f"{typ_emoji} **[{r['title']}]({r['url']})**"
                 if is_channel:
-                    title_text += "  `持续关注`"
+                    title_text += f"  `{t('path_ongoing', L)}`"
                 cols[0].markdown(title_text)
                 cols[0].caption(r.get("description", ""))
                 cols[1].caption(f"{lvl_emoji} {r['level']}")
-                duration_label = f"⏱ ~{r['duration_hours']}h/周" if is_channel else f"⏱ {r['duration_hours']}h"
+                duration_label = f"⏱ ~{r['duration_hours']}h/{'wk' if L == 'en' else '周'}" if is_channel else f"⏱ {r['duration_hours']}h"
                 cols[2].caption(f"{duration_label} · {lang_tag}")
                 done_key = f"done_{rid}_{week['week']}"
                 checked = cols[3].checkbox("✓", key=done_key, label_visibility="collapsed")
@@ -310,20 +318,20 @@ def render_path(path_data: dict, resources: list):
     st.divider()
     if total_resources > 0:
         progress = done_count / total_resources
-        st.progress(progress, text=f"学习进度：{done_count}/{total_resources} 个资源已完成")
+        st.progress(progress, text=t("path_progress", L, done=done_count, total=total_resources))
         if done_count > 0:
-            st.caption("⚠️ 进度仅在当前会话有效，刷新页面后重置。建议使用下方「导出」保存学习计划。")
+            st.caption(t("path_progress_warn", L))
     else:
-        st.caption("暂无可追踪的资源")
+        st.caption(t("path_no_resources", L))
 
     # 导出学习计划
     st.divider()
     st.markdown(
         "<div style='padding:16px 20px;background:#f8fafc;border-radius:12px;"
         "border:1px solid #e2e8f0;margin-bottom:12px;'>"
-        "<div style='font-size:1rem;font-weight:600;color:#334155;'>💾 保存学习计划</div>"
-        "<div style='font-size:0.78rem;color:#64748b;margin-top:4px;'>"
-        "导出后可离线查看、打印、或下次导入恢复</div></div>",
+        f"<div style='font-size:1rem;font-weight:600;color:#334155;'>{t('path_save_title', L)}</div>"
+        f"<div style='font-size:0.78rem;color:#64748b;margin-top:4px;'>"
+        f"{t('path_save_hint', L)}</div></div>",
         unsafe_allow_html=True,
     )
     dl_cols = st.columns(2)
@@ -331,7 +339,7 @@ def render_path(path_data: dict, resources: list):
         profile = st.session_state.get("profile", {})
         md_content = export_plan_markdown(path_data, profile, resources)
         st.download_button(
-            "📄 导出为 Markdown",
+            t("path_export_md", L),
             data=md_content,
             file_name="ai-learning-path.md",
             mime="text/markdown",
@@ -340,7 +348,7 @@ def render_path(path_data: dict, resources: list):
     with dl_cols[1]:
         json_content = export_plan_json(path_data, profile)
         st.download_button(
-            "📦 导出为 JSON（可导入）",
+            t("path_export_json", L),
             data=json_content,
             file_name="ai-learning-path.json",
             mime="application/json",
@@ -378,12 +386,13 @@ def render_path_analytics(path_data: dict, resources: list):
         return
 
     st.divider()
+    L = _lang()
     st.markdown(
         "<div style='padding:16px 20px;background:linear-gradient(135deg,#f0fdf4 0%,#ecfdf5 100%);"
         "border-radius:12px;border:1px solid #bbf7d0;margin-bottom:16px;'>"
-        "<div style='font-size:1rem;font-weight:600;color:#166534;'>📊 学习路径分析</div>"
-        "<div style='font-size:0.78rem;color:#15803d;margin-top:4px;'>"
-        "自动从你的学习路径中提取统计数据</div></div>",
+        f"<div style='font-size:1rem;font-weight:600;color:#166534;'>{t('analytics_title', L)}</div>"
+        f"<div style='font-size:0.78rem;color:#15803d;margin-top:4px;'>"
+        f"{t('analytics_hint', L)}</div></div>",
         unsafe_allow_html=True,
     )
 
@@ -396,19 +405,20 @@ def render_path_analytics(path_data: dict, resources: list):
 
     # ── 概览指标 ──
     m1, m2, m3, m4 = st.columns(4)
-    m1.metric("📚 总资源", len(all_r))
-    m2.metric("⏱ 总学时", f"{total_hours}h")
-    m3.metric("📅 周数", len(weeks))
-    m4.metric("🌐 语言", f"中{lang_counts.get('zh',0)} / 英{lang_counts.get('en',0)}")
+    m1.metric(t("analytics_total", L), len(all_r))
+    m2.metric(t("analytics_hours", L), f"{total_hours}h")
+    m3.metric(t("analytics_weeks", L), len(weeks))
+    lang_label = f"中{lang_counts.get('zh',0)} / 英{lang_counts.get('en',0)}" if L == "zh" else f"ZH {lang_counts.get('zh',0)} / EN {lang_counts.get('en',0)}"
+    m4.metric(t("analytics_lang", L), lang_label)
 
     st.write("")
-    tab1, tab2, tab3 = st.tabs(["📊 资源分布", "📈 每周节奏", "🏷️ 话题覆盖"])
+    tab1, tab2, tab3 = st.tabs([t("analytics_tab_dist", L), t("analytics_tab_pace", L), t("analytics_tab_topics", L)])
 
     with tab1:
         # ── 资源类型 + 侧重分布 ──
         col_a, col_b = st.columns(2)
         with col_a:
-            st.markdown("**资源类型构成**")
+            st.markdown(t("analytics_type_comp", L))
             for typ, cnt in type_counts.most_common():
                 emoji = TYPE_EMOJI.get(typ, "🔗")
                 pct = cnt / len(all_r) * 100
@@ -424,7 +434,7 @@ def render_path_analytics(path_data: dict, resources: list):
                     unsafe_allow_html=True,
                 )
         with col_b:
-            st.markdown("**学习侧重分布**")
+            st.markdown(t("analytics_focus_dist", L))
             focus_colors = {"foundational": "#8b5cf6", "applied": "#ef4444", "both": "#3b82f6"}
             for foc, cnt in focus_counts.most_common():
                 label = FOCUS_EMOJI.get(foc, foc)
@@ -443,7 +453,7 @@ def render_path_analytics(path_data: dict, resources: list):
 
     with tab2:
         # ── 每周资源数 + 学时 + 难度趋势 ──
-        st.markdown("**每周学习节奏**")
+        st.markdown(t("analytics_weekly_pace", L))
         for w in weeks:
             w_resources = [ridx.get(rid) for rid in w.get("resources", []) if ridx.get(rid)]
             w_hours = sum(r["duration_hours"] for r in w_resources if r["type"] != "channel")
@@ -451,23 +461,27 @@ def render_path_analytics(path_data: dict, resources: list):
             # 难度均值
             levels = [LEVEL_ORDER.get(r["level"], 3) for r in w_resources]
             avg_level = sum(levels) / len(levels) if levels else 3
-            level_labels = {1: "🟢入门", 2: "🟢初级", 3: "🟡中级", 4: "🟡进阶", 5: "🔴高级"}
+            level_labels = (
+                {1: "🟢入门", 2: "🟢初级", 3: "🟡中级", 4: "🟡进阶", 5: "🔴高级"}
+                if L == "zh" else
+                {1: "🟢Beginner", 2: "🟢Elementary", 3: "🟡Intermediate", 4: "🟡Advanced", 5: "🔴Expert"}
+            )
             avg_label = level_labels.get(round(avg_level), "🟡中级")
             hour_bar = min(int(w_hours / 0.5), 250)  # cap bar width
             st.markdown(
                 f"<div style='display:flex;align-items:center;gap:8px;margin-bottom:6px;'>"
-                f"<div style='width:60px;font-weight:600;font-size:0.82rem;color:#334155;'>第{w['week']}周</div>"
+                f"<div style='width:70px;font-weight:600;font-size:0.82rem;color:#334155;'>{'第' + str(w['week']) + '周' if L == 'zh' else 'Wk ' + str(w['week'])}</div>"
                 f"<div style='flex:1;background:#f1f5f9;border-radius:6px;height:26px;position:relative;'>"
                 f"<div style='width:{hour_bar}px;background:linear-gradient(90deg,#34d399,#059669);"
                 f"border-radius:6px;height:100%;'></div>"
                 f"<span style='position:absolute;left:8px;top:4px;font-size:0.72rem;color:#1e293b;'>"
-                f"{w_hours}h · {w_count}个资源 · {avg_label}</span></div></div>",
+                f"{w_hours}h · {w_count} {'资源' if L == 'zh' else 'items'} · {avg_label}</span></div></div>",
                 unsafe_allow_html=True,
             )
 
     with tab3:
         # ── 话题覆盖 Top 15 ──
-        st.markdown("**话题覆盖 Top 15**")
+        st.markdown(t("analytics_top_topics", L))
         top_topics = topic_counts.most_common(15)
         if top_topics:
             max_count = top_topics[0][1]
@@ -510,7 +524,7 @@ def submit_feedback(feedback: dict) -> str:
         f"**意见**: {feedback.get('comment') or '（无）'}\n\n"
         f"**方向**: {profile.get('direction', '-')}\n"
         f"**水平**: {profile.get('level', '-')}\n"
-        f"**时间**: {profile.get('hours_per_week', '-')}h/周\n"
+        f"**时间**: {profile.get('hours_per_week', '-')}h/{'wk' if L == 'en' else '周'}\n"
         f"**语言**: {profile.get('language', '-')}\n\n"
         f"**目标**:\n> {profile.get('goal', '-')}"
     )
@@ -537,22 +551,24 @@ def submit_feedback(feedback: dict) -> str:
 
 
 def render_feedback():
+    L = _lang()
     st.divider()
-    st.subheader("📝 学习反馈")
-    st.caption("你的反馈会帮助我们持续优化推荐质量")
+    st.subheader(t("fb_title", L))
+    st.caption(t("fb_hint", L))
 
     with st.form("feedback_form"):
         rating = st.select_slider(
-            "这次路径推荐对你有帮助吗？",
-            options=["完全没用", "一般", "有点帮助", "很有帮助", "太赞了"],
-            value="有点帮助",
+            t("fb_rating", L),
+            options=["完全没用", "一般", "有点帮助", "很有帮助", "太赞了"] if L == "zh"
+            else ["Not helpful", "Okay", "Somewhat helpful", "Very helpful", "Amazing"],
+            value="有点帮助" if L == "zh" else "Somewhat helpful",
         )
         comment = st.text_area(
-            "有什么建议？（可选）",
-            placeholder="比如：缺少某个方向的资源、难度跳跃太大、时间分配不合理...",
+            t("fb_comment", L),
+            placeholder=t("fb_comment_placeholder", L),
             height=80,
         )
-        submitted = st.form_submit_button("提交反馈")
+        submitted = st.form_submit_button(t("fb_submit", L))
 
     if submitted:
         feedback = {
@@ -562,9 +578,9 @@ def render_feedback():
         }
         result = submit_feedback(feedback)
         if result == "github":
-            st.success("感谢反馈！已记录到 GitHub Issues 🙏")
+            st.success(t("fb_thanks_github", L))
         else:
-            st.success("感谢反馈！🙏")
+            st.success(t("fb_thanks_local", L))
 
 
 # ─── 输入表单 ────────────────────────────────────────────────────────────────
@@ -683,16 +699,15 @@ PRESET_PROFILES = {
 
 
 def render_form():
-    st.title("🧭 AI Pathfinder")
-    st.markdown(
-        "> 告诉我你的**现在**和**目标**，我来帮你规划最短最有效的AI学习路径——完全免费，开源。"
-    )
-    st.caption("📊 90 条精选资源 · 📡 15 个持续信息源 · 🧱 基础→🔧 实战全覆盖")
+    L = _lang()
+    st.title(t("form_title", L))
+    st.markdown(t("form_subtitle", L))
+    st.caption(t("form_stats", L))
     st.divider()
 
     # ── 预设模板快速填写 ──────────────────────────────────────────────────────
-    st.subheader("⚡ 快速开始")
-    st.caption("选一个最接近你方向的模板，一键填入表单，之后仍可修改")
+    st.subheader(t("form_quick_start", L))
+    st.caption(t("form_quick_hint", L))
 
     PRESET_DESCRIPTIONS = {
         "💻 软测 → AI 转型": "AI 辅助用例生成、智能回归测试、Agent搭建",
@@ -711,7 +726,7 @@ def render_form():
                 f"{PRESET_DESCRIPTIONS.get(name, '')}</div></div>",
                 unsafe_allow_html=True,
             )
-            if st.button("选择", use_container_width=True, key=f"preset_{i}"):
+            if st.button(t("form_select", L), use_container_width=True, key=f"preset_{i}"):
                 st.session_state.preset_profile = preset_data
                 st.rerun()
     st.divider()
@@ -719,50 +734,50 @@ def render_form():
     # 读取预设值（用户点了模板按钮 或 从分享链接恢复）
     p = st.session_state.get("preset_profile", {})
     if st.session_state.pop("from_shared_url", False):
-        st.info("📎 已从分享链接恢复用户画像，确认无误后点击下方生成按钮")
+        st.info(t("form_restored", L))
 
     with st.form("profile_form"):
         c1, c2 = st.columns(2)
         with c1:
             level_idx = LEVELS.index(p["level"]) if p.get("level") in LEVELS else 0
-            level = st.selectbox("📊 当前水平", LEVELS, index=level_idx)
-            hours = st.slider("⏰ 每周可投入（小时）", 2, 30, p.get("hours_per_week", 8))
+            level = st.selectbox(t("form_level", L), LEVELS, index=level_idx)
+            hours = st.slider(t("form_hours", L), 2, 30, p.get("hours_per_week", 8))
 
         with c2:
             goal = st.text_area(
-                "🎯 你的目标（越具体越好）",
+                t("form_goal", L),
                 value=p.get("goal", ""),
-                placeholder="例：3个月内能搭建一个RAG问答系统并部署上线，已有Python基础",
+                placeholder=t("form_goal_placeholder", L),
                 height=100,
             )
             pref_idx = PREFERENCES.index(p["preference"]) if p.get("preference") in PREFERENCES else 0
-            preference = st.selectbox("🎨 偏好学习方式", PREFERENCES, index=pref_idx)
+            preference = st.selectbox(t("form_preference", L), PREFERENCES, index=pref_idx)
 
         c3, c4 = st.columns(2)
         with c3:
             dir_idx = DIRECTIONS.index(p["direction"]) if p.get("direction") in DIRECTIONS else 0
-            direction = st.selectbox("🎯 目标方向", DIRECTIONS, index=dir_idx)
+            direction = st.selectbox(t("form_direction", L), DIRECTIONS, index=dir_idx)
         with c4:
             lang_idx = LANGUAGES.index(p["language"]) if p.get("language") in LANGUAGES else 0
-            language = st.selectbox("🌐 语言偏好", LANGUAGES, index=lang_idx)
+            language = st.selectbox(t("form_language", L), LANGUAGES, index=lang_idx)
 
         c5, c6 = st.columns(2)
         with c5:
             focus_idx = FOCUS_OPTIONS.index(p["focus"]) if p.get("focus") in FOCUS_OPTIONS else 0
-            focus = st.selectbox("🎓 学习重心", FOCUS_OPTIONS, index=focus_idx)
+            focus = st.selectbox(t("form_focus", L), FOCUS_OPTIONS, index=focus_idx)
         with c6:
             st.caption("")
-            st.caption("打基础：侧重数学原理和论文理解\n重实战：侧重项目实操和工具使用")
+            st.caption(t("form_focus_hint", L))
 
         skills_background = st.text_area(
-            "💼 当前技能/项目经历（可选，填写后推荐更精准）",
+            t("form_skills", L),
             value=p.get("skills_background", ""),
-            placeholder="例：做过 3 年 Web 后端开发，用过 Spring Boot 和 Python，写过自动化测试脚本，没接触过机器学习",
+            placeholder=t("form_skills_placeholder", L),
             height=80,
         )
 
         submitted = st.form_submit_button(
-            "🚀 生成我的学习路径", type="primary", use_container_width=True
+            t("form_submit", L), type="primary", use_container_width=True
         )
 
     if submitted:
@@ -784,8 +799,9 @@ def render_form():
 
 
 def render_resource_browser(resources: list):
-    st.title("📚 资源库")
-    st.caption("浏览全部资源 · 5 维筛选 · 关键词搜索")
+    L = _lang()
+    st.title(t("browser_title", L))
+    st.caption(t("browser_hint", L))
 
     # 统计概览
     from collections import Counter
@@ -801,12 +817,12 @@ def render_resource_browser(resources: list):
             f"<div style='font-size:1.4rem;font-weight:700;color:{fg};'>{val}</div>"
             f"<div style='font-size:0.75rem;color:#718096;margin-top:2px;'>{label}</div></div>"
             for label, val, bg, fg in [
-                ("总资源", len(resources), "#eef2ff", "#4338ca"),
-                ("🇨🇳 中文", lang_counts.get("zh", 0), "#fef3c7", "#92400e"),
-                ("📡 信息源", type_counts.get("channel", 0), "#dbeafe", "#1e40af"),
-                ("💻 实战项目", type_counts.get("repo", 0), "#dcfce7", "#166534"),
-                ("🧱 打基础", focus_counts.get("foundational", 0), "#f3e8ff", "#6b21a8"),
-                ("🔧 重实战", focus_counts.get("applied", 0), "#ffe4e6", "#9f1239"),
+                (t("browser_total", L), len(resources), "#eef2ff", "#4338ca"),
+                (t("browser_chinese", L), lang_counts.get("zh", 0), "#fef3c7", "#92400e"),
+                (t("browser_channels", L), type_counts.get("channel", 0), "#dbeafe", "#1e40af"),
+                (t("browser_repos", L), type_counts.get("repo", 0), "#dcfce7", "#166534"),
+                (t("browser_foundational", L), focus_counts.get("foundational", 0), "#f3e8ff", "#6b21a8"),
+                (t("browser_applied", L), focus_counts.get("applied", 0), "#ffe4e6", "#9f1239"),
             ]
         )
         + "</div>",
@@ -816,8 +832,8 @@ def render_resource_browser(resources: list):
 
     # 搜索框
     search_query = st.text_input(
-        "🔍 搜索资源",
-        placeholder="输入关键词搜索标题、描述或主题（如：RAG、Agent、微调...）",
+        t("browser_search", L),
+        placeholder=t("browser_search_placeholder", L),
     )
 
     # 筛选器
@@ -829,17 +845,17 @@ def render_resource_browser(resources: list):
 
     c1, c2, c3 = st.columns(3)
     with c1:
-        selected_topics = st.multiselect("主题", all_topics)
+        selected_topics = st.multiselect(t("browser_topic", L), all_topics)
     with c2:
-        selected_types = st.multiselect("类型", all_types)
+        selected_types = st.multiselect(t("browser_type", L), all_types)
     with c3:
-        selected_levels = st.multiselect("难度", all_levels)
+        selected_levels = st.multiselect(t("browser_level", L), all_levels)
 
     c4, c5 = st.columns(2)
     with c4:
-        selected_domains = st.multiselect("方向领域", all_domains)
+        selected_domains = st.multiselect(t("browser_domain", L), all_domains)
     with c5:
-        selected_focuses = st.multiselect("学习重心", all_focuses, format_func=lambda x: FOCUS_EMOJI.get(x, x))
+        selected_focuses = st.multiselect(t("browser_focus_filter", L), all_focuses, format_func=lambda x: FOCUS_EMOJI.get(x, x))
 
     filtered = resources
     if search_query:
@@ -861,7 +877,7 @@ def render_resource_browser(resources: list):
     if selected_focuses:
         filtered = [r for r in filtered if r.get("focus", "both") in selected_focuses]
 
-    st.caption(f"显示 {len(filtered)} / {len(resources)} 条")
+    st.caption(t("browser_showing", L, shown=len(filtered), total=len(resources)))
     st.divider()
 
     for r in filtered:
@@ -874,7 +890,7 @@ def render_resource_browser(resources: list):
         cols[0].markdown(f"{typ_emoji} **[{r['title']}]({r['url']})**")
         cols[0].caption(r.get("description", ""))
         cols[1].caption(f"{lvl_emoji} {r['level']} · {lang_tag}")
-        duration_text = f"⏱ {r['duration_hours']}h/周" if r["type"] == "channel" else f"⏱ {r['duration_hours']}h"
+        duration_text = f"⏱ {r['duration_hours']}h/{'wk' if L == 'en' else '周'}" if r["type"] == "channel" else f"⏱ {r['duration_hours']}h"
         cols[2].caption(f"{duration_text} · {focus_tag}")
 
 
@@ -933,16 +949,15 @@ def export_plan_json(path_data: dict, profile: dict) -> str:
 
 
 def render_trend_radar(resources: list):
-    st.title("🔥 趋势雷达")
-    st.markdown(
-        "> AI 领域变化极快——学完基础后，**持续跟踪趋势**和学完一门课一样重要。"
-    )
+    L = _lang()
+    st.title(t("radar_title", L))
+    st.markdown(t("radar_subtitle", L))
     st.divider()
 
     # 1. 信息源推荐（从 channel 类型资源中提取）
     channels = [r for r in resources if r["type"] == "channel"]
-    st.subheader("📡 推荐信息源")
-    st.caption("这些是经过筛选的高质量持续学习渠道，建议每周花 1-2 小时浏览")
+    st.subheader(t("radar_sources", L))
+    st.caption(t("radar_sources_hint", L))
 
     # 分类展示
     zh_channels = [r for r in channels if r.get("language") == "zh"]
@@ -950,7 +965,7 @@ def render_trend_radar(resources: list):
 
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown("**🇨🇳 中文信息源**")
+        st.markdown(t("radar_zh_sources", L))
         for r in zh_channels:
             st.markdown(
                 f"<div style='padding:10px 14px;border-left:3px solid #f59e0b;background:#fffbeb;"
@@ -961,7 +976,7 @@ def render_trend_radar(resources: list):
                 f"</div>", unsafe_allow_html=True,
             )
     with col2:
-        st.markdown("**🇬🇧 英文信息源**")
+        st.markdown(t("radar_en_sources", L))
         for r in en_channels:
             st.markdown(
                 f"<div style='padding:10px 14px;border-left:3px solid #6366f1;background:#eef2ff;"
@@ -975,8 +990,9 @@ def render_trend_radar(resources: list):
     st.divider()
 
     # 2. 新手引导
-    st.subheader("🧭 新手？从这里开始")
-    st.markdown("""
+    st.subheader(t("radar_newbie", L))
+    if L == "zh":
+        st.markdown("""
 **不知道从哪里学？按你的情况选一条路：**
 
 | 你的状态 | 建议起点 | 推荐预设模板 |
@@ -987,17 +1003,34 @@ def render_trend_radar(resources: list):
 | 想系统学 ML 理论 | 数学基础 → ML → DL → 论文 | **📊 ML / 数据科学** |
 | 想做 AI Agent | LangChain/LangGraph 实战 | **🤖 AI Agent 开发** |
     """)
+    else:
+        st.markdown("""
+**Not sure where to start? Pick a path based on your level:**
+
+| Your situation | Suggested starting point | Recommended preset |
+|---------|---------|-------------|
+| Complete beginner | Learn Python first, then follow a path | ← Go to **Path Planner** |
+| Know Python, want AI apps | Jump into LLM API + RAG | **💬 LLM App Basics** |
+| Dev experience, pivot to AI testing | AI-assisted testing + Agent | **💻 QA → AI Pivot** |
+| Want ML theory | Math → ML → DL → Papers | **📊 ML / Data Science** |
+| Want to build AI Agents | LangChain/LangGraph hands-on | **🤖 AI Agent Dev** |
+    """)
 
     st.divider()
 
     # 3. 本周值得关注
-    st.subheader("🔗 快速跳转")
+    st.subheader(t("radar_links", L))
     links = [
-        ("🔥 GitHub Trending", "https://github.com/trending/python?since=weekly", "本周最热 Python 项目", "#dcfce7", "#166534"),
-        ("🔥 Hacker News AI", "https://hn.algolia.com/?q=AI+LLM+agent&type=story&sort=byPopularity&dateRange=pastMonth", "技术社区 AI 热帖", "#dbeafe", "#1e40af"),
-        ("🔥 Product Hunt AI", "https://www.producthunt.com/topics/artificial-intelligence", "最新 AI 产品", "#ffe4e6", "#9f1239"),
-        ("🔥 Papers With Code", "https://paperswithcode.com/trending", "热门论文 + 代码", "#f3e8ff", "#6b21a8"),
-        ("🔥 HF Daily Papers", "https://huggingface.co/papers", "每日论文精选", "#fef3c7", "#92400e"),
+        ("🔥 GitHub Trending", "https://github.com/trending/python?since=weekly",
+         "本周最热 Python 项目" if L == "zh" else "Top Python repos this week", "#dcfce7", "#166534"),
+        ("🔥 Hacker News AI", "https://hn.algolia.com/?q=AI+LLM+agent&type=story&sort=byPopularity&dateRange=pastMonth",
+         "技术社区 AI 热帖" if L == "zh" else "AI hot posts", "#dbeafe", "#1e40af"),
+        ("🔥 Product Hunt AI", "https://www.producthunt.com/topics/artificial-intelligence",
+         "最新 AI 产品" if L == "zh" else "Latest AI products", "#ffe4e6", "#9f1239"),
+        ("🔥 Papers With Code", "https://paperswithcode.com/trending",
+         "热门论文 + 代码" if L == "zh" else "Trending papers + code", "#f3e8ff", "#6b21a8"),
+        ("🔥 HF Daily Papers", "https://huggingface.co/papers",
+         "每日论文精选" if L == "zh" else "Daily paper picks", "#fef3c7", "#92400e"),
     ]
     link_html = "<div style='display:flex;gap:10px;flex-wrap:wrap;'>"
     for label, url, desc, bg, fg in links:
@@ -1015,16 +1048,15 @@ def render_trend_radar(resources: list):
 
 
 def render_import_plan(resources: list):
-    st.title("📤 导入学习计划")
-    st.markdown(
-        "> 上传之前导出的 JSON 文件，恢复你的学习路径和个人画像。"
-    )
+    L = _lang()
+    st.title(t("import_title", L))
+    st.markdown(t("import_subtitle", L))
     st.divider()
 
     uploaded = st.file_uploader(
-        "选择 JSON 文件",
+        t("import_upload", L),
         type=["json"],
-        help="支持通过「导出为 JSON」按钮生成的文件",
+        help=t("import_upload_help", L),
     )
 
     if uploaded is not None:
@@ -1033,35 +1065,35 @@ def render_import_plan(resources: list):
             profile = data.get("profile")
             path_data = data.get("path")
             if not profile or not path_data:
-                st.error("文件格式无效：缺少 profile 或 path 字段")
+                st.error(t("import_invalid", L))
                 return
 
-            st.success("✅ 文件解析成功！")
+            st.success(t("import_success", L))
 
             # 预览
-            with st.expander("📋 画像预览", expanded=True):
+            with st.expander(t("import_profile_preview", L), expanded=True):
                 st.write(f"**水平**: {profile.get('level', '-')}")
                 st.write(f"**方向**: {profile.get('direction', '-')}")
                 st.write(f"**学习重心**: {profile.get('focus', '-')}")
                 st.write(f"**目标**: {profile.get('goal', '-')}")
-                st.write(f"**时间**: {profile.get('hours_per_week', '-')}h/周")
+                st.write(f"**时间**: {profile.get('hours_per_week', '-')}h/{'wk' if L == 'en' else '周'}")
 
-            with st.expander("📊 路径预览"):
+            with st.expander(t("import_path_preview", L)):
                 st.write(f"**总结**: {path_data.get('summary', '-')}")
                 st.write(f"**周数**: {path_data.get('estimated_weeks', '?')}")
                 for week in path_data.get("weeks", [])[:3]:
                     st.caption(f"第 {week['week']} 周: {week['goal']}")
 
-            if st.button("🚀 加载此计划", type="primary", use_container_width=True):
+            if st.button(t("import_load", L), type="primary", use_container_width=True):
                 st.session_state.path = path_data
                 st.session_state.profile = profile
                 st.query_params["p"] = encode_profile(profile)
                 st.rerun()
 
         except json.JSONDecodeError:
-            st.error("文件不是有效的 JSON 格式")
+            st.error(t("import_json_error", L))
         except Exception as e:
-            st.error(f"解析失败：{e}")
+            st.error(f"{t('import_parse_error', L)}{e}")
 
 
 # ─── 智能对话 ─────────────────────────────────────────────────────────────────
@@ -1106,14 +1138,15 @@ def _build_chat_context(resources: list) -> str:
 
 
 def render_chat(resources: list):
-    st.title("🧠 智能对话")
-    st.markdown("> 学习过程中遇到问题？随时问我。我了解你的学习画像和路径。")
+    L = _lang()
+    st.title(t("chat_title", L))
+    st.markdown(t("chat_subtitle", L))
 
     if st.session_state.get("profile"):
         p = st.session_state.profile
-        st.caption(f"当前画像：{p.get('level','')} · {p.get('direction','')} · {FOCUS_EMOJI.get(p.get('focus',''), '')}")
+        st.caption(f"{'当前画像' if L == 'zh' else 'Profile'}：{p.get('level','')} · {p.get('direction','')} · {FOCUS_EMOJI.get(p.get('focus',''), '')}")
     else:
-        st.caption("💡 还没有生成学习路径？先去「路径规划」生成一个，对话会更有针对性。")
+        st.caption(t("chat_no_profile", L))
 
     st.divider()
 
@@ -1127,7 +1160,8 @@ def render_chat(resources: list):
             st.markdown(msg["content"])
 
     # 用户输入
-    if user_input := st.chat_input("输入你的问题，例如「RAG 和 Fine-tuning 有什么区别？」"):
+    user_input = st.chat_input(t("chat_input", L))
+    if user_input:
         st.session_state.chat_messages.append({"role": "user", "content": user_input})
         with st.chat_message("user"):
             st.markdown(user_input)
@@ -1136,7 +1170,7 @@ def render_chat(resources: list):
         api_key, base_url, model = get_llm_config()
         if not api_key:
             with st.chat_message("assistant"):
-                st.error("请先在左侧边栏配置 API Key")
+                st.error(t("chat_no_key", L))
             return
 
         context = _build_chat_context(resources)
@@ -1149,7 +1183,7 @@ def render_chat(resources: list):
         messages.extend(recent)
 
         with st.chat_message("assistant"):
-            with st.spinner("思考中..."):
+            with st.spinner(t("chat_thinking", L)):
                 try:
                     client = OpenAI(api_key=api_key, base_url=base_url)
                     resp = client.chat.completions.create(
@@ -1162,12 +1196,12 @@ def render_chat(resources: list):
                     st.markdown(reply)
                     st.session_state.chat_messages.append({"role": "assistant", "content": reply})
                 except Exception as e:
-                    st.error(f"请求失败：{e}")
+                    st.error(f"{t('chat_error', L)}{e}")
 
     # 清空对话按钮
     if st.session_state.chat_messages:
         st.divider()
-        if st.button("🗑️ 清空对话", use_container_width=True):
+        if st.button(t("chat_clear", L), use_container_width=True):
             st.session_state.chat_messages = []
             st.rerun()
 
@@ -1177,9 +1211,10 @@ def render_chat(resources: list):
 
 def render_settings():
     """侧边栏 API 设置面板"""
-    with st.expander("⚙️ API 设置", expanded=False):
+    L = _lang()
+    with st.expander(t("settings_title", L), expanded=False):
         provider = st.selectbox(
-            "模型供应商",
+            t("settings_provider", L),
             list(PROVIDER_PRESETS.keys()),
             key="settings_provider",
         )
@@ -1187,12 +1222,12 @@ def render_settings():
 
         if provider == "自定义":
             st.text_input(
-                "API Base URL",
+                t("settings_custom_url", L),
                 placeholder="https://your-api.com/v1",
                 key="settings_base_url",
             )
             st.text_input(
-                "模型名称",
+                t("settings_custom_model", L),
                 placeholder="your-model-name",
                 key="settings_model_text",
             )
@@ -1201,18 +1236,18 @@ def render_settings():
             # 防止切换 provider 后出现 stale value 报错
             if st.session_state.get(model_key, preset["models"][0]) not in preset["models"]:
                 st.session_state[model_key] = preset["models"][0]
-            st.selectbox("模型", preset["models"], key=model_key)
+            st.selectbox(t("settings_model", L), preset["models"], key=model_key)
 
         st.text_input(
-            "API Key",
+            t("settings_key", L),
             type="password",
             key="settings_api_key",
-            placeholder="sk-... （留空使用服务器配置）",
+            placeholder="sk-...",
         )
         if st.session_state.get("settings_api_key"):
-            st.caption("✅ 将使用你的 API Key")
+            st.caption("✅ " + ("将使用你的 API Key" if L == "zh" else "Using your API Key"))
         else:
-            st.caption("ℹ️ 使用服务器 Key（共享，可能限流）")
+            st.caption("ℹ️ " + ("使用服务器 Key（共享，可能限流）" if L == "zh" else "Using shared server key (may be rate-limited)"))
 
 
 # ─── 侧边栏 ──────────────────────────────────────────────────────────────────
@@ -1220,31 +1255,40 @@ def render_settings():
 
 def render_sidebar():
     with st.sidebar:
-        st.title("🧭 AI Pathfinder")
-        st.caption("个性化AI学习路径规划")
+        # Language toggle
+        lang_col1, lang_col2 = st.columns([3, 1])
+        with lang_col1:
+            st.title(t("sidebar_title", _lang()))
+        with lang_col2:
+            st.write("")
+            if st.button("🌐", key="lang_toggle", help="中文 / English"):
+                st.session_state.ui_lang = "en" if _lang() == "zh" else "zh"
+                st.rerun()
+        st.caption(t("sidebar_caption", _lang()))
         st.divider()
 
+        L = _lang()
         page = st.radio(
             "导航",
-            ["🗺️ 路径规划", "🧠 智能对话", "📚 资源浏览", "🔥 趋势雷达", "📤 导入计划"],
+            [t("nav_path", L), t("nav_chat", L), t("nav_browser", L), t("nav_radar", L), t("nav_import", L)],
             label_visibility="collapsed",
         )
 
         if st.session_state.get("path"):
             st.divider()
             p = st.session_state.profile
-            st.subheader("📋 当前画像")
-            st.write(f"**水平**: {p['level']}")
+            st.subheader(t("sidebar_profile", L))
+            st.write(f"{t('sidebar_level', L)}: {p['level']}")
             if p.get("direction"):
-                st.write(f"**方向**: {p['direction']}")
+                st.write(f"{t('sidebar_direction', L)}: {p['direction']}")
             if p.get("focus"):
-                st.write(f"**重心**: {FOCUS_EMOJI.get(p['focus'], p['focus'])}")
+                st.write(f"{t('sidebar_focus', L)}: {FOCUS_EMOJI.get(p['focus'], p['focus'])}")
             goal_display = p["goal"][:50] + ("..." if len(p["goal"]) > 50 else "")
-            st.write(f"**目标**: {goal_display}")
-            st.write(f"**时间**: {p['hours_per_week']}h/周")
-            st.caption("🔗 路径已编码到地址栏，可直接复制分享")
+            st.write(f"{t('sidebar_goal', L)}: {goal_display}")
+            st.write(f"{t('sidebar_time', L)}: {p['hours_per_week']}h/{'周' if L == 'zh' else 'wk'}")
+            st.caption(t("sidebar_share_hint", L))
             st.divider()
-            if st.button("🔄 重新规划", use_container_width=True):
+            if st.button(t("sidebar_replan", L), use_container_width=True):
                 st.session_state.path = None
                 st.session_state.profile = None
                 st.query_params.clear()
@@ -1253,7 +1297,7 @@ def render_sidebar():
         st.divider()
         render_settings()
         st.divider()
-        st.caption("开源免费 · 社区驱动")
+        st.caption(t("sidebar_footer", L))
         st.markdown("[📦 GitHub](https://github.com/moshierming/ai-pathfinder)")
         st.markdown("[💬 社区讨论](https://github.com/moshierming/ai-pathfinder/discussions)")
         st.markdown("[🐛 反馈问题](https://github.com/moshierming/ai-pathfinder/issues)")
@@ -1284,30 +1328,31 @@ def main():
 
     page = render_sidebar()
 
-    if "智能对话" in page:
+    if "Chat" in page or "对话" in page:
         render_chat(resources)
         return
 
-    if "资源浏览" in page:
+    if "Resources" in page or "资源" in page:
         render_resource_browser(resources)
         return
 
-    if "趋势雷达" in page:
+    if "Radar" in page or "雷达" in page:
         render_trend_radar(resources)
         return
 
-    if "导入计划" in page:
+    if "Import" in page or "导入" in page:
         render_import_plan(resources)
         return
 
     # 路径规划页面
+    L = _lang()
     if st.session_state.path is None:
         submitted, profile = render_form()
         if submitted:
             if not profile["goal"].strip():
-                st.error("请填写学习目标")
+                st.error(t("form_empty_goal", L))
                 return
-            with st.spinner("🤔 正在为你规划学习路径，约需 10-20 秒..."):
+            with st.spinner(t("form_generating", L)):
                 try:
                     filtered = filter_resources_for_direction(
                         resources, profile.get("direction", ""), profile.get("language", ""),
@@ -1320,14 +1365,11 @@ def main():
                     st.rerun()
                 except Exception as e:
                     err = str(e)
-                    st.error(f"生成失败：{err}")
+                    st.error(f"{t('error_generate', L)}{err}")
                     if "api_key" in err.lower() or "apikey" in err.lower() or "请配置" in err:
-                        st.info(
-                            "💡 请在左侧边栏的 **⚙️ API 设置** 中输入你的 API Key，"
-                            "或在 `.streamlit/secrets.toml` 中配置 `DASHSCOPE_API_KEY`"
-                        )
+                        st.info(t("error_api_hint", L))
                     elif "404" in err:
-                        st.info("💡 模型名称可能有误，请在左侧边栏的 **⚙️ API 设置** 中检查模型名称")
+                        st.info(t("error_model_hint", L))
     else:
         render_path(st.session_state.path, resources)
         render_feedback()
