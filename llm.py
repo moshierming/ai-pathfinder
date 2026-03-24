@@ -39,7 +39,7 @@ def get_llm_config() -> tuple[str, str, str]:
     return api_key, base_url, model
 
 
-def _compact_resources(resources: list[dict]) -> str:
+def _compact_resources(resources: list[dict[str, object]]) -> str:
     """Compact resource list to minimal token footprint."""
     lines = []
     for r in resources:
@@ -52,7 +52,7 @@ def _compact_resources(resources: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def generate_path(profile: dict, resources: list[dict]) -> dict:
+def generate_path(profile: dict[str, object], resources: list[dict[str, object]]) -> dict[str, object]:
     """Call LLM to generate a personalized learning path (streaming)."""
     api_key, base_url, model = get_llm_config()
     if not api_key:
@@ -130,7 +130,7 @@ TREND_INSIGHT_PROMPT = """你是一位资深 AI 行业分析师。基于以下 A
 }"""
 
 
-def _load_insights_cache() -> dict | None:
+def _load_insights_cache() -> dict[str, object] | None:
     """Load cached insights if fresh (same date)."""
     if not os.path.exists(INSIGHTS_CACHE_PATH):
         return None
@@ -144,7 +144,7 @@ def _load_insights_cache() -> dict | None:
     return None
 
 
-def _save_insights_cache(data: dict) -> None:
+def _save_insights_cache(data: dict[str, object]) -> None:
     """Save insights to local cache file."""
     try:
         with open(INSIGHTS_CACHE_PATH, "w", encoding="utf-8") as f:
@@ -153,7 +153,7 @@ def _save_insights_cache(data: dict) -> None:
         _log.warning("insights_cache_save_failed: %s", e)
 
 
-def generate_trend_insights(channels: list[dict], force_refresh: bool = False) -> dict:
+def generate_trend_insights(channels: list[dict[str, object]], force_refresh: bool = False) -> dict[str, object]:
     """Generate daily AI trend insights via LLM, with local caching."""
     if not force_refresh:
         cached = _load_insights_cache()

@@ -11,7 +11,7 @@ from i18n import t
 from views import _lang
 
 
-def render_form() -> tuple[bool, dict]:
+def render_form() -> tuple[bool, dict[str, object]]:
     L = _lang()
     st.title(t("form_title", L))
     st.markdown(t("form_subtitle", L))

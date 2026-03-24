@@ -1,7 +1,4 @@
 {
-  "tests/test_app.py::TestConstants": true,
-  "tests/test_app.py::TestEncodeProfile": true,
-  "tests/test_app.py::TestExportJson": true,
-  "tests/test_app.py::TestExportMarkdown": true,
-  "tests/test_app.py::TestFilterResources": true
+  "tests/e2e/test_core_flows.py::TestAppLoads::()::test_title_visible": true,
+  "tests/test_llm.py::TestGenerateTrendInsights::()::test_api_failure_returns_stale_cache": true
 }

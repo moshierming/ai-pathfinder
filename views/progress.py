@@ -27,7 +27,7 @@ def _ensure_dir() -> None:
 # ─── Collect / Restore ──────────────────────────────────────────────────────
 
 
-def collect_progress() -> dict:
+def collect_progress() -> dict[str, object]:
     """Gather all saveable state into a dict."""
     done = {}
     for k, v in st.session_state.items():
@@ -45,7 +45,7 @@ def collect_progress() -> dict:
     }
 
 
-def restore_progress(data: dict) -> bool:
+def restore_progress(data: dict[str, object]) -> bool:
     """Write saved state back into session_state. Returns True on success."""
     if not isinstance(data, dict):
         return False
@@ -85,7 +85,7 @@ def save_progress_local() -> str | None:
     return filepath
 
 
-def load_progress_local() -> dict | None:
+def load_progress_local() -> dict[str, object] | None:
     """Load most recent saved progress. Returns dict or None."""
     filepath = os.path.join(_PROGRESS_DIR, "latest.json")
     if not os.path.exists(filepath):
@@ -97,7 +97,7 @@ def load_progress_local() -> dict | None:
         return None
 
 
-def progress_to_json(data: dict | None = None) -> str:
+def progress_to_json(data: dict[str, object] | None = None) -> str:
     """Serialize progress to downloadable JSON string."""
     if data is None:
         data = collect_progress()

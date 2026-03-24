@@ -21,7 +21,7 @@ from views.settings import render_settings
 
 
 @st.cache_data(show_spinner=False, ttl=3600)
-def load_resources() -> list[dict]:
+def load_resources() -> list[dict[str, object]]:
     """Cached wrapper — YAML is parsed once, refreshed every hour."""
     return _load_resources_uncached()
 

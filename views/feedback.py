@@ -16,7 +16,7 @@ from views import _lang
 _log = get_logger("feedback")
 
 
-def submit_feedback(feedback: dict) -> str:
+def submit_feedback(feedback: dict[str, object]) -> str:
     """Save feedback: local file (always try) + GitHub Issues (if token). Returns 'github' or 'local'."""
     try:
         feedback_dir = os.path.join(os.path.dirname(__file__), "..", "feedback")

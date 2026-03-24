@@ -38,7 +38,12 @@ def decode_profile(s: str) -> dict | None:
         return None
 
 
-def filter_resources_for_direction(resources: list[dict], direction: str, language: str, focus: str = "both") -> list[dict]:
+def filter_resources_for_direction(
+    resources: list[dict[str, object]],
+    direction: str,
+    language: str,
+    focus: str = "both",
+) -> list[dict[str, object]]:
     """Pre-filter resources by direction + language + focus, capped at 50."""
     domains = DIRECTION_TO_DOMAIN.get(direction, [])
     if domains:
@@ -67,7 +72,11 @@ def filter_resources_for_direction(resources: list[dict], direction: str, langua
     return filtered[:35]
 
 
-def export_plan_markdown(path_data: dict, profile: dict, resources: list[dict]) -> str:
+def export_plan_markdown(
+    path_data: dict[str, object],
+    profile: dict[str, object],
+    resources: list[dict[str, object]],
+) -> str:
     """Export learning path as readable Markdown."""
     ridx = {r["id"]: r for r in resources}
     lines = [
@@ -110,7 +119,7 @@ def export_plan_markdown(path_data: dict, profile: dict, resources: list[dict]) 
     return "\n".join(lines)
 
 
-def export_plan_json(path_data: dict, profile: dict) -> str:
+def export_plan_json(path_data: dict[str, object], profile: dict[str, object]) -> str:
     """Export learning path as importable JSON."""
     return json.dumps({"profile": profile, "path": path_data}, ensure_ascii=False, indent=2)
 
