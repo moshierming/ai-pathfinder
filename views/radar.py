@@ -6,7 +6,7 @@ from html import escape as html_escape
 import streamlit as st
 
 from i18n import t
-from llm import generate_trend_insights
+from llm import generate_trend_insights, _sanitize_text
 from views import _lang
 
 
@@ -40,11 +40,12 @@ def _render_insights_section(channels: list[dict[str, object]], L: str) -> None:
     # Overview
     overview = data.get("overview", "")
     if overview and isinstance(overview, str):
+        overview = _sanitize_text(overview)
         st.markdown(
             f"<div style='padding:14px 18px;background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%);"
             f"border-radius:12px;margin-bottom:16px;border-left:4px solid #f59e0b;'>"
             f"<div style='font-weight:600;color:#92400e;font-size:0.95rem;'>"
-            f"\ud83c\udf1f {t('radar_insights_overview', L)}</div>"
+            f"\U0001f31f {t('radar_insights_overview', L)}</div>"
             f"<div style='color:#78350f;font-size:0.88rem;margin-top:6px;'>"
             f"{html_escape(overview)}</div></div>",
             unsafe_allow_html=True,
@@ -59,18 +60,21 @@ def _render_insights_section(channels: list[dict[str, object]], L: str) -> None:
             tags = []
         tags_html = " ".join(
             f"<span style='background:#e0e7ff;color:#4338ca;font-size:0.7rem;"
-            f"padding:2px 8px;border-radius:10px;'>{html_escape(str(tag))}</span>"
+            f"padding:2px 8px;border-radius:10px;'>{html_escape(_sanitize_text(str(tag)))}</span>"
             for tag in tags
         )
+        title = _sanitize_text(str(ins.get('title', '')))
+        summary = _sanitize_text(str(ins.get('summary', '')))
+        action = _sanitize_text(str(ins.get('action', '')))
         st.markdown(
             f"<div style='padding:14px 18px;background:#f8fafc;border-radius:10px;"
             f"border:1px solid #e2e8f0;margin-bottom:10px;'>"
             f"<div style='font-weight:600;color:#1e293b;font-size:0.92rem;'>"
-            f"\ud83d\udca1 {html_escape(str(ins.get('title', '')))}</div>"
+            f"\U0001f4a1 {html_escape(title)}</div>"
             f"<div style='color:#334155;font-size:0.84rem;margin-top:5px;'>"
-            f"{html_escape(str(ins.get('summary', '')))}</div>"
+            f"{html_escape(summary)}</div>"
             f"<div style='color:#047857;font-size:0.82rem;margin-top:5px;font-weight:500;'>"
-            f"\u2705 {html_escape(str(ins.get('action', '')))}</div>"
+            f"\u2705 {html_escape(action)}</div>"
             f"<div style='margin-top:6px;display:flex;gap:4px;'>{tags_html}</div></div>",
             unsafe_allow_html=True,
         )
