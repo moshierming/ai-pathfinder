@@ -232,7 +232,7 @@ def render_form():
     )
     st.divider()
 
-    with st.form("profile"):
+    with st.form("profile_form"):
         c1, c2 = st.columns(2)
         with c1:
             level = st.selectbox("📊 当前水平", LEVELS)
