@@ -1,0 +1,206 @@
+"""Integration tests for views — testable logic with mocked Streamlit."""
+
+import sys, os, json
+from unittest.mock import MagicMock, patch, mock_open
+from datetime import datetime
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+# ─── Get/create the shared streamlit mock ─────────────────────────────────────
+# Other test files may have already inserted a mock; reuse it so all modules
+# that imported `st` reference the same object.
+
+if "streamlit" not in sys.modules:
+    sys.modules["streamlit"] = MagicMock()
+mock_st = sys.modules["streamlit"]
+mock_st.session_state = {}
+mock_st.secrets = MagicMock()
+mock_st.secrets.get = MagicMock(return_value="")
+
+if "openai" not in sys.modules:
+    sys.modules["openai"] = MagicMock()
+
+
+# ─── Tests for _build_chat_context ───────────────────────────────────────────
+
+from views.chat import _build_chat_context
+
+
+SAMPLE_RESOURCES = [
+    {"id": "r1", "title": "Intro to ML", "type": "course", "topics": ["ML", "basics"]},
+    {"id": "r2", "title": "Deep Learning", "type": "book", "topics": ["DL", "neural-nets", "CNN", "RNN"]},
+    {"id": "r3", "title": "NLP Guide", "type": "article", "topics": []},
+]
+
+
+class TestBuildChatContext:
+    def setup_method(self):
+        mock_st.session_state = {}
+
+    def test_includes_resource_summary(self):
+        ctx = _build_chat_context(SAMPLE_RESOURCES)
+        assert "r1" in ctx
+        assert "Intro to ML" in ctx
+        assert "r2" in ctx
+
+    def test_includes_profile_when_present(self):
+        mock_st.session_state = {
+            "profile": {"level": "中级", "direction": "NLP", "goal": "做翻译系统", "focus": "applied"}
+        }
+        ctx = _build_chat_context(SAMPLE_RESOURCES)
+        assert "中级" in ctx
+        assert "NLP" in ctx
+        assert "做翻译系统" in ctx
+
+    def test_includes_path_when_present(self):
+        mock_st.session_state = {
+            "path": {
+                "summary": "NLP学习路径",
+                "estimated_weeks": 6,
+                "weeks": [
+                    {"week": 1, "resources": ["r1", "r2"]},
+                    {"week": 2, "resources": ["r3"]},
+                ]
+            }
+        }
+        ctx = _build_chat_context(SAMPLE_RESOURCES)
+        assert "NLP学习路径" in ctx
+        assert "6" in ctx
+        assert "r1" in ctx
+
+    def test_no_profile_no_path(self):
+        mock_st.session_state = {}
+        ctx = _build_chat_context(SAMPLE_RESOURCES)
+        assert "资源库摘要" in ctx
+        assert "用户画像" not in ctx
+
+    def test_topic_truncation(self):
+        """Resources have topics truncated to 3."""
+        ctx = _build_chat_context(SAMPLE_RESOURCES)
+        # r2 has 4 topics, only first 3 should appear in summary
+        assert "DL" in ctx
+        assert "neural-nets" in ctx
+        assert "CNN" in ctx
+        # RNN is the 4th topic, should be excluded
+        assert "RNN" not in ctx
+
+    def test_resource_limit_60(self):
+        """Only first 60 resources are included."""
+        big_list = [{"id": f"rx{i}", "title": f"R{i}", "type": "article", "topics": []} for i in range(100)]
+        ctx = _build_chat_context(big_list)
+        assert "rx59" in ctx
+        assert "rx60" not in ctx
+
+    def test_empty_resources(self):
+        ctx = _build_chat_context([])
+        assert "资源库摘要" in ctx
+
+    def test_path_with_no_weeks(self):
+        mock_st.session_state = {
+            "path": {"summary": "Empty", "estimated_weeks": 0, "weeks": []}
+        }
+        ctx = _build_chat_context([])
+        assert "Empty" in ctx
+
+
+# ─── Tests for submit_feedback ───────────────────────────────────────────────
+
+
+
+class TestSubmitFeedback:
+    def setup_method(self):
+        mock_st.session_state = {}
+        mock_st.secrets = MagicMock()
+        mock_st.secrets.get = MagicMock(return_value="")
+        # Reload feedback module to pick up fresh mock_st.secrets
+        import importlib
+        import views.feedback as fb_mod
+        importlib.reload(fb_mod)
+
+    @patch("views.feedback.os.makedirs")
+    @patch("builtins.open", mock_open())
+    def test_local_save_returns_local(self, mock_makedirs):
+        from views.feedback import submit_feedback as sf
+        result = sf({"rating": "太赞了", "comment": "Good"})
+        assert result == "local"
+        mock_makedirs.assert_called_once()
+
+    @patch("views.feedback.os.makedirs")
+    @patch("builtins.open", mock_open())
+    @patch("views.feedback.urllib.request.urlopen")
+    def test_github_save_returns_github(self, mock_urlopen, mock_makedirs):
+        mock_st.secrets = MagicMock()
+        mock_st.secrets.get = MagicMock(side_effect=lambda k, d="": {"GITHUB_TOKEN": "ghp_test123"}.get(k, d))
+        from views.feedback import submit_feedback as sf
+        result = sf({"rating": "很有帮助", "comment": "Nice", "profile": {}})
+        assert result == "github"
+        mock_urlopen.assert_called_once()
+
+    @patch("views.feedback.os.makedirs")
+    @patch("builtins.open", mock_open())
+    @patch("views.feedback.urllib.request.urlopen", side_effect=Exception("network error"))
+    def test_github_failure_falls_back_local(self, mock_urlopen, mock_makedirs):
+        mock_st.secrets = MagicMock()
+        mock_st.secrets.get = MagicMock(side_effect=lambda k, d="": {"GITHUB_TOKEN": "ghp_test123"}.get(k, d))
+        from views.feedback import submit_feedback as sf
+        result = sf({"rating": "一般", "comment": ""})
+        assert result == "local"
+
+    @patch("views.feedback.os.makedirs", side_effect=OSError("permission denied"))
+    def test_local_save_failure_silent(self, mock_makedirs):
+        from views.feedback import submit_feedback as sf
+        result = sf({"rating": "一般"})
+        assert result == "local"
+
+    @patch("views.feedback.os.makedirs")
+    @patch("builtins.open", mock_open())
+    def test_feedback_file_content(self, mock_makedirs):
+        feedback = {"rating": "太赞了", "comment": "反馈内容", "profile": {"level": "初级"}}
+        from views.feedback import submit_feedback as sf
+        sf(feedback)
+        handle = open()
+        written = handle.write.call_args_list
+        assert len(written) > 0 or handle.method_calls
+
+    @patch("views.feedback.os.makedirs")
+    @patch("builtins.open", mock_open())
+    @patch("views.feedback.urllib.request.urlopen")
+    def test_github_issue_body_contains_rating(self, mock_urlopen, mock_makedirs):
+        mock_st.secrets = MagicMock()
+        mock_st.secrets.get = MagicMock(side_effect=lambda k, d="": {"GITHUB_TOKEN": "ghp_test"}.get(k, d))
+        from views.feedback import submit_feedback as sf
+        sf({"rating": "太赞了", "comment": "Very nice", "profile": {"direction": "NLP"}})
+        call_args = mock_urlopen.call_args
+        req = call_args[0][0]
+        body = json.loads(req.data.decode("utf-8"))
+        assert "太赞了" in body["body"]
+        assert "NLP" in body["body"]
+        assert "feedback" in body["labels"]
+
+
+# ─── Tests for views.import_plan (decode reuse) ─────────────────────────────
+
+from views.import_plan import render_import_plan
+
+
+class TestImportPlanLogic:
+    """We can't test the rendering, but we verify the import_plan module imports correctly."""
+    def test_module_importable(self):
+        from views import import_plan
+        assert hasattr(import_plan, "render_import_plan")
+
+    def test_settings_importable(self):
+        from views import settings
+        assert hasattr(settings, "render_settings")
+
+    def test_all_views_importable(self):
+        """All 8 view modules should be importable."""
+        from views import path, form, browser, radar, chat, feedback, import_plan, settings
+        assert hasattr(path, "render_path")
+        assert hasattr(form, "render_form")
+        assert hasattr(browser, "render_resource_browser")
+        assert hasattr(radar, "render_trend_radar")
+        assert hasattr(chat, "render_chat")
+        assert hasattr(feedback, "render_feedback")
+        assert hasattr(import_plan, "render_import_plan")
+        assert hasattr(settings, "render_settings")
