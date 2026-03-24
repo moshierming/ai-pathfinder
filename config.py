@@ -1,0 +1,176 @@
+"""Constants and configuration for AI Pathfinder."""
+
+PROVIDER_PRESETS = {
+    "DashScope (阿里云百炼)": {
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "models": ["qwen-plus", "qwen-turbo", "qwen-max", "qwen-long"],
+    },
+    "OpenAI": {
+        "base_url": "https://api.openai.com/v1",
+        "models": ["gpt-4o-mini", "gpt-4o", "gpt-4-turbo"],
+    },
+    "DeepSeek": {
+        "base_url": "https://api.deepseek.com/v1",
+        "models": ["deepseek-chat", "deepseek-reasoner"],
+    },
+    "自定义": {
+        "base_url": "",
+        "models": [],
+    },
+}
+
+LEVEL_EMOJI = {
+    "beginner": "🟢",
+    "intermediate": "🟡",
+    "advanced": "🔴",
+    "beginner-to-intermediate": "🟢",
+    "intermediate-to-advanced": "🟡",
+}
+
+TYPE_EMOJI = {
+    "course": "🎓",
+    "video": "🎬",
+    "article": "📄",
+    "repo": "💻",
+    "book": "📚",
+    "channel": "📡",
+}
+
+FOCUS_EMOJI = {
+    "foundational": "🧱 打基础",
+    "applied": "🔧 重实战",
+    "both": "⚖️ 理论+实战",
+}
+
+LEVEL_ORDER = {
+    "beginner": 1, "beginner-to-intermediate": 2, "intermediate": 3,
+    "intermediate-to-advanced": 4, "advanced": 5,
+}
+
+LEVELS = [
+    "🔰 完全零基础（不会Python）",
+    "📗 会Python，了解基本ML概念",
+    "📘 能跑通基础模型（sklearn/transformers）",
+    "📙 能独立完成小型AI项目",
+    "🚀 已在工作中用AI/ML，想深入某方向",
+]
+
+PREFERENCES = ["🎬 视频课程为主", "📄 文档/教程为主", "💻 项目实战为主", "⚖️ 均衡搭配"]
+
+LANGUAGES = ["🇨🇳 优先中文资源", "🇬🇧 优先英文资源", "🌍 不限语言"]
+
+FOCUS_OPTIONS = ["⚖️ 理论+实战均衡", "🧱 侧重打基础（数学/原理/论文）", "🔧 侧重实战（项目/部署/工具）"]
+
+FOCUS_MAP = {
+    "⚖️ 理论+实战均衡": "both",
+    "🧱 侧重打基础（数学/原理/论文）": "foundational",
+    "🔧 侧重实战（项目/部署/工具）": "applied",
+}
+
+DIRECTIONS = [
+    "🤖 AI Agent / 多智能体系统",
+    "🧪 AI 辅助软件测试 / 质量保障",
+    "💬 LLM 应用开发 / RAG",
+    "📊 机器学习 / 数据科学",
+    "🎨 AIGC / 多模态生成",
+    "🔧 MLOps / AI 系统工程",
+    "🔬 AI 研究 / 论文方向",
+    "🌐 其他 / 尚未确定",
+]
+
+DIRECTION_TO_DOMAIN = {
+    "🤖 AI Agent / 多智能体系统": ["ai-agent", "llm-app"],
+    "🧪 AI 辅助软件测试 / 质量保障": ["software-testing", "llm-app"],
+    "💬 LLM 应用开发 / RAG": ["llm-app", "ai-agent"],
+    "📊 机器学习 / 数据科学": ["data-science"],
+    "🎨 AIGC / 多模态生成": ["aigc", "data-science"],
+    "🔧 MLOps / AI 系统工程": ["mlops", "llm-app"],
+    "🔬 AI 研究 / 论文方向": ["research", "data-science"],
+    "🌐 其他 / 尚未确定": [],
+}
+
+PRESET_PROFILES = {
+    "💻 软测 → AI 转型": {
+        "level": "📗 会Python，了解基本ML概念",
+        "goal": "3-6个月内学会用AI工具提升测试效率，包括AI辅助用例生成、智能回归测试和基础Agent搭建",
+        "hours_per_week": 8,
+        "preference": "⚖️ 均衡搭配",
+        "language": "🇨🇳 优先中文资源",
+        "direction": "🧪 AI 辅助软件测试 / 质量保障",
+        "focus": "⚖️ 理论+实战均衡",
+    },
+    "🤖 AI Agent 开发": {
+        "level": "📘 能跑通基础模型（sklearn/transformers）",
+        "goal": "掌握LangChain/LangGraph等Agent框架，能独立开发多工具调用的AI Agent并部署上线",
+        "hours_per_week": 10,
+        "preference": "💻 项目实战为主",
+        "language": "🌍 不限语言",
+        "direction": "🤖 AI Agent / 多智能体系统",
+        "focus": "🔧 侧重实战（项目/部署/工具）",
+    },
+    "💬 LLM 应用入门": {
+        "level": "📗 会Python，了解基本ML概念",
+        "goal": "能独立开发RAG问答系统，掌握Prompt工程、向量数据库和LLM API调用，完成一个可部署的LLM应用",
+        "hours_per_week": 8,
+        "preference": "⚖️ 均衡搭配",
+        "language": "🌍 不限语言",
+        "direction": "💬 LLM 应用开发 / RAG",
+        "focus": "⚖️ 理论+实战均衡",
+    },
+    "📊 ML / 数据科学": {
+        "level": "📗 会Python，了解基本ML概念",
+        "goal": "系统学习机器学习理论和实践，完成端到端ML项目，掌握数据处理、特征工程和基础模型部署",
+        "hours_per_week": 10,
+        "preference": "⚖️ 均衡搭配",
+        "language": "🌍 不限语言",
+        "direction": "📊 机器学习 / 数据科学",
+        "focus": "🧱 侧重打基础（数学/原理/论文）",
+    },
+}
+
+PRESET_DESCRIPTIONS = {
+    "💻 软测 → AI 转型": "有测试经验，想用AI提升效率",
+    "🤖 AI Agent 开发": "搭建多工具调用的智能体",
+    "💬 LLM 应用入门": "从零到RAG问答系统部署",
+    "📊 ML / 数据科学": "系统学习机器学习理论与实践",
+}
+
+SYSTEM_PROMPT = """你是一位专业的AI学习路径规划师。根据用户的背景和目标，从给定的资源库中，为用户规划个性化学习路径。
+
+规则：
+1. 只用资源库中的资源（用 id 字段引用）
+2. 按周分组，每周2-4个资源，总时长不超出用户时间预算
+3. 难度循序渐进
+4. 每周给一句学习目标和一句小提示
+5. 资源含 domain 字段时，优先选取 domain 与用户目标方向匹配的资源
+6. 若用户填写了'当前技能/项目经历'，充分利用此信息：跳过用户已熟悉的基础内容，从技能空白处切入；优先推荐能与已有工程经验衔接的资源（如有软件测试背景则优先软测+Agent资源）
+7. 优先推荐 type 为 repo 的实战项目资源（与课程/文章搭配），每2-3周安排至少1个可动手运行的项目
+8. 根据用户的 focus 偏好调整资源选取：
+   - foundational（打基础）：侧重 focus=foundational 的理论/数学/论文类资源
+   - applied（重实战）：侧重 focus=applied 的项目/部署/工具类资源
+   - both（均衡）：两者均衡搭配
+9. type=channel 的资源是持续学习信息源（博客、公众号、播客等），不要放在前几周，在学习路径后半段安排2-3个作为"持续跟踪"推荐（不占每周时间预算）
+10. 输出纯 JSON，不要有其他文字
+
+输出格式：
+{
+  "summary": "整体路径说明（1-2句）",
+  "estimated_weeks": 8,
+  "weeks": [
+    {
+      "week": 1,
+      "goal": "掌握Python数据处理基础",
+      "tip": "建议边看边敲，不要只看不动手",
+      "resources": ["r001", "r003"]
+    }
+  ]
+}"""
+
+CHAT_SYSTEM_PROMPT = """你是 AI Pathfinder 的学习助手。用户正在学习 AI 相关知识，你可以帮他解答学习过程中的问题。
+
+规则：
+1. 回答简洁、准确、有实操指导性
+2. 如果用户的学习画像和路径在下方提供，结合这些信息给出更有针对性的建议
+3. 可以推荐用户路径中已有的资源，也可以给出额外的建议
+4. 使用中文回答（除非用户用英文提问）
+5. 如果问题超出 AI/ML 学习范畴，友好地引导回学习话题"""
