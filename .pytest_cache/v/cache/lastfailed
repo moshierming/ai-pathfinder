@@ -1,0 +1,7 @@
+{
+  "tests/test_app.py::TestConstants": true,
+  "tests/test_app.py::TestEncodeProfile": true,
+  "tests/test_app.py::TestExportJson": true,
+  "tests/test_app.py::TestExportMarkdown": true,
+  "tests/test_app.py::TestFilterResources": true
+}
