@@ -6,10 +6,7 @@ import streamlit as st
 
 from i18n import t
 from utils import encode_profile
-
-
-def _lang():
-    return st.session_state.get("ui_lang", "zh")
+from views import _lang
 
 
 def render_import_plan(resources: list):

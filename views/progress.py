@@ -9,11 +9,9 @@ import streamlit as st
 from i18n import t
 from logging_config import get_logger
 
+from views import _lang
+
 _log = get_logger("progress")
-
-
-def _lang():
-    return st.session_state.get("ui_lang", "zh")
 
 
 # ─── Progress directory ──────────────────────────────────────────────────────

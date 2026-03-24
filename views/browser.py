@@ -6,10 +6,7 @@ import streamlit as st
 
 from config import FOCUS_EMOJI, LEVEL_EMOJI, TYPE_EMOJI
 from i18n import t
-
-
-def _lang():
-    return st.session_state.get("ui_lang", "zh")
+from views import _lang
 
 
 def render_resource_browser(resources: list):

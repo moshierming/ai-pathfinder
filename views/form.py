@@ -7,10 +7,7 @@ from config import (
     PRESET_PROFILES,
 )
 from i18n import t
-
-
-def _lang():
-    return st.session_state.get("ui_lang", "zh")
+from views import _lang
 
 
 def render_form():
