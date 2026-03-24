@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.git/
+.gitignore
+.streamlit/secrets.toml
+.venv/
+*.bak
+*.egg-info/
+dist/
+tests/
+feedback/
+*.md
+.DS_Store
+Dockerfile
+docker-compose.yml

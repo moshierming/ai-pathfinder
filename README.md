@@ -135,6 +135,22 @@ streamlit run app.py
 
 ---
 
+### Docker 部署
+
+```bash
+# 方式一：docker-compose（推荐）
+export DASHSCOPE_API_KEY="sk-..."
+docker compose up -d
+
+# 方式二：直接 docker run
+docker build -t ai-pathfinder .
+docker run -d -p 8501:8501 -e DASHSCOPE_API_KEY="sk-..." ai-pathfinder
+```
+
+访问 http://localhost:8501 即可使用。
+
+---
+
 ## 部署到 Streamlit Cloud
 
 1. Fork 本仓库
