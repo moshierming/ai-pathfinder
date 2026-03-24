@@ -66,10 +66,15 @@
 独立页面浏览全部 105 条资源，支持 5 维筛选（话题/类型/难度/方向/侧重）+ 关键词搜索 + 统计概览。
 
 ### ⚙️ 多供应商 API 支持
-在侧边栏直接切换：
+在侧边栏直接切换（均兼容 OpenAI SDK）：
 - **DashScope（阿里云百炼）**：qwen3.5-plus
-- **OpenAI**：gpt-4o-mini / gpt-4o
+- **OpenAI**：gpt-4o-mini / gpt-4o / gpt-4-turbo
 - **DeepSeek**：deepseek-chat / deepseek-reasoner
+- **Google Gemini**：gemini-2.0-flash / gemini-1.5-pro
+- **SiliconFlow（硅基流动）**：Qwen2.5-72B / DeepSeek-V3
+- **Moonshot（月之暗面）**：moonshot-v1-8k/32k/128k
+- **ZhipuAI（智谱）**：glm-4-flash / glm-4-plus
+- **Ollama（本地模型）**：qwen2.5 / llama3.1 / deepseek-r1
 - **自定义**：任意兼容 OpenAI 格式的 API
 
 ### 📝 反馈收集
