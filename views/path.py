@@ -7,6 +7,7 @@ import streamlit as st
 from config import FOCUS_EMOJI, LEVEL_EMOJI, LEVEL_ORDER, TYPE_EMOJI
 from i18n import t
 from utils import export_plan_json, export_plan_markdown
+from views.progress import render_progress_save
 
 
 def _lang():
@@ -70,10 +71,9 @@ def render_path(path_data: dict, resources: list):
     if total_resources > 0:
         progress = done_count / total_resources
         st.progress(progress, text=t("path_progress", L, done=done_count, total=total_resources))
-        if done_count > 0:
-            st.caption(t("path_progress_warn", L))
-    else:
-        st.caption(t("path_no_resources", L))
+
+    # 保存进度（含勾选状态 + 对话记录）
+    render_progress_save()
 
     # 导出学习计划
     st.divider()
