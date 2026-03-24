@@ -11,6 +11,7 @@ resources:
     description: "零基础入门Python，交互式练习"
     language: en
     free: true
+    focus: foundational
 
   - id: r002
     title: "Python 官方教程（中文版）"
@@ -23,6 +24,7 @@ resources:
     description: "官方文档，最权威的Python入门"
     language: zh
     free: true
+    focus: foundational
 
   - id: r003
     title: "3Blue1Brown：线性代数的本质"
@@ -35,6 +37,7 @@ resources:
     description: "可视化理解线性代数，ML必备数学基础"
     language: zh
     free: true
+    focus: foundational
 
   - id: r004
     title: "Khan Academy 微积分"
@@ -47,6 +50,7 @@ resources:
     description: "梯度下降的数学基础"
     language: zh
     free: true
+    focus: foundational
 
   # ── ML 基础 ───────────────────────────────────────────────────────────────
   - id: r005
@@ -60,6 +64,7 @@ resources:
     description: "全球最受欢迎的ML入门课，可免费旁听"
     language: en
     free: true
+    focus: foundational
 
   - id: r006
     title: "sklearn 官方教程"
@@ -72,6 +77,7 @@ resources:
     description: "动手跑ML模型，sklearn是ML工程必备"
     language: en
     free: true
+    focus: foundational
 
   - id: r007
     title: "StatQuest：机器学习可视化讲解（B站）"
@@ -84,6 +90,7 @@ resources:
     description: "用极简可视化讲清楚每个ML算法原理"
     language: en
     free: true
+    focus: foundational
 
   # ── 深度学习 ──────────────────────────────────────────────────────────────
   - id: r008
@@ -97,6 +104,7 @@ resources:
     description: "自顶向下，以实战驱动，最实用的深度学习课"
     language: en
     free: true
+    focus: foundational
 
   - id: r009
     title: "Andrej Karpathy：Neural Networks: Zero to Hero"
@@ -109,6 +117,7 @@ resources:
     description: "从零手写GPT，理解LLM底层原理的最佳资源"
     language: en
     free: true
+    focus: both
 
   - id: r010
     title: "动手学深度学习（d2l.ai 中文版）"
@@ -121,6 +130,7 @@ resources:
     description: "李沐主导，中文深度学习教科书，附代码"
     language: zh
     free: true
+    focus: foundational
 
   - id: r011
     title: "李沐论文精读系列"
@@ -133,6 +143,7 @@ resources:
     description: "手把手带读经典论文，培养阅读论文能力"
     language: zh
     free: true
+    focus: foundational
 
   # ── NLP & Transformers ────────────────────────────────────────────────────
   - id: r012
@@ -146,6 +157,7 @@ resources:
     description: "官方Transformers教程，理论+实战，必学"
     language: en
     free: true
+    focus: both
 
   - id: r013
     title: "The Illustrated Transformer"
@@ -158,6 +170,7 @@ resources:
     description: "最好的Transformer可视化解释，必读"
     language: en
     free: true
+    focus: foundational
 
   - id: r014
     title: "Stanford CS224n：NLP with Deep Learning"
@@ -170,6 +183,7 @@ resources:
     description: "斯坦福NLP旗舰课，讲义+视频全公开"
     language: en
     free: true
+    focus: foundational
 
   # ── LLM 应用 ──────────────────────────────────────────────────────────────
   - id: r015
@@ -183,6 +197,7 @@ resources:
     description: "1小时速成Prompt Engineering，LLM应用起点"
     language: en
     free: true
+    focus: both
 
   - id: r016
     title: "LangChain 官方文档"
@@ -195,6 +210,7 @@ resources:
     description: "LLM应用开发框架，RAG/Agent必备"
     language: en
     free: true
+    focus: both
 
   - id: r017
     title: "吴恩达 Building Systems with the ChatGPT API"
@@ -207,6 +223,7 @@ resources:
     description: "用LLM构建完整系统，从单prompt到pipeline"
     language: en
     free: true
+    focus: both
 
   - id: r018
     title: "吴恩达 LangChain for LLM Application Development"
@@ -219,6 +236,7 @@ resources:
     description: "LangChain官方合作课，快速上手"
     language: en
     free: true
+    focus: both
 
   # ── RAG ───────────────────────────────────────────────────────────────────
   - id: r019
@@ -232,6 +250,7 @@ resources:
     description: "RAG进阶：评估、优化、高级检索策略"
     language: en
     free: true
+    focus: both
 
   - id: r020
     title: "LlamaIndex 官方文档"
@@ -244,6 +263,7 @@ resources:
     description: "RAG专门框架，比LangChain更专注于索引检索"
     language: en
     free: true
+    focus: both
 
   - id: r021
     title: "Pinecone：向量数据库学习中心"
@@ -256,6 +276,7 @@ resources:
     description: "向量检索原理与实践，RAG基础设施"
     language: en
     free: true
+    focus: both
 
   - id: r022
     title: "RAG from Scratch（LangChain官方系列）"
@@ -268,6 +289,7 @@ resources:
     description: "从零实现RAG的完整代码仓库，附视频"
     language: en
     free: true
+    focus: applied
 
   # ── Agent ─────────────────────────────────────────────────────────────────
   - id: r023
@@ -281,6 +303,7 @@ resources:
     description: "用LangGraph构建可靠的AI Agent"
     language: en
     free: true
+    focus: both
 
   - id: r024
     title: "HuggingFace Agents Course"
@@ -293,6 +316,7 @@ resources:
     description: "HuggingFace官方Agent课程，含smolagents框架"
     language: en
     free: true
+    focus: applied
 
   # ── 微调 Fine-tuning ──────────────────────────────────────────────────────
   - id: r025
@@ -306,6 +330,7 @@ resources:
     description: "LLM微调原理与实践"
     language: en
     free: true
+    focus: both
 
   - id: r026
     title: "HuggingFace PEFT 文档"
@@ -318,6 +343,7 @@ resources:
     description: "LoRA/QLoRA等参数高效微调的官方指南"
     language: en
     free: true
+    focus: foundational
 
   - id: r027
     title: "Unsloth：快速LLM微调教程"
@@ -330,6 +356,7 @@ resources:
     description: "2x速度、70%内存的开源微调框架，Colab可直接运行"
     language: en
     free: true
+    focus: applied
 
   # ── 模型部署 ─────────────────────────────────────────────────────────────
   - id: r028
@@ -343,6 +370,7 @@ resources:
     description: "Python最快的API框架，模型服务化标配"
     language: zh
     free: true
+    focus: applied
 
   - id: r029
     title: "Docker 官方入门教程"
@@ -355,6 +383,7 @@ resources:
     description: "容器化部署，让模型到处能跑"
     language: en
     free: true
+    focus: applied
 
   - id: r030
     title: "Streamlit 官方文档"
@@ -367,6 +396,7 @@ resources:
     description: "最快速构建ML演示应用，从想法到Demo只需1小时"
     language: en
     free: true
+    focus: applied
 
   # ── 实战项目 ──────────────────────────────────────────────────────────────
   - id: r031
@@ -380,6 +410,7 @@ resources:
     description: "Sebastian Raschka著，从零实现GPT，代码全开源"
     language: en
     free: true
+    focus: foundational
 
   - id: r032
     title: "Full Stack LLM Bootcamp"
@@ -392,6 +423,7 @@ resources:
     description: "工程师视角的LLM全栈开发，从prompt到生产"
     language: en
     free: true
+    focus: applied
 
   - id: r033
     title: "Weights & Biases MLOps Course"
@@ -404,6 +436,7 @@ resources:
     description: "MLOps实践，实验追踪+模型管理+监控"
     language: en
     free: true
+    focus: applied
 
   - id: r034
     title: "Kaggle Learn"
@@ -416,6 +449,7 @@ resources:
     description: "Kaggle官方微课，每门1-3小时，边学边做"
     language: en
     free: true
+    focus: both
 
   # ── 中文资源 ──────────────────────────────────────────────────────────────
   - id: r035
@@ -429,6 +463,7 @@ resources:
     description: "国内LLM技术课，涵盖GLM系列模型使用与微调"
     language: zh
     free: true
+    focus: both
 
   - id: r036
     title: "魔搭社区（ModelScope）教程"
@@ -441,6 +476,7 @@ resources:
     description: "阿里达摩院开源社区，国内模型首发地，含实战教程"
     language: zh
     free: true
+    focus: both
 
   - id: r037
     title: "吃瓜教程：机器学习白板推导"
@@ -453,6 +489,7 @@ resources:
     description: "用数学公式推导ML算法，适合想深入理论的同学"
     language: zh
     free: true
+    focus: foundational
 
   - id: r038
     title: "HuggingFace Diffusion Models Course"
@@ -465,6 +502,7 @@ resources:
     description: "扩散模型官方课程，图像生成方向必学"
     language: en
     free: true
+    focus: both
 
   - id: r039
     title: "Andrej Karpathy：Intro to Large Language Models（讲座）"
@@ -477,6 +515,7 @@ resources:
     description: "1小时直觉理解LLM，最好的LLM科普"
     language: en
     free: true
+    focus: foundational
 
   - id: r040
     title: "吴恩达 MLOps Specialization"
@@ -489,6 +528,7 @@ resources:
     description: "ML系统工程化全流程，从实验到生产"
     language: en
     free: true
+    focus: applied
 
   # ── 软件测试 × AI ──────────────────────────────────────────────────────────
   - id: r041
@@ -502,6 +542,7 @@ resources:
     description: "Python最主流测试框架，自动化测试人员必学基础"
     language: en
     free: true
+    focus: applied
 
   - id: r042
     title: "Playwright for Python 官方文档"
@@ -514,6 +555,7 @@ resources:
     description: "微软出品的现代Web自动化测试框架，支持录制回放和AI辅助"
     language: en
     free: true
+    focus: applied
 
   - id: r043
     title: "Selenium with Python 官方文档"
@@ -526,6 +568,7 @@ resources:
     description: "Web自动化测试经典框架，招聘需求覆盖率最高"
     language: en
     free: true
+    focus: applied
 
   - id: r044
     title: "DeepEval：LLM 应用测试框架"
@@ -538,6 +581,7 @@ resources:
     description: "专为LLM应用设计的测评框架，含RAG评估、幻觉检测、pytest集成"
     language: en
     free: true
+    focus: applied
 
   - id: r045
     title: "promptfoo：LLM 测试与多模型对比"
@@ -550,6 +594,7 @@ resources:
     description: "开源LLM测试工具，支持多模型并行对比和提示词回归测试"
     language: en
     free: true
+    focus: applied
 
   - id: r046
     title: "Ragas：RAG 系统评估框架"
@@ -562,6 +607,7 @@ resources:
     description: "RAG专用评测框架，覆盖忠实度/答案相关性/上下文召回率等核心指标"
     language: en
     free: true
+    focus: applied
 
   - id: r047
     title: "Hamel Husain：如何构建LLM评估系统"
@@ -574,6 +620,7 @@ resources:
     description: "业内最实用的LLM评估教程，系统讲透如何为实际项目设计evals"
     language: en
     free: true
+    focus: applied
 
   - id: r048
     title: "吴恩达 Automated Testing for LLMOps"
@@ -586,6 +633,7 @@ resources:
     description: "LLM应用自动化测试流水线，集成CI/CD的工程化实践"
     language: en
     free: true
+    focus: applied
 
   - id: r049
     title: "Giskard：AI 模型质量检测平台"
@@ -598,6 +646,7 @@ resources:
     description: "自动扫描LLM应用的偏见、注入攻击、幻觉等问题，支持CI/CD"
     language: en
     free: true
+    focus: both
 
   - id: r050
     title: "ISTQB 人工智能测试大纲（官方）"
@@ -610,6 +659,7 @@ resources:
     description: "ISTQB官方AI测试认证大纲，软件测试工程师向AI方向转型的权威指引"
     language: en
     free: true
+    focus: applied
 
   # ── AI Agent 进阶 ─────────────────────────────────────────────────────────
   - id: r051
@@ -623,6 +673,7 @@ resources:
     description: "微软多智能体框架，构建可对话协作的Agent系统"
     language: en
     free: true
+    focus: both
 
   - id: r052
     title: "CrewAI 官方文档"
@@ -635,6 +686,7 @@ resources:
     description: "角色扮演型多Agent框架，适合构建任务驱动的Agent团队"
     language: en
     free: true
+    focus: both
 
   - id: r053
     title: "Anthropic：构建高效Agent的实践指南"
@@ -647,6 +699,7 @@ resources:
     description: "Anthropic官方实践报告，定义Agent架构的五大核心模式（必读）"
     language: en
     free: true
+    focus: both
 
   - id: r054
     title: "Model Context Protocol (MCP) 官方文档"
@@ -659,6 +712,7 @@ resources:
     description: "Anthropic制定的AI工具标准协议，统一Agent与外部系统的集成接口"
     language: en
     free: true
+    focus: applied
 
   - id: r055
     title: "LangGraph 官方教程"
@@ -671,6 +725,7 @@ resources:
     description: "基于状态机的Agent框架，适合构建复杂可控的多步骤Agent工作流"
     language: en
     free: true
+    focus: both
 
   - id: r056
     title: "吴恩达 AI Agentic Design Patterns with AutoGen"
@@ -683,6 +738,7 @@ resources:
     description: "Agent四大设计模式：反思、工具调用、规划、多Agent协作，AutoGen实战"
     language: en
     free: true
+    focus: both
 
   - id: r057
     title: "Function Calling 与 Tool Use 完整指南（OpenAI）"
@@ -695,6 +751,7 @@ resources:
     description: "LLM工具调用的底层机制，所有Agent框架的核心能力基础"
     language: en
     free: true
+    focus: applied
 
   - id: r058
     title: "MemGPT / Letta：长期记忆Agent框架"
@@ -707,6 +764,7 @@ resources:
     description: "解决Agent跨会话记忆管理问题，实现真正的持久化长期记忆"
     language: en
     free: true
+    focus: applied
 
   - id: r059
     title: "吴恩达 Multi AI Agent Systems with crewAI"
@@ -719,6 +777,7 @@ resources:
     description: "用CrewAI构建多Agent协作系统，项目驱动教学"
     language: en
     free: true
+    focus: both
 
   - id: r060
     title: "AgentBench：智能体能力评测基准"
@@ -731,6 +790,7 @@ resources:
     description: "清华大学发布的Agent系统评测基准，8类真实任务场景全面检验Agent能力"
     language: en
     free: true
+    focus: applied
 
   - id: r061
     title: "动手学深度学习（中文版）"
@@ -743,6 +803,7 @@ resources:
     description: "李沐等著，面向中文读者的权威深度学习教材，配套代码与B站视频，从零基础到CV/NLP实战"
     language: zh
     free: true
+    focus: foundational
 
   - id: r062
     title: "跟李沐学AI：精读经典论文（B站）"
@@ -755,6 +816,7 @@ resources:
     description: "李沐逐篇精读ResNet/Transformer/BERT等经典论文，中文深度讲解，科研/工程必看"
     language: zh
     free: true
+    focus: foundational
 
   - id: r063
     title: "LLM 实战手册（DataWhale llm-cookbook）"
@@ -767,6 +829,7 @@ resources:
     description: "DataWhale出品，面向国内开发者的LLM应用开发中文教程，覆盖RAG/微调/Agent全流程"
     language: zh
     free: true
+    focus: applied
 
   - id: r064
     title: "书生浦语大模型实战营（InternLM）"
@@ -779,6 +842,7 @@ resources:
     description: "上海AI实验室开源大模型实战课，涵盖InternLM微调/部署/RAG/Agent完整链路"
     language: zh
     free: true
+    focus: applied
 
   - id: r065
     title: "Prompt Engineering 指南（中文版）"
@@ -791,6 +855,7 @@ resources:
     description: "DAIR.AI出品，系统讲解Prompt工程技巧，中文翻译，覆盖CoT/Few-Shot/ReAct等核心方法"
     language: zh
     free: true
+    focus: foundational
 
   - id: r066
     title: "HuggingFace NLP 课程（中文）"
@@ -803,6 +868,7 @@ resources:
     description: "HuggingFace官方NLP课程中文版，从Tokenizer到Fine-tuning再到模型分享完整流程"
     language: zh
     free: true
+    focus: both
 
   - id: r067
     title: "南瓜书：西瓜书公式推导详解"
@@ -815,6 +881,7 @@ resources:
     description: "配套周志华《机器学习》的数学推导详解，DataWhale出品，夯实ML理论基础必备"
     language: zh
     free: true
+    focus: foundational
 
   - id: r068
     title: "Qwen-Agent 开发框架与实战示例"
@@ -827,6 +894,7 @@ resources:
     description: "阿里通义千问官方Agent开发框架，中文文档，工具调用/RAG/代码解释器完整示例"
     language: zh
     free: true
+    focus: applied
 
   - id: r069
     title: "MiniMind：从零实现中文小语言模型"
@@ -839,6 +907,7 @@ resources:
     description: "从零构建中文小语言模型，涵盖预训练/SFT/RLHF全流程，代码极简适合深入理解LLM原理"
     language: zh
     free: true
+    focus: both
 
   - id: r070
     title: "Self-LLM：开源大模型部署实战（DataWhale）"
@@ -851,6 +920,7 @@ resources:
     description: "DataWhale出品，主流开源大模型（Llama/Qwen/ChatGLM等）本地部署与调用中文实战教程"
     language: zh
     free: true
+    focus: applied
 
   - id: r071
     title: "OpenAI Cookbook：可运行的LLM实战配方"
@@ -863,6 +933,7 @@ resources:
     description: "OpenAI官方实战案例库，涵盖RAG/嵌入/函数调用/微调，每个示例均可直接运行，软件工程师入门LLM应用的最佳实验场"
     language: en
     free: true
+    focus: applied
 
   - id: r072
     title: "面向开发者的LLM入门（吴恩达×OpenAI中文版）"
@@ -875,6 +946,7 @@ resources:
     description: "DataWhale将吴恩达×OpenAI系列课翻译为中文Jupyter Notebook，边读边跑，从Prompt工程到RAG/Fine-tuning完整覆盖"
     language: zh
     free: true
+    focus: applied
 
   - id: r073
     title: "awesome-llm-apps：开箱即跑的LLM应用合集"
@@ -887,6 +959,7 @@ resources:
     description: "100+ 可直接运行的LLM应用示例（RAG、Agent、多模态），配套代码和教程，软件工程师动手学习LLM的项目素材库"
     language: en
     free: true
+    focus: applied
 
   - id: r074
     title: "30天Python AI工程师实战挑战（GenAI Cohort）"
@@ -899,6 +972,7 @@ resources:
     description: "30天结构化学习计划，每天一个可运行项目，从Prompt到RAG到Agent部署，有Python基础的工程师快速入门GenAI工程"
     language: en
     free: true
+    focus: applied
 
   - id: r075
     title: "AI辅助软件测试实战：Playwright MCP Server"
@@ -911,3 +985,201 @@ resources:
     description: "微软官方 Playwright MCP Server，让AI Agent直接控制浏览器执行E2E测试，测试工程师接入AI能力的最短路径"
     language: en
     free: true
+    focus: applied
+
+  # ── 持续学习信息源（channel 类型） ──────────────────────────────────────────
+
+  - id: r076
+    title: "Lilian Weng's Blog (OpenAI)"
+    url: "https://lilianweng.github.io"
+    type: channel
+    topics: [research, deep-learning, llm, agent]
+    domain: [research, ai-agent]
+    level: intermediate-to-advanced
+    duration_hours: 2
+    description: "OpenAI 研究员 Lilian Weng 的博客，深度解析 Agent/LLM/RL 前沿论文，每篇都是精品综述"
+    language: en
+    free: true
+    focus: foundational
+
+  - id: r077
+    title: "The Batch (Andrew Ng's Newsletter)"
+    url: "https://www.deeplearning.ai/the-batch/"
+    type: channel
+    topics: [overview, research, machine-learning]
+    domain: [general]
+    level: beginner-to-intermediate
+    duration_hours: 1
+    description: "吴恩达主编的 AI 周报，每周精选最重要的 AI 新闻和论文，适合保持行业视野"
+    language: en
+    free: true
+    focus: foundational
+
+  - id: r078
+    title: "Hacker News - AI 热帖"
+    url: "https://hn.algolia.com/?q=AI+LLM+agent&type=story&sort=byPopularity&dateRange=pastMonth"
+    type: channel
+    topics: [overview, agent, llm, practice]
+    domain: [general, ai-agent, llm-app]
+    level: intermediate
+    duration_hours: 2
+    description: "Hacker News AI 相关热帖聚合，技术社区最前沿的讨论和项目发现"
+    language: en
+    free: true
+    focus: both
+
+  - id: r079
+    title: "Product Hunt - AI 产品日榜"
+    url: "https://www.producthunt.com/topics/artificial-intelligence"
+    type: channel
+    topics: [overview, deployment, llm, practice]
+    domain: [llm-app, ai-agent]
+    level: beginner-to-intermediate
+    duration_hours: 1
+    description: "每日新 AI 产品发现，了解行业应用趋势，找到值得学习的产品形态"
+    language: en
+    free: true
+    focus: applied
+
+  - id: r080
+    title: "GitHub Trending - ML/AI"
+    url: "https://github.com/trending?since=weekly&spoken_language_code=&language=python"
+    type: channel
+    topics: [practice, agent, llm, deployment]
+    domain: [general, ai-agent, llm-app]
+    level: intermediate
+    duration_hours: 2
+    description: "GitHub 每周热门项目，第一时间发现优质开源 AI 项目和工具"
+    language: en
+    free: true
+    focus: applied
+
+  - id: r081
+    title: "机器之心（公众号/网站）"
+    url: "https://www.jiqizhixin.com"
+    type: channel
+    topics: [overview, research, llm, deep-learning]
+    domain: [general, research]
+    level: beginner-to-intermediate
+    duration_hours: 2
+    description: "中文 AI 资讯旗舰，覆盖论文解读、产业动态、技术教程，信息密度最高的中文 AI 媒体"
+    language: zh
+    free: true
+    focus: both
+
+  - id: r082
+    title: "量子位（公众号/网站）"
+    url: "https://www.qbitai.com"
+    type: channel
+    topics: [overview, llm, agent, practice]
+    domain: [general, llm-app]
+    level: beginner
+    duration_hours: 1
+    description: "面向大众的 AI 科技媒体，报道风格通俗，适合快速了解 AI 行业动态"
+    language: zh
+    free: true
+    focus: both
+
+  - id: r083
+    title: "Simon Willison's Blog"
+    url: "https://simonwillison.net"
+    type: channel
+    topics: [llm, practice, tool-use, deployment]
+    domain: [llm-app, ai-agent]
+    level: intermediate
+    duration_hours: 2
+    description: "LLM 应用开发领域最活跃的博客，实战经验分享、工具评测、prompt 技巧，更新极其勤快"
+    language: en
+    free: true
+    focus: applied
+
+  - id: r084
+    title: "Andrej Karpathy YouTube"
+    url: "https://www.youtube.com/@AndrejKarpathy"
+    type: channel
+    topics: [deep-learning, llm, from-scratch, theory]
+    domain: [research, llm-app]
+    level: intermediate
+    duration_hours: 3
+    description: "前 OpenAI/Tesla AI 负责人，从零实现 GPT/Tokenizer 系列视频，深入浅出讲解底层原理"
+    language: en
+    free: true
+    focus: foundational
+
+  - id: r085
+    title: "DataWhale 公众号/社区"
+    url: "https://datawhale.cn"
+    type: channel
+    topics: [machine-learning, deep-learning, llm, practice]
+    domain: [general, data-science]
+    level: beginner-to-intermediate
+    duration_hours: 2
+    description: "中文开源学习社区，定期组队学习活动，适合找学伴和系统化学习路径"
+    language: zh
+    free: true
+    focus: both
+
+  - id: r086
+    title: "Latent Space Podcast"
+    url: "https://www.latent.space/podcast"
+    type: channel
+    topics: [overview, agent, llm, research]
+    domain: [ai-agent, llm-app, research]
+    level: intermediate
+    duration_hours: 2
+    description: "AI 工程领域最受欢迎的播客，深度采访 OpenAI/Anthropic/开源社区核心人物"
+    language: en
+    free: true
+    focus: both
+
+  - id: r087
+    title: "AIGC Weekly（公众号）"
+    url: "https://quail.ink/op7418"
+    type: channel
+    topics: [overview, aigc, llm, practice]
+    domain: [aigc, llm-app]
+    level: beginner-to-intermediate
+    duration_hours: 1
+    description: "中文 AIGC 周刊，每周精选 AI 生成内容领域最值得关注的项目和文章"
+    language: zh
+    free: true
+    focus: both
+
+  - id: r088
+    title: "Hugging Face Blog"
+    url: "https://huggingface.co/blog"
+    type: channel
+    topics: [transformers, huggingface, llm, fine-tuning]
+    domain: [research, llm-app]
+    level: intermediate
+    duration_hours: 2
+    description: "HuggingFace 官方博客，第一时间获取开源模型最新动态、教程和最佳实践"
+    language: en
+    free: true
+    focus: both
+
+  - id: r089
+    title: "李沐 B站/YouTube"
+    url: "https://space.bilibili.com/1567748478"
+    type: channel
+    topics: [paper-reading, research, deep-learning, llm]
+    domain: [research]
+    level: intermediate
+    duration_hours: 3
+    description: "论文精读系列持续更新，兼顾理论深度和工程直觉，中文 AI 教育标杆"
+    language: zh
+    free: true
+    focus: foundational
+
+  - id: r090
+    title: "AI 前线（InfoQ）"
+    url: "https://www.infoq.cn/topic/ai"
+    type: channel
+    topics: [overview, deployment, llm, practice]
+    domain: [general, llm-app, mlops]
+    level: intermediate
+    duration_hours: 1
+    description: "InfoQ 中文站 AI 频道，偏工程实践和企业落地案例，适合了解 AI 在生产环境的应用"
+    language: zh
+    free: true
+    focus: applied
