@@ -25,7 +25,13 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Validate Python syntax
-        run: python -m py_compile app.py
+        run: |
+          python -m py_compile app.py
+          python -m py_compile config.py
+          python -m py_compile llm.py
+          python -m py_compile utils.py
+          python -m py_compile i18n.py
+          for f in views/*.py; do python -m py_compile "$f"; done
 
       - name: Validate resources.yaml
         run: |
@@ -64,6 +70,9 @@ jobs:
           import yaml
           print('All imports OK')
           "
+
+      - name: Run tests
+        run: python -m pytest tests/ -v --tb=short
 
   notify-failure:
     needs: lint-and-validate
