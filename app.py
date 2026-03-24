@@ -216,12 +216,17 @@ def render_path(path_data: dict, resources: list):
                 lvl_emoji = LEVEL_EMOJI.get(r["level"], "⚪")
                 typ_emoji = TYPE_EMOJI.get(r["type"], "🔗")
                 lang_tag = "🇨🇳 中文" if r.get("language") == "zh" else "🇬🇧 英文"
+                is_channel = r.get("type") == "channel"
 
                 cols = st.columns([5, 2, 2, 1])
-                cols[0].markdown(f"{typ_emoji} **[{r['title']}]({r['url']})**")
+                title_text = f"{typ_emoji} **[{r['title']}]({r['url']})**"
+                if is_channel:
+                    title_text += "  `持续关注`"
+                cols[0].markdown(title_text)
                 cols[0].caption(r.get("description", ""))
                 cols[1].caption(f"{lvl_emoji} {r['level']}")
-                cols[2].caption(f"⏱ {r['duration_hours']}h · {lang_tag}")
+                duration_label = f"⏱ ~{r['duration_hours']}h/周" if is_channel else f"⏱ {r['duration_hours']}h"
+                cols[2].caption(f"{duration_label} · {lang_tag}")
                 done_key = f"done_{rid}_{week['week']}"
                 checked = cols[3].checkbox("✓", key=done_key, label_visibility="collapsed")
                 if checked:
@@ -234,6 +239,8 @@ def render_path(path_data: dict, resources: list):
     if total_resources > 0:
         progress = done_count / total_resources
         st.progress(progress, text=f"学习进度：{done_count}/{total_resources} 个资源已完成")
+        if done_count > 0:
+            st.caption("⚠️ 进度仅在当前会话有效，刷新页面后重置。建议使用下方「导出」保存学习计划。")
     else:
         st.caption("暂无可追踪的资源")
 
@@ -466,6 +473,7 @@ def render_form():
     st.markdown(
         "> 告诉我你的**现在**和**目标**，我来帮你规划最短最有效的AI学习路径——完全免费，开源。"
     )
+    st.caption("📊 90 条精选资源 · 📡 15 个持续信息源 · 🧱 基础→🔧 实战全覆盖")
     st.divider()
 
     # ── 预设模板快速填写 ──────────────────────────────────────────────────────
@@ -548,7 +556,26 @@ def render_form():
 
 def render_resource_browser(resources: list):
     st.title("📚 资源库")
-    st.caption(f"共 {len(resources)} 条精选免费AI学习资源")
+
+    # 统计概览
+    from collections import Counter
+    type_counts = Counter(r["type"] for r in resources)
+    focus_counts = Counter(r.get("focus", "both") for r in resources)
+    lang_counts = Counter(r.get("language", "?") for r in resources)
+    stat_cols = st.columns(6)
+    stat_cols[0].metric("总资源", len(resources))
+    stat_cols[1].metric("🇨🇳 中文", lang_counts.get("zh", 0))
+    stat_cols[2].metric("📡 信息源", type_counts.get("channel", 0))
+    stat_cols[3].metric("💻 实战项目", type_counts.get("repo", 0))
+    stat_cols[4].metric("🧱 打基础", focus_counts.get("foundational", 0))
+    stat_cols[5].metric("🔧 重实战", focus_counts.get("applied", 0))
+    st.divider()
+
+    # 搜索框
+    search_query = st.text_input(
+        "🔍 搜索资源",
+        placeholder="输入关键词搜索标题、描述或主题（如：RAG、Agent、微调...）",
+    )
 
     # 筛选器
     all_topics = sorted({t for r in resources for t in r["topics"]})
@@ -572,6 +599,14 @@ def render_resource_browser(resources: list):
         selected_focuses = st.multiselect("学习重心", all_focuses, format_func=lambda x: FOCUS_EMOJI.get(x, x))
 
     filtered = resources
+    if search_query:
+        q = search_query.lower()
+        filtered = [
+            r for r in filtered
+            if q in r["title"].lower()
+            or q in r.get("description", "").lower()
+            or any(q in t for t in r.get("topics", []))
+        ]
     if selected_topics:
         filtered = [r for r in filtered if any(t in r["topics"] for t in selected_topics)]
     if selected_types:
@@ -829,6 +864,8 @@ def render_sidebar():
             st.write(f"**水平**: {p['level']}")
             if p.get("direction"):
                 st.write(f"**方向**: {p['direction']}")
+            if p.get("focus"):
+                st.write(f"**重心**: {FOCUS_EMOJI.get(p['focus'], p['focus'])}")
             goal_display = p["goal"][:50] + ("..." if len(p["goal"]) > 50 else "")
             st.write(f"**目标**: {goal_display}")
             st.write(f"**时间**: {p['hours_per_week']}h/周")
@@ -845,8 +882,8 @@ def render_sidebar():
         st.divider()
         st.caption("开源免费 · 社区驱动")
         st.markdown("[📦 GitHub](https://github.com/moshierming/ai-pathfinder)")
-        st.markdown("[� 社区讨论](https://github.com/moshierming/ai-pathfinder/discussions)")
-        st.markdown("[�🐛 反馈问题](https://github.com/moshierming/ai-pathfinder/issues)")
+        st.markdown("[💬 社区讨论](https://github.com/moshierming/ai-pathfinder/discussions)")
+        st.markdown("[🐛 反馈问题](https://github.com/moshierming/ai-pathfinder/issues)")
 
     return page
 
