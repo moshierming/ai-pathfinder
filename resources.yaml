@@ -444,8 +444,251 @@ resources:
     url: "https://www.coursera.org/specializations/machine-learning-engineering-for-production-mlops"
     type: course
     topics: [mlops, deployment, monitoring]
+    domain: [mlops]
     level: intermediate-to-advanced
     duration_hours: 40
     description: "ML系统工程化全流程，从实验到生产"
+    language: en
+    free: true
+
+  # ── 软件测试 × AI ──────────────────────────────────────────────────────────
+  - id: r041
+    title: "pytest 官方文档"
+    url: "https://docs.pytest.org/en/stable/"
+    type: article
+    topics: [testing, pytest, python]
+    domain: [software-testing]
+    level: beginner
+    duration_hours: 8
+    description: "Python最主流测试框架，自动化测试人员必学基础"
+    language: en
+    free: true
+
+  - id: r042
+    title: "Playwright for Python 官方文档"
+    url: "https://playwright.dev/python/"
+    type: article
+    topics: [testing, playwright, browser-automation, python]
+    domain: [software-testing]
+    level: beginner-to-intermediate
+    duration_hours: 10
+    description: "微软出品的现代Web自动化测试框架，支持录制回放和AI辅助"
+    language: en
+    free: true
+
+  - id: r043
+    title: "Selenium with Python 官方文档"
+    url: "https://selenium-python.readthedocs.io/"
+    type: article
+    topics: [testing, selenium, browser-automation, python]
+    domain: [software-testing]
+    level: beginner
+    duration_hours: 8
+    description: "Web自动化测试经典框架，招聘需求覆盖率最高"
+    language: en
+    free: true
+
+  - id: r044
+    title: "DeepEval：LLM 应用测试框架"
+    url: "https://docs.confident-ai.com/"
+    type: article
+    topics: [testing, llm-evaluation, rag-evaluation, ai-testing]
+    domain: [software-testing, ai-agent]
+    level: intermediate
+    duration_hours: 8
+    description: "专为LLM应用设计的测评框架，含RAG评估、幻觉检测、pytest集成"
+    language: en
+    free: true
+
+  - id: r045
+    title: "promptfoo：LLM 测试与多模型对比"
+    url: "https://promptfoo.dev/docs/intro/"
+    type: article
+    topics: [testing, llm-evaluation, prompt-testing]
+    domain: [software-testing, ai-agent]
+    level: intermediate
+    duration_hours: 5
+    description: "开源LLM测试工具，支持多模型并行对比和提示词回归测试"
+    language: en
+    free: true
+
+  - id: r046
+    title: "Ragas：RAG 系统评估框架"
+    url: "https://docs.ragas.io/en/stable/"
+    type: article
+    topics: [testing, rag-evaluation, llm-evaluation]
+    domain: [software-testing, ai-agent]
+    level: intermediate
+    duration_hours: 5
+    description: "RAG专用评测框架，覆盖忠实度/答案相关性/上下文召回率等核心指标"
+    language: en
+    free: true
+
+  - id: r047
+    title: "Hamel Husain：如何构建LLM评估系统"
+    url: "https://hamel.dev/blog/posts/evals/"
+    type: article
+    topics: [testing, llm-evaluation, ai-testing, best-practices]
+    domain: [software-testing, ai-agent]
+    level: intermediate
+    duration_hours: 4
+    description: "业内最实用的LLM评估教程，系统讲透如何为实际项目设计evals"
+    language: en
+    free: true
+
+  - id: r048
+    title: "吴恩达 Automated Testing for LLMOps"
+    url: "https://www.deeplearning.ai/short-courses/automated-testing-llmops/"
+    type: course
+    topics: [testing, llm-evaluation, llmops, ci-cd]
+    domain: [software-testing, ai-agent]
+    level: intermediate
+    duration_hours: 3
+    description: "LLM应用自动化测试流水线，集成CI/CD的工程化实践"
+    language: en
+    free: true
+
+  - id: r049
+    title: "Giskard：AI 模型质量检测平台"
+    url: "https://docs.giskard.ai/en/stable/"
+    type: article
+    topics: [testing, ai-safety, bias-detection, llm-evaluation]
+    domain: [software-testing]
+    level: intermediate
+    duration_hours: 6
+    description: "自动扫描LLM应用的偏见、注入攻击、幻觉等问题，支持CI/CD"
+    language: en
+    free: true
+
+  - id: r050
+    title: "ISTQB 人工智能测试大纲（官方）"
+    url: "https://www.istqb.org/certifications/artificial-intelligence-tester"
+    type: article
+    topics: [testing, ai-testing, certification]
+    domain: [software-testing]
+    level: intermediate
+    duration_hours: 10
+    description: "ISTQB官方AI测试认证大纲，软件测试工程师向AI方向转型的权威指引"
+    language: en
+    free: true
+
+  # ── AI Agent 进阶 ─────────────────────────────────────────────────────────
+  - id: r051
+    title: "AutoGen 官方文档"
+    url: "https://microsoft.github.io/autogen/"
+    type: article
+    topics: [agent, autogen, multi-agent]
+    domain: [ai-agent]
+    level: intermediate
+    duration_hours: 12
+    description: "微软多智能体框架，构建可对话协作的Agent系统"
+    language: en
+    free: true
+
+  - id: r052
+    title: "CrewAI 官方文档"
+    url: "https://docs.crewai.com/"
+    type: article
+    topics: [agent, crewai, multi-agent, role-playing]
+    domain: [ai-agent]
+    level: intermediate
+    duration_hours: 8
+    description: "角色扮演型多Agent框架，适合构建任务驱动的Agent团队"
+    language: en
+    free: true
+
+  - id: r053
+    title: "Anthropic：构建高效Agent的实践指南"
+    url: "https://www.anthropic.com/research/building-effective-agents"
+    type: article
+    topics: [agent, best-practices, patterns, system-design]
+    domain: [ai-agent]
+    level: intermediate-to-advanced
+    duration_hours: 3
+    description: "Anthropic官方实践报告，定义Agent架构的五大核心模式（必读）"
+    language: en
+    free: true
+
+  - id: r054
+    title: "Model Context Protocol (MCP) 官方文档"
+    url: "https://modelcontextprotocol.io/introduction"
+    type: article
+    topics: [agent, mcp, tool-use, integration]
+    domain: [ai-agent]
+    level: intermediate
+    duration_hours: 8
+    description: "Anthropic制定的AI工具标准协议，统一Agent与外部系统的集成接口"
+    language: en
+    free: true
+
+  - id: r055
+    title: "LangGraph 官方教程"
+    url: "https://langchain-ai.github.io/langgraph/tutorials/introduction/"
+    type: article
+    topics: [agent, langgraph, state-machine, workflow]
+    domain: [ai-agent]
+    level: intermediate-to-advanced
+    duration_hours: 12
+    description: "基于状态机的Agent框架，适合构建复杂可控的多步骤Agent工作流"
+    language: en
+    free: true
+
+  - id: r056
+    title: "吴恩达 AI Agentic Design Patterns with AutoGen"
+    url: "https://www.deeplearning.ai/short-courses/ai-agentic-design-patterns-with-autogen/"
+    type: course
+    topics: [agent, design-patterns, autogen]
+    domain: [ai-agent]
+    level: intermediate
+    duration_hours: 4
+    description: "Agent四大设计模式：反思、工具调用、规划、多Agent协作，AutoGen实战"
+    language: en
+    free: true
+
+  - id: r057
+    title: "Function Calling 与 Tool Use 完整指南（OpenAI）"
+    url: "https://platform.openai.com/docs/guides/function-calling"
+    type: article
+    topics: [agent, function-calling, tool-use, openai]
+    domain: [ai-agent]
+    level: intermediate
+    duration_hours: 4
+    description: "LLM工具调用的底层机制，所有Agent框架的核心能力基础"
+    language: en
+    free: true
+
+  - id: r058
+    title: "MemGPT / Letta：长期记忆Agent框架"
+    url: "https://github.com/cpacker/MemGPT"
+    type: repo
+    topics: [agent, memory, long-context, persistence]
+    domain: [ai-agent]
+    level: advanced
+    duration_hours: 8
+    description: "解决Agent跨会话记忆管理问题，实现真正的持久化长期记忆"
+    language: en
+    free: true
+
+  - id: r059
+    title: "吴恩达 Multi AI Agent Systems with crewAI"
+    url: "https://www.deeplearning.ai/short-courses/multi-ai-agent-systems-with-crewai/"
+    type: course
+    topics: [agent, crewai, multi-agent, orchestration]
+    domain: [ai-agent]
+    level: intermediate
+    duration_hours: 4
+    description: "用CrewAI构建多Agent协作系统，项目驱动教学"
+    language: en
+    free: true
+
+  - id: r060
+    title: "AgentBench：智能体能力评测基准"
+    url: "https://github.com/THUDM/AgentBench"
+    type: repo
+    topics: [agent, evaluation, benchmark, research]
+    domain: [ai-agent, software-testing]
+    level: advanced
+    duration_hours: 5
+    description: "清华大学发布的Agent系统评测基准，8类真实任务场景全面检验Agent能力"
     language: en
     free: true
