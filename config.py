@@ -13,6 +13,26 @@ PROVIDER_PRESETS = {
         "base_url": "https://api.deepseek.com/v1",
         "models": ["deepseek-chat", "deepseek-reasoner"],
     },
+    "Google Gemini": {
+        "base_url": "https://generativelanguage.googleapis.com/v1beta/openai/",
+        "models": ["gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash"],
+    },
+    "SiliconFlow (硅基流动)": {
+        "base_url": "https://api.siliconflow.cn/v1",
+        "models": ["Qwen/Qwen2.5-72B-Instruct", "deepseek-ai/DeepSeek-V3", "THUDM/glm-4-9b-chat"],
+    },
+    "Moonshot (月之暗面)": {
+        "base_url": "https://api.moonshot.cn/v1",
+        "models": ["moonshot-v1-8k", "moonshot-v1-32k", "moonshot-v1-128k"],
+    },
+    "ZhipuAI (智谱)": {
+        "base_url": "https://open.bigmodel.cn/api/paas/v4",
+        "models": ["glm-4-flash", "glm-4-plus", "glm-4"],
+    },
+    "Ollama (本地模型)": {
+        "base_url": "http://localhost:11434/v1",
+        "models": ["qwen2.5", "llama3.1", "deepseek-r1"],
+    },
     "自定义": {
         "base_url": "",
         "models": [],
