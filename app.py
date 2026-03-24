@@ -25,15 +25,48 @@ def load_resources():
 
 # ─── LLM 客户端 ──────────────────────────────────────────────────────────────
 
+PROVIDER_PRESETS = {
+    "DashScope (阿里云百炼)": {
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "models": ["qwen-plus", "qwen-turbo", "qwen-max", "qwen-long"],
+    },
+    "OpenAI": {
+        "base_url": "https://api.openai.com/v1",
+        "models": ["gpt-4o-mini", "gpt-4o", "gpt-4-turbo"],
+    },
+    "DeepSeek": {
+        "base_url": "https://api.deepseek.com/v1",
+        "models": ["deepseek-chat", "deepseek-reasoner"],
+    },
+    "自定义": {
+        "base_url": "",
+        "models": [],
+    },
+}
+
 
 def get_llm_config():
-    api_key = st.secrets.get("DASHSCOPE_API_KEY", "") or os.environ.get(
-        "DASHSCOPE_API_KEY", ""
+    # 优先级：用户在侧边栏填写的 Key > secrets.toml > 环境变量
+    api_key = (
+        st.session_state.get("settings_api_key", "")
+        or st.secrets.get("DASHSCOPE_API_KEY", "")
+        or os.environ.get("DASHSCOPE_API_KEY", "")
     )
-    base_url = st.secrets.get(
-        "API_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1"
-    )
-    model = st.secrets.get("MODEL", "qwen3.5-plus")
+    provider = st.session_state.get("settings_provider", "DashScope (阿里云百炼)")
+    preset = PROVIDER_PRESETS.get(provider, PROVIDER_PRESETS["DashScope (阿里云百炼)"])
+    if provider == "自定义":
+        base_url = (
+            st.session_state.get("settings_base_url", "")
+            or st.secrets.get("API_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1")
+        )
+        model = (
+            st.session_state.get("settings_model_text", "")
+            or st.secrets.get("MODEL", "qwen-plus")
+        )
+    else:
+        base_url = preset["base_url"]
+        model_key = f"settings_model_{provider}"
+        model = st.session_state.get(model_key, preset["models"][0]) or preset["models"][0]
     return api_key, base_url, model
 
 
@@ -44,7 +77,8 @@ SYSTEM_PROMPT = """你是一位专业的AI学习路径规划师。根据用户�
 2. 按周分组，每周2-4个资源，总时长不超出用户时间预算
 3. 难度循序渐进
 4. 每周给一句学习目标和一句小提示
-5. 输出纯 JSON，不要有其他文字
+5. 资源含 domain 字段时，优先选取 domain 与用户目标方向匹配的资源
+6. 输出纯 JSON，不要有其他文字
 
 输出格式：
 {
@@ -74,6 +108,7 @@ def generate_path(profile: dict, resources: list) -> dict:
             "title": r["title"],
             "level": r["level"],
             "topics": r["topics"],
+            "domain": r.get("domain", ["general"]),
             "duration_hours": r["duration_hours"],
             "type": r["type"],
         }
@@ -82,6 +117,7 @@ def generate_path(profile: dict, resources: list) -> dict:
 
     user_msg = f"""用户信息：
 - 当前水平：{profile['level']}
+- 目标方向：{profile.get('direction', '通用AI方向')}
 - 学习目标：{profile['goal']}
 - 每周可投入时间：{profile['hours_per_week']} 小时
 - 偏好学习方式：{profile['preference']}
@@ -223,6 +259,17 @@ PREFERENCES = ["🎬 视频课程为主", "📄 文档/教程为主", "💻 项�
 
 LANGUAGES = ["🇨🇳 优先中文资源", "🇬🇧 优先英文资源", "🌍 不限语言"]
 
+DIRECTIONS = [
+    "🤖 AI Agent / 多智能体系统",
+    "🧪 AI 辅助软件测试 / 质量保障",
+    "💬 LLM 应用开发 / RAG",
+    "📊 机器学习 / 数据科学",
+    "🎨 AIGC / 多模态生成",
+    "🔧 MLOps / AI 系统工程",
+    "🔬 AI 研究 / 论文方向",
+    "🌐 其他 / 尚未确定",
+]
+
 
 def render_form():
     st.title("🧭 AI Pathfinder")
@@ -245,7 +292,11 @@ def render_form():
             )
             preference = st.selectbox("🎨 偏好学习方式", PREFERENCES)
 
-        language = st.selectbox("🌐 语言偏好", LANGUAGES)
+        c3, c4 = st.columns(2)
+        with c3:
+            direction = st.selectbox("🎯 目标方向", DIRECTIONS)
+        with c4:
+            language = st.selectbox("🌐 语言偏好", LANGUAGES)
 
         submitted = st.form_submit_button(
             "🚀 生成我的学习路径", type="primary", use_container_width=True
@@ -257,6 +308,7 @@ def render_form():
         "hours_per_week": hours,
         "preference": preference,
         "language": language,
+        "direction": direction,
     }
 
 
@@ -303,6 +355,49 @@ def render_resource_browser(resources: list):
         cols[2].caption(f"⏱ {r['duration_hours']}h · {', '.join(r['topics'][:3])}")
 
 
+# ─── API 设置面板 ─────────────────────────────────────────────────────────────
+
+
+def render_settings():
+    """侧边栏 API 设置面板"""
+    with st.expander("⚙️ API 设置", expanded=False):
+        provider = st.selectbox(
+            "模型供应商",
+            list(PROVIDER_PRESETS.keys()),
+            key="settings_provider",
+        )
+        preset = PROVIDER_PRESETS[provider]
+
+        if provider == "自定义":
+            st.text_input(
+                "API Base URL",
+                placeholder="https://your-api.com/v1",
+                key="settings_base_url",
+            )
+            st.text_input(
+                "模型名称",
+                placeholder="your-model-name",
+                key="settings_model_text",
+            )
+        else:
+            model_key = f"settings_model_{provider}"
+            # 防止切换 provider 后出现 stale value 报错
+            if st.session_state.get(model_key, preset["models"][0]) not in preset["models"]:
+                st.session_state[model_key] = preset["models"][0]
+            st.selectbox("模型", preset["models"], key=model_key)
+
+        st.text_input(
+            "API Key",
+            type="password",
+            key="settings_api_key",
+            placeholder="sk-... （留空使用服务器配置）",
+        )
+        if st.session_state.get("settings_api_key"):
+            st.caption("✅ 将使用你的 API Key")
+        else:
+            st.caption("ℹ️ 使用服务器 Key（共享，可能限流）")
+
+
 # ─── 侧边栏 ──────────────────────────────────────────────────────────────────
 
 
@@ -323,6 +418,8 @@ def render_sidebar():
             p = st.session_state.profile
             st.subheader("📋 当前画像")
             st.write(f"**水平**: {p['level']}")
+            if p.get("direction"):
+                st.write(f"**方向**: {p['direction']}")
             goal_display = p["goal"][:50] + ("..." if len(p["goal"]) > 50 else "")
             st.write(f"**目标**: {goal_display}")
             st.write(f"**时间**: {p['hours_per_week']}h/周")
@@ -332,6 +429,8 @@ def render_sidebar():
                 st.session_state.profile = None
                 st.rerun()
 
+        st.divider()
+        render_settings()
         st.divider()
         st.caption("开源免费 · 社区驱动")
         st.markdown("[📦 GitHub](https://github.com/moshierming/ai-pathfinder)")
@@ -373,12 +472,13 @@ def main():
                 except Exception as e:
                     err = str(e)
                     st.error(f"生成失败：{err}")
-                    if "api_key" in err.lower() or "apikey" in err.lower():
+                    if "api_key" in err.lower() or "apikey" in err.lower() or "请配置" in err:
                         st.info(
-                            "💡 请在 `.streamlit/secrets.toml` 中配置 `DASHSCOPE_API_KEY`"
+                            "💡 请在左侧边栏的 **⚙️ API 设置** 中输入你的 API Key，"
+                            "或在 `.streamlit/secrets.toml` 中配置 `DASHSCOPE_API_KEY`"
                         )
                     elif "404" in err:
-                        st.info("💡 模型名称可能有误，请检查 `MODEL` 配置")
+                        st.info("💡 模型名称可能有误，请在左侧边栏的 **⚙️ API 设置** 中检查模型名称")
     else:
         render_path(st.session_state.path, resources)
         render_feedback()
