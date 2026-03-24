@@ -1,4 +1,5 @@
 """Feedback collection view."""
+from __future__ import annotations
 
 import json
 import os
@@ -65,7 +66,7 @@ def submit_feedback(feedback: dict) -> str:
         return "local"
 
 
-def render_feedback():
+def render_feedback() -> None:
     L = _lang()
     st.divider()
     st.subheader(t("fb_title", L))

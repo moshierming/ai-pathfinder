@@ -1,4 +1,5 @@
 """LLM client: configuration, path generation, trend insights."""
+from __future__ import annotations
 
 import json
 import os
@@ -13,7 +14,7 @@ from logging_config import get_logger
 _log = get_logger("llm")
 
 
-def get_llm_config():
+def get_llm_config() -> tuple[str, str, str]:
     """Return (api_key, base_url, model) from session/secrets/env."""
     api_key = (
         st.session_state.get("settings_api_key", "")
@@ -38,7 +39,7 @@ def get_llm_config():
     return api_key, base_url, model
 
 
-def _compact_resources(resources: list) -> str:
+def _compact_resources(resources: list[dict]) -> str:
     """Compact resource list to minimal token footprint."""
     lines = []
     for r in resources:
@@ -51,7 +52,7 @@ def _compact_resources(resources: list) -> str:
     return "\n".join(lines)
 
 
-def generate_path(profile: dict, resources: list) -> dict:
+def generate_path(profile: dict, resources: list[dict]) -> dict:
     """Call LLM to generate a personalized learning path (streaming)."""
     api_key, base_url, model = get_llm_config()
     if not api_key:
@@ -129,7 +130,7 @@ TREND_INSIGHT_PROMPT = """你是一位资深 AI 行业分析师。基于以下 A
 }"""
 
 
-def _load_insights_cache():
+def _load_insights_cache() -> dict | None:
     """Load cached insights if fresh (same date)."""
     if not os.path.exists(INSIGHTS_CACHE_PATH):
         return None
@@ -143,7 +144,7 @@ def _load_insights_cache():
     return None
 
 
-def _save_insights_cache(data):
+def _save_insights_cache(data: dict) -> None:
     """Save insights to local cache file."""
     try:
         with open(INSIGHTS_CACHE_PATH, "w", encoding="utf-8") as f:
@@ -152,7 +153,7 @@ def _save_insights_cache(data):
         _log.warning("insights_cache_save_failed: %s", e)
 
 
-def generate_trend_insights(channels: list, force_refresh: bool = False) -> dict:
+def generate_trend_insights(channels: list[dict], force_refresh: bool = False) -> dict:
     """Generate daily AI trend insights via LLM, with local caching."""
     if not force_refresh:
         cached = _load_insights_cache()
@@ -160,20 +161,20 @@ def generate_trend_insights(channels: list, force_refresh: bool = False) -> dict
             _log.info("trend_insights loaded from cache date=%s", cached.get("date"))
             return cached
 
-    api_key, base_url, model = get_llm_config()
-    if not api_key:
-        return {}
-
-    client = OpenAI(api_key=api_key, base_url=base_url)
-
-    source_list = "\n".join(
-        f"- {ch['title']} ({ch.get('language','')}) — {ch.get('description','')}"
-        for ch in channels
-    )
-
-    _log.info("generate_trend_insights model=%s sources=%d", model, len(channels))
-
     try:
+        api_key, base_url, model = get_llm_config()
+        if not api_key:
+            return {}
+
+        client = OpenAI(api_key=api_key, base_url=base_url)
+
+        source_list = "\n".join(
+            f"- {ch['title']} ({ch.get('language','')}) — {ch.get('description','')}"
+            for ch in channels
+        )
+
+        _log.info("generate_trend_insights model=%s sources=%d", model, len(channels))
+
         stream = client.chat.completions.create(
             model=model,
             messages=[
@@ -191,6 +192,13 @@ def generate_trend_insights(channels: list, force_refresh: bool = False) -> dict
             if delta and delta.content:
                 chunks.append(delta.content)
         result = json.loads("".join(chunks))
+        if not isinstance(result, dict):
+            result = {}
+        if not isinstance(result.get("insights"), list):
+            result["insights"] = []
+        result["insights"] = [
+            ins for ins in result["insights"] if isinstance(ins, dict)
+        ]
         result["date"] = datetime.now().strftime("%Y-%m-%d")
         _save_insights_cache(result)
         _log.info("trend_insights generated insights=%d", len(result.get("insights", [])))

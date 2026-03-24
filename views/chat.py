@@ -1,4 +1,5 @@
 """Chat view."""
+from __future__ import annotations
 
 import streamlit as st
 from openai import OpenAI
@@ -13,7 +14,7 @@ from views import _lang
 _log = get_logger("chat")
 
 
-def _build_chat_context(resources: list) -> str:
+def _build_chat_context(resources: list[dict]) -> str:
     """Build chat context: user profile + current path + resource summary."""
     parts = []
     profile = st.session_state.get("profile")
@@ -35,7 +36,7 @@ def _build_chat_context(resources: list) -> str:
     return "\n\n".join(parts)
 
 
-def render_chat(resources: list):
+def render_chat(resources: list[dict]) -> None:
     L = _lang()
     st.title(t("chat_title", L))
     st.markdown(t("chat_subtitle", L))

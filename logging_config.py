@@ -1,4 +1,5 @@
 """Centralized logging configuration for AI Pathfinder."""
+from __future__ import annotations
 
 import logging
 import os
@@ -12,7 +13,7 @@ _FMT = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
 _initialized = False
 
 
-def get_logger(name="ai_pathfinder"):
+def get_logger(name: str = "ai_pathfinder") -> logging.Logger:
     """Return a logger. Initializes file handler on first call."""
     global _initialized
     logger = logging.getLogger(name)
