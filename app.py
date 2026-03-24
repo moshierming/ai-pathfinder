@@ -135,6 +135,7 @@ def generate_path(profile: dict, resources: list) -> dict:
 - 当前水平：{profile['level']}
 - 目标方向：{profile.get('direction', '通用AI方向')}
 - 学习目标：{profile['goal']}
+- 当前技能/项目经历：{profile.get('skills_background') or '（未填写）'}
 - 每周可投入时间：{profile['hours_per_week']} 小时
 - 偏好学习方式：{profile['preference']}
 - 语言偏好：{profile['language']}
@@ -451,6 +452,13 @@ def render_form():
             lang_idx = LANGUAGES.index(p["language"]) if p.get("language") in LANGUAGES else 0
             language = st.selectbox("🌐 语言偏好", LANGUAGES, index=lang_idx)
 
+        skills_background = st.text_area(
+            "💼 当前技能/项目经历（可选，填写后推荐更精准）",
+            value=p.get("skills_background", ""),
+            placeholder="例：做过 3 年 Web 后端开发，用过 Spring Boot 和 Python，写过自动化测试脚本，没接触过机器学习",
+            height=80,
+        )
+
         submitted = st.form_submit_button(
             "🚀 生成我的学习路径", type="primary", use_container_width=True
         )
@@ -461,6 +469,7 @@ def render_form():
     return submitted, {
         "level": level,
         "goal": goal,
+        "skills_background": skills_background,
         "hours_per_week": hours,
         "preference": preference,
         "language": language,
@@ -598,7 +607,8 @@ def render_sidebar():
         st.divider()
         st.caption("开源免费 · 社区驱动")
         st.markdown("[📦 GitHub](https://github.com/moshierming/ai-pathfinder)")
-        st.markdown("[🐛 反馈问题](https://github.com/moshierming/ai-pathfinder/issues)")
+        st.markdown("[� 社区讨论](https://github.com/moshierming/ai-pathfinder/discussions)")
+        st.markdown("[�🐛 反馈问题](https://github.com/moshierming/ai-pathfinder/issues)")
 
     return page
 
