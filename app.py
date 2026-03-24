@@ -347,6 +347,142 @@ def render_path(path_data: dict, resources: list):
             use_container_width=True,
         )
 
+    # 学习统计
+    render_path_analytics(path_data, resources)
+
+
+# ─── 学习分析 ────────────────────────────────────────────────────────────────
+
+LEVEL_ORDER = {"beginner": 1, "beginner-to-intermediate": 2, "intermediate": 3,
+               "intermediate-to-advanced": 4, "advanced": 5}
+
+
+def render_path_analytics(path_data: dict, resources: list):
+    """渲染学习路径的可视化分析面板。"""
+    from collections import Counter
+
+    ridx = {r["id"]: r for r in resources}
+    weeks = path_data.get("weeks", [])
+    if not weeks:
+        return
+
+    # 收集路径中的所有资源
+    path_resources = []
+    for w in weeks:
+        for rid in w.get("resources", []):
+            r = ridx.get(rid)
+            if r:
+                path_resources.append((w["week"], r))
+
+    if not path_resources:
+        return
+
+    st.divider()
+    st.markdown(
+        "<div style='padding:16px 20px;background:linear-gradient(135deg,#f0fdf4 0%,#ecfdf5 100%);"
+        "border-radius:12px;border:1px solid #bbf7d0;margin-bottom:16px;'>"
+        "<div style='font-size:1rem;font-weight:600;color:#166534;'>📊 学习路径分析</div>"
+        "<div style='font-size:0.78rem;color:#15803d;margin-top:4px;'>"
+        "自动从你的学习路径中提取统计数据</div></div>",
+        unsafe_allow_html=True,
+    )
+
+    all_r = [r for _, r in path_resources]
+    total_hours = sum(r["duration_hours"] for r in all_r if r["type"] != "channel")
+    type_counts = Counter(r["type"] for r in all_r)
+    focus_counts = Counter(r.get("focus", "both") for r in all_r)
+    topic_counts = Counter(t for r in all_r for t in r.get("topics", []))
+    lang_counts = Counter(r.get("language", "?") for r in all_r)
+
+    # ── 概览指标 ──
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("📚 总资源", len(all_r))
+    m2.metric("⏱ 总学时", f"{total_hours}h")
+    m3.metric("📅 周数", len(weeks))
+    m4.metric("🌐 语言", f"中{lang_counts.get('zh',0)} / 英{lang_counts.get('en',0)}")
+
+    st.write("")
+    tab1, tab2, tab3 = st.tabs(["📊 资源分布", "📈 每周节奏", "🏷️ 话题覆盖"])
+
+    with tab1:
+        # ── 资源类型 + 侧重分布 ──
+        col_a, col_b = st.columns(2)
+        with col_a:
+            st.markdown("**资源类型构成**")
+            for typ, cnt in type_counts.most_common():
+                emoji = TYPE_EMOJI.get(typ, "🔗")
+                pct = cnt / len(all_r) * 100
+                bar_width = max(int(pct * 2.5), 10)
+                st.markdown(
+                    f"<div style='display:flex;align-items:center;margin-bottom:6px;'>"
+                    f"<div style='width:100px;font-size:0.82rem;'>{emoji} {typ}</div>"
+                    f"<div style='flex:1;background:#f1f5f9;border-radius:6px;height:22px;position:relative;'>"
+                    f"<div style='width:{bar_width}%;background:linear-gradient(90deg,#667eea,#764ba2);"
+                    f"border-radius:6px;height:100%;'></div>"
+                    f"<span style='position:absolute;right:8px;top:2px;font-size:0.72rem;color:#475569;'>"
+                    f"{cnt} ({pct:.0f}%)</span></div></div>",
+                    unsafe_allow_html=True,
+                )
+        with col_b:
+            st.markdown("**学习侧重分布**")
+            focus_colors = {"foundational": "#8b5cf6", "applied": "#ef4444", "both": "#3b82f6"}
+            for foc, cnt in focus_counts.most_common():
+                label = FOCUS_EMOJI.get(foc, foc)
+                pct = cnt / len(all_r) * 100
+                color = focus_colors.get(foc, "#64748b")
+                bar_width = max(int(pct * 2.5), 10)
+                st.markdown(
+                    f"<div style='display:flex;align-items:center;margin-bottom:6px;'>"
+                    f"<div style='width:120px;font-size:0.82rem;'>{label}</div>"
+                    f"<div style='flex:1;background:#f1f5f9;border-radius:6px;height:22px;position:relative;'>"
+                    f"<div style='width:{bar_width}%;background:{color};border-radius:6px;height:100%;'></div>"
+                    f"<span style='position:absolute;right:8px;top:2px;font-size:0.72rem;color:#475569;'>"
+                    f"{cnt} ({pct:.0f}%)</span></div></div>",
+                    unsafe_allow_html=True,
+                )
+
+    with tab2:
+        # ── 每周资源数 + 学时 + 难度趋势 ──
+        st.markdown("**每周学习节奏**")
+        for w in weeks:
+            w_resources = [ridx.get(rid) for rid in w.get("resources", []) if ridx.get(rid)]
+            w_hours = sum(r["duration_hours"] for r in w_resources if r["type"] != "channel")
+            w_count = len(w_resources)
+            # 难度均值
+            levels = [LEVEL_ORDER.get(r["level"], 3) for r in w_resources]
+            avg_level = sum(levels) / len(levels) if levels else 3
+            level_labels = {1: "🟢入门", 2: "🟢初级", 3: "🟡中级", 4: "🟡进阶", 5: "🔴高级"}
+            avg_label = level_labels.get(round(avg_level), "🟡中级")
+            hour_bar = min(int(w_hours / 0.5), 250)  # cap bar width
+            st.markdown(
+                f"<div style='display:flex;align-items:center;gap:8px;margin-bottom:6px;'>"
+                f"<div style='width:60px;font-weight:600;font-size:0.82rem;color:#334155;'>第{w['week']}周</div>"
+                f"<div style='flex:1;background:#f1f5f9;border-radius:6px;height:26px;position:relative;'>"
+                f"<div style='width:{hour_bar}px;background:linear-gradient(90deg,#34d399,#059669);"
+                f"border-radius:6px;height:100%;'></div>"
+                f"<span style='position:absolute;left:8px;top:4px;font-size:0.72rem;color:#1e293b;'>"
+                f"{w_hours}h · {w_count}个资源 · {avg_label}</span></div></div>",
+                unsafe_allow_html=True,
+            )
+
+    with tab3:
+        # ── 话题覆盖 Top 15 ──
+        st.markdown("**话题覆盖 Top 15**")
+        top_topics = topic_counts.most_common(15)
+        if top_topics:
+            max_count = top_topics[0][1]
+            for topic, cnt in top_topics:
+                pct = cnt / max_count * 100
+                st.markdown(
+                    f"<div style='display:flex;align-items:center;margin-bottom:4px;'>"
+                    f"<div style='width:130px;font-size:0.8rem;color:#475569;'><code>{topic}</code></div>"
+                    f"<div style='flex:1;background:#f1f5f9;border-radius:4px;height:18px;'>"
+                    f"<div style='width:{pct:.0f}%;background:linear-gradient(90deg,#fbbf24,#f59e0b);"
+                    f"border-radius:4px;height:100%;'></div></div>"
+                    f"<div style='width:30px;text-align:right;font-size:0.75rem;color:#64748b;'>{cnt}</div></div>",
+                    unsafe_allow_html=True,
+                )
+
 
 # ─── 反馈收集 ────────────────────────────────────────────────────────────────
 
