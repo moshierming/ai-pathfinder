@@ -4,10 +4,7 @@ import streamlit as st
 
 from config import PROVIDER_PRESETS
 from i18n import t
-
-
-def _lang():
-    return st.session_state.get("ui_lang", "zh")
+from views import _lang
 
 
 def render_settings():

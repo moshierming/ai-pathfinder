@@ -8,11 +8,8 @@ import streamlit as st
 from config import FOCUS_EMOJI, LEVEL_EMOJI, LEVEL_ORDER, TYPE_EMOJI
 from i18n import t
 from utils import export_plan_json, export_plan_markdown
+from views import _lang
 from views.progress import render_progress_save
-
-
-def _lang():
-    return st.session_state.get("ui_lang", "zh")
 
 
 def render_path(path_data: dict, resources: list):

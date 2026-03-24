@@ -7,6 +7,7 @@ from i18n import t
 from llm import generate_path
 from logging_config import get_logger
 from utils import load_resources as _load_resources_uncached, decode_profile, encode_profile, filter_resources_for_direction
+from views import _lang
 from views.browser import render_resource_browser
 from views.chat import render_chat
 from views.feedback import render_feedback
@@ -22,10 +23,6 @@ from views.settings import render_settings
 def load_resources():
     """Cached wrapper — YAML is parsed once, refreshed every hour."""
     return _load_resources_uncached()
-
-
-def _lang():
-    return st.session_state.get("ui_lang", "zh")
 
 
 st.set_page_config(

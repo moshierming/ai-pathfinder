@@ -8,11 +8,9 @@ from i18n import t
 from llm import get_llm_config
 from logging_config import get_logger
 
+from views import _lang
+
 _log = get_logger("chat")
-
-
-def _lang():
-    return st.session_state.get("ui_lang", "zh")
 
 
 def _build_chat_context(resources: list) -> str:
