@@ -1,0 +1,11 @@
+services:
+  ai-pathfinder:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      - DASHSCOPE_API_KEY=${DASHSCOPE_API_KEY:-}
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+    volumes:
+      - ./feedback:/app/feedback
+    restart: unless-stopped
