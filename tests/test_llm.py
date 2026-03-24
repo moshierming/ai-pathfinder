@@ -171,8 +171,9 @@ class TestCompactResources:
         assert "ML课程" in result
         assert "course" in result
         assert "10h" in result
-        # topics truncated to first 3
-        assert "ml,python,data" in result
+        # topics truncated to first 2
+        assert "ml,python" in result
+        assert "data" not in result
 
     def test_empty_list(self):
         from llm import _compact_resources
@@ -184,8 +185,8 @@ class TestCompactResources:
                 "duration_hours": 5, "topics": ["alpha", "beta", "gamma", "delta", "epsilon"],
                 "domain": ["general"], "focus": "applied"}]
         result = _compact_resources(res)
-        assert "alpha,beta,gamma" in result
-        assert "delta" not in result
+        assert "alpha,beta" in result
+        assert "gamma" not in result
 
     def test_missing_optional_fields(self):
         from llm import _compact_resources
@@ -193,7 +194,8 @@ class TestCompactResources:
                 "duration_hours": 5, "topics": [], "focus": "both"}]
         result = _compact_resources(res)
         assert "r1" in result
-        assert "general" in result  # default domain
+        # focus='both' is omitted from compact format
+        assert result.endswith("5h|")
 
     def test_multiple_resources(self):
         from llm import _compact_resources

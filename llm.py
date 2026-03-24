@@ -1,8 +1,10 @@
 """LLM client: configuration, path generation, trend insights."""
 from __future__ import annotations
 
+import hashlib
 import json
 import os
+from collections.abc import Callable
 from datetime import datetime
 
 import streamlit as st
@@ -12,6 +14,8 @@ from config import PROVIDER_PRESETS, SYSTEM_PROMPT
 from logging_config import get_logger
 
 _log = get_logger("llm")
+
+_PATH_TIMEOUT = 25  # seconds – hard cap for path generation API call
 
 
 def get_llm_config() -> tuple[str, str, str]:
@@ -43,22 +47,52 @@ def _compact_resources(resources: list[dict[str, object]]) -> str:
     """Compact resource list to minimal token footprint."""
     lines = []
     for r in resources:
-        topics = ",".join(r["topics"][:3])
-        domain = ",".join(r.get("domain", ["general"])[:2])
+        topics = ",".join(r["topics"][:2])
+        focus = r.get("focus", "both")
+        focus_tag = "" if focus == "both" else f"|{focus}"
         lines.append(
-            f"{r['id']}|{r['title']}|{r['type']}|{r['level']}|{r['duration_hours']}h|"
-            f"{r.get('focus','both')}|{domain}|{topics}"
+            f"{r['id']}|{r['title']}|{r['type']}|{r['level']}|{r['duration_hours']}h{focus_tag}|{topics}"
         )
     return "\n".join(lines)
 
 
-def generate_path(profile: dict[str, object], resources: list[dict[str, object]]) -> dict[str, object]:
-    """Call LLM to generate a personalized learning path (streaming)."""
+def _path_cache_key(profile: dict[str, object], resources: list[dict[str, object]]) -> str:
+    """Deterministic cache key from profile + resource ids."""
+    raw = json.dumps(
+        {"p": profile, "r": [r["id"] for r in resources]},
+        sort_keys=True,
+        ensure_ascii=False,
+    )
+    return hashlib.sha256(raw.encode()).hexdigest()[:16]
+
+
+def generate_path(
+    profile: dict[str, object],
+    resources: list[dict[str, object]],
+    *,
+    on_progress: Callable[[int], None] | None = None,
+) -> dict[str, object]:
+    """Call LLM to generate a personalized learning path (streaming).
+
+    Parameters
+    ----------
+    on_progress:
+        Optional callback invoked with accumulated character count during
+        streaming so the caller can show progress.
+    """
+    # ── cache hit → instant return ──────────────────────────────────────
+    cache_key = _path_cache_key(profile, resources)
+    path_cache: dict[str, dict[str, object]] = st.session_state.setdefault("_path_cache", {})
+    if cache_key in path_cache:
+        _log.info("generate_path cache hit key=%s", cache_key)
+        return path_cache[cache_key]
+
+    # ── LLM call ────────────────────────────────────────────────────────
     api_key, base_url, model = get_llm_config()
     if not api_key:
         raise ValueError("请配置 DASHSCOPE_API_KEY")
 
-    client = OpenAI(api_key=api_key, base_url=base_url)
+    client = OpenAI(api_key=api_key, base_url=base_url, timeout=_PATH_TIMEOUT)
 
     compact = _compact_resources(resources)
 
@@ -72,7 +106,7 @@ def generate_path(profile: dict[str, object], resources: list[dict[str, object]]
 - 偏好学习方式：{profile['preference']}
 - 语言偏好：{profile['language']}
 
-可用资源（{len(resources)}条，格式: id|标题|类型|难度|时长|侧重|方向|话题）：
+可用资源（{len(resources)}条，格式: id|标题|类型|难度|时长|话题）：
 {compact}
 
 请生成个性化学习路径。"""
@@ -86,18 +120,23 @@ def generate_path(profile: dict[str, object], resources: list[dict[str, object]]
             {"role": "user", "content": user_msg},
         ],
         response_format={"type": "json_object"},
-        temperature=0.3,
-        max_tokens=2500,
+        temperature=0.15,
+        max_tokens=1500,
         stream=True,
     )
-    chunks = []
+    chunks: list[str] = []
+    char_count = 0
     for chunk in stream:
         delta = chunk.choices[0].delta if chunk.choices else None
         if delta and delta.content:
             chunks.append(delta.content)
+            char_count += len(delta.content)
+            if on_progress is not None:
+                on_progress(char_count)
     full = "".join(chunks)
     result = json.loads(full)
-    _log.info("generate_path completed weeks=%d", len(result.get('weeks', [])))
+    path_cache[cache_key] = result
+    _log.info("generate_path completed weeks=%d chars=%d", len(result.get('weeks', [])), char_count)
     return result
 
 
