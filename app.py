@@ -104,7 +104,7 @@ def encode_profile(profile: dict) -> str:
     return base64.urlsafe_b64encode(raw.encode()).decode()
 
 
-def decode_profile(s: str) -> dict | None:
+def decode_profile(s: str):
     try:
         raw = base64.urlsafe_b64decode(s.encode()).decode()
         return json.loads(raw)
@@ -616,7 +616,7 @@ DIRECTIONS = [
     "🌐 其他 / 尚未确定",
 ]
 
-DIRECTION_TO_DOMAIN: dict[str, list[str]] = {
+DIRECTION_TO_DOMAIN = {
     "🤖 AI Agent / 多智能体系统": ["ai-agent", "llm-app"],
     "🧪 AI 辅助软件测试 / 质量保障": ["software-testing", "llm-app"],
     "💬 LLM 应用开发 / RAG": ["llm-app", "ai-agent"],
