@@ -731,3 +731,123 @@ resources:
     description: "清华大学发布的Agent系统评测基准，8类真实任务场景全面检验Agent能力"
     language: en
     free: true
+
+  - id: r061
+    title: "动手学深度学习（中文版）"
+    url: "https://zh.d2l.ai/"
+    type: book
+    topics: [deep-learning, pytorch, cnn, rnn, transformers]
+    domain: [data-science]
+    level: intermediate
+    duration_hours: 80
+    description: "李沐等著，面向中文读者的权威深度学习教材，配套代码与B站视频，从零基础到CV/NLP实战"
+    language: zh
+    free: true
+
+  - id: r062
+    title: "跟李沐学AI：精读经典论文（B站）"
+    url: "https://space.bilibili.com/1567748478/channel/collectiondetail?sid=32744"
+    type: video
+    topics: [research, transformers, vision, nlp]
+    domain: [research, data-science]
+    level: intermediate
+    duration_hours: 40
+    description: "李沐逐篇精读ResNet/Transformer/BERT等经典论文，中文深度讲解，科研/工程必看"
+    language: zh
+    free: true
+
+  - id: r063
+    title: "LLM 实战手册（DataWhale llm-cookbook）"
+    url: "https://github.com/datawhalechina/llm-cookbook"
+    type: repo
+    topics: [llm, rag, fine-tuning, langchain]
+    domain: [llm-app, ai-agent]
+    level: beginner-to-intermediate
+    duration_hours: 20
+    description: "DataWhale出品，面向国内开发者的LLM应用开发中文教程，覆盖RAG/微调/Agent全流程"
+    language: zh
+    free: true
+
+  - id: r064
+    title: "书生浦语大模型实战营（InternLM）"
+    url: "https://github.com/InternLM/Tutorial"
+    type: course
+    topics: [llm, fine-tuning, rag, agent, deployment]
+    domain: [llm-app, ai-agent]
+    level: intermediate
+    duration_hours: 30
+    description: "上海AI实验室开源大模型实战课，涵盖InternLM微调/部署/RAG/Agent完整链路"
+    language: zh
+    free: true
+
+  - id: r065
+    title: "Prompt Engineering 指南（中文版）"
+    url: "https://www.promptingguide.ai/zh"
+    type: article
+    topics: [prompting, llm, in-context-learning, chain-of-thought]
+    domain: [llm-app]
+    level: beginner
+    duration_hours: 6
+    description: "DAIR.AI出品，系统讲解Prompt工程技巧，中文翻译，覆盖CoT/Few-Shot/ReAct等核心方法"
+    language: zh
+    free: true
+
+  - id: r066
+    title: "HuggingFace NLP 课程（中文）"
+    url: "https://huggingface.co/learn/nlp-course/zh-CN/chapter1/1"
+    type: course
+    topics: [transformers, fine-tuning, nlp, huggingface]
+    domain: [llm-app]
+    level: intermediate
+    duration_hours: 25
+    description: "HuggingFace官方NLP课程中文版，从Tokenizer到Fine-tuning再到模型分享完整流程"
+    language: zh
+    free: true
+
+  - id: r067
+    title: "南瓜书：西瓜书公式推导详解"
+    url: "https://datawhalechina.github.io/pumpkin-book/"
+    type: book
+    topics: [machine-learning, mathematics, theory]
+    domain: [data-science, research]
+    level: intermediate-to-advanced
+    duration_hours: 30
+    description: "配套周志华《机器学习》的数学推导详解，DataWhale出品，夯实ML理论基础必备"
+    language: zh
+    free: true
+
+  - id: r068
+    title: "Qwen-Agent 开发框架与实战示例"
+    url: "https://github.com/QwenLM/Qwen-Agent"
+    type: repo
+    topics: [agent, llm, tool-use, rag]
+    domain: [ai-agent, llm-app]
+    level: intermediate
+    duration_hours: 15
+    description: "阿里通义千问官方Agent开发框架，中文文档，工具调用/RAG/代码解释器完整示例"
+    language: zh
+    free: true
+
+  - id: r069
+    title: "MiniMind：从零实现中文小语言模型"
+    url: "https://github.com/jingyaogong/minimind"
+    type: repo
+    topics: [llm, pretraining, sft, rlhf, pytorch]
+    domain: [research, llm-app]
+    level: advanced
+    duration_hours: 20
+    description: "从零构建中文小语言模型，涵盖预训练/SFT/RLHF全流程，代码极简适合深入理解LLM原理"
+    language: zh
+    free: true
+
+  - id: r070
+    title: "Self-LLM：开源大模型部署实战（DataWhale）"
+    url: "https://github.com/datawhalechina/self-llm"
+    type: repo
+    topics: [llm, deployment, quantization, inference]
+    domain: [mlops, llm-app]
+    level: intermediate
+    duration_hours: 18
+    description: "DataWhale出品，主流开源大模型（Llama/Qwen/ChatGLM等）本地部署与调用中文实战教程"
+    language: zh
+    free: true
