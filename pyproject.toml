@@ -30,6 +30,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0"]
+e2e = ["pytest>=7.0", "pytest-playwright>=0.4.0"]
 
 [project.urls]
 Homepage = "https://github.com/moshierming/ai-pathfinder"
@@ -38,6 +39,7 @@ Issues = "https://github.com/moshierming/ai-pathfinder/issues"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = ["e2e: end-to-end browser tests (deselect with '-m not e2e')"]
 
 [tool.setuptools]
 packages = ["views"]

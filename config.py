@@ -3,7 +3,7 @@
 PROVIDER_PRESETS = {
     "DashScope (阿里云百炼)": {
         "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
-        "models": ["qwen-plus", "qwen-turbo", "qwen-max", "qwen-long"],
+        "models": ["qwen3.5-plus"],
     },
     "OpenAI": {
         "base_url": "https://api.openai.com/v1",

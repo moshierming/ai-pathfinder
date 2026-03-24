@@ -67,7 +67,7 @@
 
 ### ⚙️ 多供应商 API 支持
 在侧边栏直接切换：
-- **DashScope（阿里云百炼）**：qwen-plus / qwen-turbo / qwen-max
+- **DashScope（阿里云百炼）**：qwen3.5-plus
 - **OpenAI**：gpt-4o-mini / gpt-4o
 - **DeepSeek**：deepseek-chat / deepseek-reasoner
 - **自定义**：任意兼容 OpenAI 格式的 API
