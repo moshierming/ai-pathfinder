@@ -187,15 +187,40 @@ TREND_INSIGHT_PROMPT = """你是一位资深 AI 行业分析师。基于以下 A
   ]
 }"""
 
+PERSONALIZED_TREND_PROMPT = """你是一位资深 AI 行业分析师。用户正在学习 **{direction}** 方向。
+基于以下信息源和你对 AI 领域的最新认知，生成为该方向**量身定制**的趋势洞察。
 
-def _load_insights_cache() -> dict[str, object] | None:
-    """Load cached insights if fresh (same date)."""
+要求：
+1. 生成 5-7 条洞察，其中 **至少 3 条直接与 {direction} 相关**，其余覆盖通用趋势
+2. 每条洞察包含：标题、摘要（2-3句话）、针对该方向学习者的行动建议
+3. 用批判视角：既指出机会也指出风险与泡沫
+4. 行动建议要具体可执行，关联到具体的工具、框架或论文
+5. 添加"本期总结"字段，结合 {direction} 方向给出学习建议
+
+输出纯 JSON：
+{{
+  "date": "YYYY-MM-DD",
+  "overview": "本期总结...",
+  "direction": "{direction}",
+  "insights": [
+    {{
+      "title": "趋势标题",
+      "summary": "趋势说明...",
+      "action": "你正在学 {direction}，建议...",
+      "tags": ["LLM", "Agent"]
+    }}
+  ]
+}}"""
+
+
+def _load_insights_cache(direction: str = "") -> dict[str, object] | None:
+    """Load cached insights if fresh (same date and direction)."""
     if not os.path.exists(INSIGHTS_CACHE_PATH):
         return None
     try:
         with open(INSIGHTS_CACHE_PATH, "r", encoding="utf-8") as f:
             data = json.load(f)
-        if data.get("date") == datetime.now().strftime("%Y-%m-%d"):
+        if data.get("date") == datetime.now().strftime("%Y-%m-%d") and data.get("direction", "") == direction:
             return data
     except Exception:
         pass
@@ -211,12 +236,20 @@ def _save_insights_cache(data: dict[str, object]) -> None:
         _log.warning("insights_cache_save_failed: %s", e)
 
 
-def generate_trend_insights(channels: list[dict[str, object]], force_refresh: bool = False) -> dict[str, object]:
-    """Generate daily AI trend insights via LLM, with local caching."""
+def generate_trend_insights(
+    channels: list[dict[str, object]],
+    force_refresh: bool = False,
+    direction: str = "",
+) -> dict[str, object]:
+    """Generate daily AI trend insights via LLM, with local caching.
+
+    When *direction* is provided the prompt is personalised to that
+    learning direction so the insights are more actionable for the user.
+    """
     if not force_refresh:
-        cached = _load_insights_cache()
+        cached = _load_insights_cache(direction)
         if cached:
-            _log.info("trend_insights loaded from cache date=%s", cached.get("date"))
+            _log.info("trend_insights loaded from cache date=%s direction=%s", cached.get("date"), direction)
             return cached
 
     try:
@@ -231,13 +264,18 @@ def generate_trend_insights(channels: list[dict[str, object]], force_refresh: bo
             for ch in channels
         )
 
-        _log.info("generate_trend_insights model=%s sources=%d", model, len(channels))
+        if direction:
+            system_prompt = PERSONALIZED_TREND_PROMPT.format(direction=direction)
+        else:
+            system_prompt = TREND_INSIGHT_PROMPT
+
+        _log.info("generate_trend_insights model=%s sources=%d direction=%s", model, len(channels), direction or "(generic)")
 
         t0 = time.monotonic()
         stream = client.chat.completions.create(
             model=model,
             messages=[
-                {"role": "system", "content": TREND_INSIGHT_PROMPT},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"今天是 {datetime.now().strftime('%Y-%m-%d')}。\n\n参考信息源：\n{source_list}\n\n请生成今日趋势洞察。"},
             ],
             response_format={"type": "json_object"},
@@ -263,9 +301,10 @@ def generate_trend_insights(channels: list[dict[str, object]], force_refresh: bo
             ins for ins in result["insights"] if isinstance(ins, dict)
         ]
         result["date"] = datetime.now().strftime("%Y-%m-%d")
+        result["direction"] = direction
         _save_insights_cache(result)
         _log.info("trend_insights generated insights=%d", len(result.get("insights", [])))
         return result
     except Exception as e:
         _log.error("trend_insights_failed: %s", e)
-        return _load_insights_cache() or {}
+        return _load_insights_cache(direction) or {}

@@ -48,6 +48,11 @@ SAMPLE_RESOURCES = [
      "type": "channel", "topics": ["ai"], "domain": ["general"],
      "level": "beginner", "duration_hours": 1, "description": "每周AI新闻",
      "language": "en", "free": True, "focus": "both"},
+    {"id": "b01", "title": "Test Builder", "url": "https://x.com/test",
+     "type": "builder", "topics": ["agent", "llm"], "domain": ["ai-agent", "llm-app"],
+     "level": "intermediate", "description": "测试大牛",
+     "language": "en", "role": "founder",
+     "links": {"x": "https://x.com/test", "github": "https://github.com/test"}},
 ]
 
 SAMPLE_PATH = {
@@ -155,6 +160,34 @@ class TestRadarRenderSmoke:
         """Non-dict insights and non-list tags should not crash."""
         from views.radar import _render_insights_section
         _render_insights_section([{"title": "c", "language": "en", "description": "d"}], "zh")
+
+    @patch("views.radar.generate_trend_insights", return_value={})
+    def test_render_radar_with_profile_direction(self, mock_gen):
+        """Radar should pass direction from profile to insights."""
+        mock_st.session_state = _AttrDict({
+            "profile": {"direction": "🤖 AI Agent / 多智能体系统"},
+        })
+        from views.radar import render_trend_radar
+        render_trend_radar(SAMPLE_RESOURCES)
+        call_args = mock_gen.call_args
+        assert call_args[1].get("direction") == "🤖 AI Agent / 多智能体系统"
+
+    def test_is_relevant_helper(self):
+        from views.radar import _is_relevant
+        builder = {"domain": ["ai-agent", "llm-app"]}
+        assert _is_relevant(builder, ["ai-agent"]) is True
+        assert _is_relevant(builder, ["data-science"]) is False
+        assert _is_relevant(builder, []) is False
+
+    @patch("views.radar.generate_trend_insights", return_value={})
+    def test_render_radar_shows_builders(self, mock_gen):
+        """Radar should not crash when builders are present."""
+        from views.radar import render_trend_radar
+        render_trend_radar(SAMPLE_RESOURCES)
+
+    def test_render_builder_card_no_crash(self):
+        from views.radar import _render_builder_card
+        _render_builder_card(SAMPLE_RESOURCES[-1], "zh")
 
 
 class TestFormRenderSmoke:

@@ -45,6 +45,8 @@ def filter_resources_for_direction(
     focus: str = "both",
 ) -> list[dict[str, object]]:
     """Pre-filter resources by direction + language + focus, capped at 50."""
+    # Exclude builder entries — they are people, not learning materials.
+    resources = [r for r in resources if r.get("type") != "builder"]
     domains = DIRECTION_TO_DOMAIN.get(direction, [])
     if domains:
         matched = [r for r in resources if any(d in r.get("domain", ["general"]) for d in domains)]

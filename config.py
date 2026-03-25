@@ -55,6 +55,7 @@ TYPE_EMOJI = {
     "repo": "💻",
     "book": "📚",
     "channel": "📡",
+    "builder": "👤",
 }
 
 FOCUS_EMOJI = {
