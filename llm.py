@@ -177,10 +177,29 @@ def generate_path(
                 on_progress(char_count)
     full = _strip_thinking("".join(chunks))
     result = json.loads(full)
+    result = _validate_path(result)
     path_cache[cache_key] = result
     elapsed = time.monotonic() - t0
     _log.info("generate_path completed weeks=%d chars=%d elapsed=%.1fs", len(result.get('weeks', [])), char_count, elapsed)
     return result
+
+
+def _validate_path(data: dict[str, object]) -> dict[str, object]:
+    """Ensure path data has required structure; fill missing fields with defaults."""
+    if not isinstance(data, dict):
+        raise ValueError("LLM 返回的路径数据不是有效 JSON 对象")
+    if "weeks" not in data or not isinstance(data["weeks"], list):
+        raise ValueError("LLM 返回的路径缺少 weeks 数组")
+    data.setdefault("summary", "")
+    data.setdefault("estimated_weeks", len(data["weeks"]))
+    for i, w in enumerate(data["weeks"]):
+        if not isinstance(w, dict):
+            raise ValueError(f"weeks[{i}] 不是有效对象")
+        w.setdefault("week", i + 1)
+        w.setdefault("goal", "")
+        w.setdefault("resources", [])
+        w.setdefault("tip", "")
+    return data
 
 
 # ─── 趋势洞察 ─────────────────────────────────────────────────────────────────
