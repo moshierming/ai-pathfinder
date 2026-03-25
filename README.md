@@ -4,15 +4,16 @@
 
 **个性化AI学习路径规划工具 — 开源免费**
 
-告诉我你现在的水平和目标，我帮你从 **105 条精选资源 · 15 个持续信息源**中规划最短最有效的学习路径。
+告诉我你现在的水平和目标，我帮你从 **105 条精选资源 · 24 位 AI 大牛 · 15 个持续信息源**中规划最短最有效的学习路径。
 
 [![CI](https://github.com/moshierming/ai-pathfinder/actions/workflows/ci.yml/badge.svg)](https://github.com/moshierming/ai-pathfinder/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/moshierming/ai-pathfinder)](https://github.com/moshierming/ai-pathfinder/releases/latest)
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://ai-pathfinder.streamlit.app)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-![Resources](https://img.shields.io/badge/resources-105条-orange)
-![Tests](https://img.shields.io/badge/tests-138-brightgreen)
+![Resources](https://img.shields.io/badge/resources-129条-orange)
+![Builders](https://img.shields.io/badge/builders-24位-ff69b4)
+![Tests](https://img.shields.io/badge/tests-223-brightgreen)
 ![Providers](https://img.shields.io/badge/LLM_providers-9-blueviolet)
 [![Docker](https://img.shields.io/badge/docker-ready-2496ED?logo=docker&logoColor=white)](Dockerfile)
 
@@ -60,6 +61,9 @@
 ### 🔥 趋势雷达
 独立页面汇聚中英文 AI 信息源推荐、新手快速入门指南、一键直达 GitHub Trending / Hacker News / Product Hunt / Papers With Code 等前沿阵地。
 
+### 👤 AI 行业大牛追踪
+24 位国内外 AI 核心建设者（研究员/工程师/创始人/教育者），每人附带 X/GitHub/B站/知乎等社交链接。趋势雷达根据你的学习方向智能推荐相关大牛，学习路径也会在每周推荐值得关注的人。
+
 ### 📤 导出 & 导入学习计划
 - **导出**：将生成的学习路径导出为 Markdown（可读）或 JSON（可还原）
 - **导入**：上传之前导出的 JSON 文件，恢复完整学习计划继续跟踪
@@ -86,7 +90,7 @@
 用户提交反馈时：本地开发直接写入 JSON 文件；Streamlit Cloud 部署时若配置了 `GITHUB_TOKEN`，自动创建 GitHub Issues 记录（避免无状态环境数据丢失）。
 
 ### 🧠 智能对话
-学习过程中遇到问题？随时在「AI Chat」页面提问。聊天助手自动感知你的学习画像和当前路径，提供有针对性的解答，保持最近 20 轮对话上下文。
+学习过程中遇到问题？随时在「AI Chat」页面提问。聊天助手自动感知你的学习画像和当前路径，提供有针对性的解答，保持最近 20 轮对话上下文。首次打开时自动展示 4 个个性化推荐问题，一键开始对话。问“有哪些大牛值得关注”，助手会从 24 位 builder 中推荐。
 
 ### 📊 学习路径可视化分析
 生成路径后自动展示三维度分析图表：

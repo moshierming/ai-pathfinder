@@ -168,7 +168,8 @@ class TestGeneratePath:
             {"level": "a", "goal": "b", "hours_per_week": 5, "preference": "c", "language": "d"},
             [],
         )
-        assert result == {"summary": "ok", "weeks": []}
+        assert result["summary"] == "ok"
+        assert result["weeks"] == []
 
     @patch("llm.OpenAI")
     def test_passes_enable_thinking_false(self, MockOpenAI):
@@ -203,6 +204,35 @@ class TestHelpers:
     def test_sanitize_text_preserves_normal(self):
         from llm import _sanitize_text
         assert _sanitize_text('hello 你好') == 'hello 你好'
+
+    def test_validate_path_fills_defaults(self):
+        from llm import _validate_path
+        data = {"weeks": [{"week": 1, "resources": ["r01"]}]}
+        result = _validate_path(data)
+        assert result["summary"] == ""
+        assert result["estimated_weeks"] == 1
+        assert result["weeks"][0]["goal"] == ""
+        assert result["weeks"][0]["tip"] == ""
+
+    def test_validate_path_auto_week_number(self):
+        from llm import _validate_path
+        data = {"weeks": [{"goal": "week1"}, {"goal": "week2"}]}
+        result = _validate_path(data)
+        assert result["weeks"][0]["week"] == 1
+        assert result["weeks"][1]["week"] == 2
+
+    def test_validate_path_raises_on_no_weeks(self):
+        from llm import _validate_path
+        import pytest
+        with pytest.raises(ValueError, match="weeks"):
+            _validate_path({"summary": "test"})
+
+    def test_validate_path_raises_on_non_dict(self):
+        from llm import _validate_path
+        import pytest
+        with pytest.raises(ValueError):
+            _validate_path("not a dict")
+
     """Test _compact_resources() formatting."""
 
     def test_single_resource(self):
