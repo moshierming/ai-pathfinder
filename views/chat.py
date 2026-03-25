@@ -13,6 +13,53 @@ from views import _lang
 
 _log = get_logger("chat")
 
+# ─── Follow-up suggestion engine ─────────────────────────────────────────────
+
+_TOPIC_SUGGESTIONS_ZH: list[tuple[list[str], list[str]]] = [
+    (["RAG", "检索增强", "向量"], ["RAG 和 Fine-tuning 哪个更适合我的场景？", "推荐一个 RAG 入门项目"]),
+    (["Agent", "智能体", "多工具", "LangChain", "LangGraph"], ["如何选择 Agent 框架？", "Agent 开发有哪些常见坑？"]),
+    (["Transformer", "注意力", "Attention"], ["Transformer 论文该怎么读？", "Attention 机制的直觉解释是什么？"]),
+    (["微调", "Fine-tun", "LoRA", "PEFT"], ["微调需要多大的数据集？", "LoRA 和全量微调的区别是什么？"]),
+    (["部署", "deploy", "API", "生产"], ["模型部署的最佳实践是什么？", "如何监控线上模型性能？"]),
+    (["Python", "编程", "代码"], ["Python 学到什么程度够用？", "有什么好的 Python 练手项目？"]),
+    (["论文", "paper", "研究"], ["如何高效阅读 AI 论文？", "推荐几篇必读的经典论文"]),
+    (["测试", "QA", "质量"], ["AI 怎么辅助自动化测试？", "测试工程师转 AI 的路线建议？"]),
+    (["大牛", "关注", "builder", "follow"], ["还有哪些值得关注的大牛？", "这些大牛都在研究什么方向？"]),
+]
+
+_TOPIC_SUGGESTIONS_EN: list[tuple[list[str], list[str]]] = [
+    (["RAG", "retrieval", "vector"], ["RAG vs fine-tuning — which fits my use case?", "Recommend a RAG starter project"]),
+    (["Agent", "multi-tool", "LangChain", "LangGraph"], ["How to choose an Agent framework?", "Common pitfalls in Agent development?"]),
+    (["Transformer", "attention"], ["How should I read the Transformer paper?", "Intuitive explanation of attention?"]),
+    (["fine-tun", "LoRA", "PEFT"], ["How much data do I need for fine-tuning?", "LoRA vs full fine-tuning?"]),
+    (["deploy", "API", "production"], ["Best practices for model deployment?", "How to monitor models in production?"]),
+    (["Python", "coding", "code"], ["How much Python is enough?", "Good Python practice projects?"]),
+    (["paper", "research"], ["How to read AI papers efficiently?", "Top must-read AI papers?"]),
+    (["testing", "QA", "quality"], ["How can AI assist automated testing?", "Career path from QA to AI?"]),
+    (["builder", "follow", "expert"], ["Other AI builders worth following?", "What are these builders working on?"]),
+]
+
+_GENERIC_ZH = ["下一步我该学什么？", "帮我推荐一个练手项目", "我的学习路径有什么可以优化的？"]
+_GENERIC_EN = ["What should I learn next?", "Suggest a hands-on project", "How can I improve my learning path?"]
+
+
+def _get_follow_ups(reply: str, L: str) -> list[str]:
+    """Pick 2-3 follow-up suggestions based on reply keywords."""
+    table = _TOPIC_SUGGESTIONS_ZH if L == "zh" else _TOPIC_SUGGESTIONS_EN
+    generic = _GENERIC_ZH if L == "zh" else _GENERIC_EN
+    reply_lower = reply.lower()
+    matched: list[str] = []
+    for keywords, suggestions in table:
+        if any(kw.lower() in reply_lower for kw in keywords):
+            for s in suggestions:
+                if s not in matched:
+                    matched.append(s)
+            if len(matched) >= 3:
+                break
+    if not matched:
+        matched = generic[:3]
+    return matched[:3]
+
 
 def _build_chat_context(resources: list[dict[str, object]]) -> str:
     """Build chat context: user profile + current path + resource & builder summary."""
@@ -91,6 +138,17 @@ def render_chat(resources: list[dict[str, object]]) -> None:
     for msg in st.session_state.chat_messages[-50:]:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
+
+    # Follow-up suggestion buttons (when last message is from assistant)
+    msgs = st.session_state.get("chat_messages", [])
+    if msgs and msgs[-1]["role"] == "assistant":
+        follow_ups = _get_follow_ups(msgs[-1]["content"], L)
+        if follow_ups:
+            fu_cols = st.columns(len(follow_ups))
+            for i, fu in enumerate(follow_ups):
+                if fu_cols[i].button(fu, key=f"followup_{i}", use_container_width=True):
+                    st.session_state.chat_messages.append({"role": "user", "content": fu})
+                    st.rerun()
 
     user_input = st.chat_input(t("chat_input", L))
     if user_input:
