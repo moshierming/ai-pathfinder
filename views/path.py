@@ -33,6 +33,14 @@ def render_path(path_data: dict[str, object], resources: list[dict[str, object]]
         f"{t('path_weeks', L)} <b>{html_escape(str(est_weeks))}</b> {t('path_weeks_unit', L)}{finish_tag}</div></div>",
         unsafe_allow_html=True,
     )
+
+    # Share link
+    share_param = st.query_params.get("p", "")
+    if share_param:
+        share_label = "📋 复制分享链接" if L == "zh" else "📋 Copy share link"
+        share_url = f"?p={share_param}"
+        st.caption(f"{share_label}: `{share_url}`")
+
     st.divider()
 
     total_resources = 0
