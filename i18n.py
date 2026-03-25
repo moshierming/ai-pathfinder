@@ -270,6 +270,22 @@ TRANSLATIONS = {
     "quality_time_balance": {"zh": "时间均衡", "en": "Time Balance"},
     "quality_hands_on": {"zh": "实战覆盖", "en": "Hands-on Coverage"},
     "quality_overall": {"zh": "综合评分", "en": "Overall Score"},
+    "quality_tip_progression": {
+        "zh": "💡 难度递进偏低：试试调整目标，让路径有更清晰的从易到难过渡",
+        "en": "💡 Low progression: try adjusting your goal for a clearer easy-to-hard transition",
+    },
+    "quality_tip_diversity": {
+        "zh": "💡 类型单一：建议在目标中提及「视频+项目+文档」多种形式搭配",
+        "en": "💡 Low diversity: mention mixed formats (video + project + docs) in your goal",
+    },
+    "quality_tip_time_balance": {
+        "zh": "💡 时间不均：尝试调整每周可投入时间，或重新生成以获得更均衡的分配",
+        "en": "💡 Uneven time: adjust weekly hours or regenerate for better balance",
+    },
+    "quality_tip_hands_on": {
+        "zh": "💡 实战不足：在目标中强调「动手项目」或选择「重实战」偏好",
+        "en": "💡 Low hands-on: emphasize 'hands-on projects' in goal or choose 'applied' focus",
+    },
 }
 
 
