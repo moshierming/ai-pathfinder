@@ -6,7 +6,7 @@ from openai import OpenAI
 
 from config import CHAT_SYSTEM_PROMPT, FOCUS_EMOJI
 from i18n import t
-from llm import get_llm_config
+from llm import get_llm_config, _sanitize_text
 from logging_config import get_logger
 
 from views import _lang
@@ -119,21 +119,25 @@ def render_chat(resources: list[dict[str, object]]) -> None:
         messages.extend(recent)
 
         with st.chat_message("assistant"):
-            with st.spinner(t("chat_thinking", L)):
-                try:
-                    client = OpenAI(api_key=api_key, base_url=base_url)
-                    resp = client.chat.completions.create(
-                        model=model,
-                        messages=messages,
-                        temperature=0.5,
-                        max_tokens=2000,
-                    )
-                    reply = resp.choices[0].message.content
-                    st.markdown(reply)
-                    st.session_state.chat_messages.append({"role": "assistant", "content": reply})
-                except Exception as e:
-                    _log.error("chat_error: %s", e)
-                    st.error(f"{t('chat_error', L)}{e}")
+            try:
+                client = OpenAI(api_key=api_key, base_url=base_url)
+                stream = client.chat.completions.create(
+                    model=model,
+                    messages=messages,
+                    temperature=0.5,
+                    max_tokens=2000,
+                    stream=True,
+                    extra_body={"enable_thinking": False},
+                )
+                reply = st.write_stream(
+                    _sanitize_text(c.choices[0].delta.content or "")
+                    for c in stream
+                    if c.choices and c.choices[0].delta and c.choices[0].delta.content
+                )
+                st.session_state.chat_messages.append({"role": "assistant", "content": reply})
+            except Exception as e:
+                _log.error("chat_error: %s", e)
+                st.error(f"{t('chat_error', L)}{e}")
 
     if st.session_state.chat_messages:
         st.divider()

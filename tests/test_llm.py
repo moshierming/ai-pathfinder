@@ -450,3 +450,36 @@ class TestGenerateTrendInsights:
             direction="🔬 AI 研究 / 论文方向",
         )
         assert result == {}
+
+
+class TestExtractJson:
+    """Test _extract_json helper for markdown-wrapped LLM responses."""
+
+    def test_bare_json(self):
+        from llm import _extract_json
+        raw = '{"weeks": [{"week": 1}]}'
+        assert json.loads(_extract_json(raw)) == {"weeks": [{"week": 1}]}
+
+    def test_markdown_code_block(self):
+        from llm import _extract_json
+        raw = '```json\n{"weeks": [{"week": 1}]}\n```'
+        assert json.loads(_extract_json(raw)) == {"weeks": [{"week": 1}]}
+
+    def test_markdown_no_lang(self):
+        from llm import _extract_json
+        raw = '```\n{"weeks": []}\n```'
+        assert json.loads(_extract_json(raw)) == {"weeks": []}
+
+    def test_text_around_json(self):
+        from llm import _extract_json
+        raw = 'Here is the result:\n{"summary": "ok", "weeks": []}\nDone.'
+        parsed = json.loads(_extract_json(raw))
+        assert parsed["summary"] == "ok"
+
+    def test_compact_resources_no_duration(self):
+        """Resources without duration_hours should default to 0."""
+        from llm import _compact_resources
+        res = [{"id": "r1", "title": "T", "type": "article", "level": "beginner",
+                "topics": ["ml"], "domain": ["general"], "focus": "both"}]
+        result = _compact_resources(res)
+        assert "0h" in result

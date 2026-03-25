@@ -26,6 +26,19 @@ def _strip_thinking(text: str) -> str:
     return re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL).strip()
 
 
+def _extract_json(text: str) -> str:
+    """Extract JSON from text that may be wrapped in markdown code blocks."""
+    # Try markdown ```json ... ``` or ``` ... ```
+    m = re.search(r"```(?:json)?\s*\n?(\{.*?\})\s*```", text, re.DOTALL)
+    if m:
+        return m.group(1)
+    # Try bare JSON object
+    m = re.search(r"(\{.*\})", text, re.DOTALL)
+    if m:
+        return m.group(1)
+    return text
+
+
 def _sanitize_text(text: str) -> str:
     """Remove surrogates and NUL that break protobuf / Streamlit encoding."""
     return re.sub(r"[\ud800-\udfff\x00]", "", text)
@@ -65,8 +78,9 @@ def _compact_resources(resources: list[dict[str, object]]) -> str:
         focus_tag = "" if focus == "both" else f"|{focus}"
         lang = r.get("language", "en")
         desc = str(r.get("description", ""))[:30]
+        hours = r.get("duration_hours", 0)
         lines.append(
-            f"{r['id']}|{r['title']}|{r['type']}|{r['level']}|{r['duration_hours']}h|{lang}{focus_tag}|{topics}|{desc}"
+            f"{r['id']}|{r['title']}|{r['type']}|{r['level']}|{hours}h|{lang}{focus_tag}|{topics}|{desc}"
         )
     return "\n".join(lines)
 
@@ -176,7 +190,12 @@ def generate_path(
             if on_progress is not None:
                 on_progress(char_count)
     full = _strip_thinking("".join(chunks))
-    result = json.loads(full)
+    if not full.strip():
+        raise ValueError("LLM 返回为空（可能超时），请重试")
+    try:
+        result = json.loads(full)
+    except json.JSONDecodeError:
+        result = json.loads(_extract_json(full))
     result = _validate_path(result)
     path_cache[cache_key] = result
     elapsed = time.monotonic() - t0
@@ -335,7 +354,11 @@ def generate_trend_insights(
             delta = chunk.choices[0].delta if chunk.choices else None
             if delta and delta.content:
                 chunks.append(delta.content)
-        result = json.loads(_strip_thinking("".join(chunks)))
+        raw = _strip_thinking("".join(chunks))
+        try:
+            result = json.loads(raw)
+        except json.JSONDecodeError:
+            result = json.loads(_extract_json(raw))
         if not isinstance(result, dict):
             result = {}
         if not isinstance(result.get("insights"), list):
