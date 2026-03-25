@@ -98,5 +98,10 @@ def render_resource_browser(resources: list[dict[str, object]]) -> None:
         cols[0].markdown(f"{typ_emoji} **[{r['title']}]({r['url']})**")
         cols[0].caption(r.get("description", ""))
         cols[1].caption(f"{lvl_emoji} {r['level']} · {lang_tag}")
-        duration_text = f"⏱ {r['duration_hours']}h/{'wk' if L == 'en' else '周'}" if r["type"] == "channel" else f"⏱ {r['duration_hours']}h"
-        cols[2].caption(f"{duration_text} · {focus_tag}")
+        hours = r.get("duration_hours")
+        if hours:
+            unit = "wk" if L == "en" else "周"
+            duration_text = f"⏱ {hours}h/{unit}" if r["type"] == "channel" else f"⏱ {hours}h"
+        else:
+            duration_text = ""
+        cols[2].caption(f"{duration_text} · {focus_tag}" if duration_text else focus_tag)

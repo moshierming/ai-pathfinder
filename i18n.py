@@ -156,6 +156,22 @@ TRANSLATIONS = {
         "en": "**Not sure where to start? Pick a path based on your level:**",
     },
     "radar_links": {"zh": "🔗 快速跳转", "en": "🔗 Quick Links"},
+    # ─── Radar – Builders / 行业大牛 ───
+    "radar_builders_title": {"zh": "👤 行业大牛", "en": "👤 AI Builders"},
+    "radar_builders_hint": {
+        "zh": "关注**实际在做事的建设者**，而非转述信息的博主。参考 [follow-builders](https://github.com/zarazhangrui/follow-builders) 理念。",
+        "en": "Follow **builders who ship**, not influencers who retweet. Inspired by [follow-builders](https://github.com/zarazhangrui/follow-builders).",
+    },
+    "radar_for_you": {"zh": "🎯 为你推荐", "en": "🎯 Recommended for You"},
+    "radar_for_you_hint": {
+        "zh": "基于你的学习方向 **{direction}**，以下是最相关的信息源和大牛",
+        "en": "Based on your direction **{direction}**, here are the most relevant sources and builders",
+    },
+    "radar_all_builders": {"zh": "👥 所有大牛", "en": "👥 All Builders"},
+    "radar_role_researcher": {"zh": "🔬 研究员", "en": "🔬 Researcher"},
+    "radar_role_engineer": {"zh": "🛠️ 工程师", "en": "🛠️ Engineer"},
+    "radar_role_founder": {"zh": "🚀 创始人", "en": "🚀 Founder"},
+    "radar_role_educator": {"zh": "📖 教育者", "en": "📖 Educator"},
     # ─── Import Plan ───
     "import_title": {"zh": "📤 导入学习计划", "en": "📤 Import Learning Plan"},
     "import_subtitle": {

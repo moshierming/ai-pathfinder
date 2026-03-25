@@ -359,3 +359,64 @@ class TestGenerateTrendInsights:
         )
         # No cache at all => returns empty dict
         assert result == {}
+
+    @patch("llm.OpenAI")
+    def test_personalized_uses_direction_prompt(self, MockOpenAI):
+        """When direction is provided, system prompt should mention it."""
+        from llm import generate_trend_insights
+        expected = {"date": "2026-03-24", "overview": "agent", "insights": [{"title": "a"}]}
+        MockOpenAI.return_value.chat.completions.create.return_value = _mock_stream(json.dumps(expected))
+        result = generate_trend_insights(
+            [{"title": "S", "language": "en", "description": "d"}],
+            force_refresh=True,
+            direction="🤖 AI Agent / 多智能体系统",
+        )
+        call_args = MockOpenAI.return_value.chat.completions.create.call_args
+        # call_args[1] is kwargs in Python 3.7 compat
+        messages = call_args[1]["messages"] if call_args[1] else call_args[0][0]
+        system_msg = messages[0]["content"]
+        assert "AI Agent" in system_msg
+        assert result.get("direction") == "🤖 AI Agent / 多智能体系统"
+
+    @patch("llm.OpenAI")
+    def test_cache_respects_direction(self, MockOpenAI):
+        """Cache for direction=A should not serve direction=B."""
+        from llm import _save_insights_cache, generate_trend_insights
+        from datetime import datetime
+        cached = {
+            "date": datetime.now().strftime("%Y-%m-%d"),
+            "direction": "🤖 AI Agent / 多智能体系统",
+            "insights": [{"title": "agent-cached"}],
+        }
+        _save_insights_cache(cached)
+        # Same direction -> use cache
+        result = generate_trend_insights(
+            [{"title": "s", "language": "en", "description": "d"}],
+            direction="🤖 AI Agent / 多智能体系统",
+        )
+        assert result["insights"][0]["title"] == "agent-cached"
+        # Different direction -> NOT use cache (needs API call, will fail => empty)
+        mock_st.session_state = {}
+        result2 = generate_trend_insights(
+            [{"title": "s", "language": "en", "description": "d"}],
+            direction="💬 LLM 应用开发 / RAG",
+        )
+        assert result2 == {}
+
+    @patch("llm.OpenAI")
+    def test_generic_cache_not_used_for_direction(self, MockOpenAI):
+        """Cache without direction should not serve personalised request."""
+        from llm import _save_insights_cache, generate_trend_insights
+        from datetime import datetime
+        cached = {
+            "date": datetime.now().strftime("%Y-%m-%d"),
+            "direction": "",
+            "insights": [{"title": "generic"}],
+        }
+        _save_insights_cache(cached)
+        mock_st.session_state = {}
+        result = generate_trend_insights(
+            [{"title": "s", "language": "en", "description": "d"}],
+            direction="🔬 AI 研究 / 论文方向",
+        )
+        assert result == {}

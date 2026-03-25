@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.6.0] — 2026-03-24
+
+### Added
+- **行业大牛追踪 (Builders)**：新增 24 位 AI 领域核心建设者（13 位国际 + 11 位中文），涵盖研究员/工程师/创始人/教育者四种角色，每人附带社交平台链接（X/GitHub/B站/知乎等）
+- **个性化趋势洞察**：趋势雷达基于用户学习方向（如 Agent/LLM/研究）生成定制化洞察，LLM Prompt 针对方向深度优化
+- **"为你推荐"信息筛选**：信息源和大牛按用户方向智能排序，相关内容优先展示
+- **Builders 社交链接卡片**：每位大牛有独立卡片，展示角色标签、简介和多平台快速跳转链接
+- **方向感知缓存**：洞察缓存现按方向+日期双维度区分，切换方向时自动刷新
+
+### Changed
+- **趋势雷达页面重构**：页面结构从"洞察→信息源→新手指南"升级为"个性化洞察→大牛推荐→信息源→新手指南"
+- **资源过滤器**：`filter_resources_for_direction()` 自动排除 builder 类型，避免大牛条目被当作学习资源推荐给 LLM
+- **资源浏览器兼容**：browser.py 适配无 `duration_hours` 字段的 builder 类型
+
+### Tests
+- 测试数: 209 → 219 (+10)
+- 新增：builder 数据完整性测试（角色/链接/类型）、个性化洞察 Prompt 验证、方向缓存隔离测试、radar 视图 builder 渲染测试
+
 ## [1.5.0] — 2026-03-24
 
 ### Changed

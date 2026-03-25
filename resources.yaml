@@ -1382,3 +1382,342 @@ resources:
     language: en
     free: true
     focus: both
+
+  # ── AI Builders / 行业大牛 ─────────────────────────────────────────────────
+  # 关注实际在做事的建设者，而非转述信息的博主
+  # role: researcher(研究员) / engineer(工程师) / founder(创始人) / educator(教育者)
+
+  - id: b001
+    title: "Andrej Karpathy"
+    url: "https://x.com/karpathy"
+    type: builder
+    topics: [deep-learning, llm, from-scratch, theory]
+    domain: [research, llm-app]
+    level: intermediate-to-advanced
+    description: "前 OpenAI/Tesla AI 负责人，从零实现 GPT 系列教学，深度学习教育标杆"
+    language: en
+    role: researcher
+    links:
+      x: "https://x.com/karpathy"
+      youtube: "https://youtube.com/@AndrejKarpathy"
+      github: "https://github.com/karpathy"
+
+  - id: b002
+    title: "Andrew Ng (吴恩达)"
+    url: "https://x.com/AndrewYNg"
+    type: builder
+    topics: [machine-learning, fundamentals, overview]
+    domain: [general, data-science]
+    level: beginner-to-intermediate
+    description: "Coursera 联合创始人，DeepLearning.AI 创始人，全球 ML 教育第一人"
+    language: en
+    role: educator
+    links:
+      x: "https://x.com/AndrewYNg"
+      website: "https://www.deeplearning.ai/"
+
+  - id: b003
+    title: "Harrison Chase"
+    url: "https://x.com/hwchase17"
+    type: builder
+    topics: [agent, langchain, rag, llm]
+    domain: [ai-agent, llm-app]
+    level: intermediate
+    description: "LangChain 创始人，Agent/RAG 生态核心推动者，关注他追踪 Agent 框架最新动态"
+    language: en
+    role: founder
+    links:
+      x: "https://x.com/hwchase17"
+      github: "https://github.com/hwchase17"
+
+  - id: b004
+    title: "Jerry Liu"
+    url: "https://x.com/jerryjliu0"
+    type: builder
+    topics: [rag, llm, indexing, agent]
+    domain: [llm-app, ai-agent]
+    level: intermediate
+    description: "LlamaIndex 创始人，RAG 技术路线核心贡献者，数据索引+检索最佳实践"
+    language: en
+    role: founder
+    links:
+      x: "https://x.com/jerryjliu0"
+      github: "https://github.com/jerryjliu"
+
+  - id: b005
+    title: "Swyx (Shawn Wang)"
+    url: "https://x.com/swyx"
+    type: builder
+    topics: [overview, agent, llm, practice]
+    domain: [general, ai-agent, llm-app]
+    level: intermediate
+    description: "AI Engineer 大会发起人，Latent Space 播客主持，最清醒的 AI 行业观察者之一"
+    language: en
+    role: engineer
+    links:
+      x: "https://x.com/swyx"
+      website: "https://www.latent.space/"
+
+  - id: b006
+    title: "Chip Huyen"
+    url: "https://x.com/chipro"
+    type: builder
+    topics: [mlops, deployment, llm, practice]
+    domain: [mlops, llm-app]
+    level: intermediate-to-advanced
+    description: "《Designing ML Systems》作者，MLOps/LLMOps 领域权威，系统工程视角看 AI"
+    language: en
+    role: engineer
+    links:
+      x: "https://x.com/chipro"
+      website: "https://huyenchip.com/"
+      github: "https://github.com/chiphuyen"
+
+  - id: b007
+    title: "Jim Fan"
+    url: "https://x.com/DrJimFan"
+    type: builder
+    topics: [agent, embodied-ai, research, multimodal]
+    domain: [ai-agent, research]
+    level: intermediate-to-advanced
+    description: "NVIDIA 高级研究科学家，Voyager/MineDojo 作者，通用智能体研究先驱"
+    language: en
+    role: researcher
+    links:
+      x: "https://x.com/DrJimFan"
+      github: "https://github.com/MineDojo"
+
+  - id: b008
+    title: "Simon Willison"
+    url: "https://x.com/simonw"
+    type: builder
+    topics: [llm, tool-use, practice, sqlite]
+    domain: [llm-app, ai-agent]
+    level: intermediate
+    description: "Datasette 创始人，LLM CLI 工具狂人，最早系统实践 LLM 工程化的人之一"
+    language: en
+    role: engineer
+    links:
+      x: "https://x.com/simonw"
+      website: "https://simonwillison.net/"
+      github: "https://github.com/simonw"
+
+  - id: b009
+    title: "Jason Wei"
+    url: "https://x.com/jasonwei20"
+    type: builder
+    topics: [research, prompting, chain-of-thought, llm]
+    domain: [research, llm-app]
+    level: advanced
+    description: "OpenAI 研究员，Chain-of-Thought Prompting 论文一作，推理能力研究核心人物"
+    language: en
+    role: researcher
+    links:
+      x: "https://x.com/jasonwei20"
+      scholar: "https://scholar.google.com/citations?user=wA2tq6gAAAAJ"
+
+  - id: b010
+    title: "Yann LeCun"
+    url: "https://x.com/ylecun"
+    type: builder
+    topics: [deep-learning, research, fundamentals]
+    domain: [research, general]
+    level: advanced
+    description: "Meta 首席 AI 科学家，深度学习三巨头之一，对 AGI 路径有独到的批判视角"
+    language: en
+    role: researcher
+    links:
+      x: "https://x.com/ylecun"
+
+  - id: b011
+    title: "Amjad Masad"
+    url: "https://x.com/amasad"
+    type: builder
+    topics: [agent, llm, coding, practice]
+    domain: [ai-agent, llm-app]
+    level: intermediate
+    description: "Replit 创始人，AI Coding Agent 先驱，亲身实践 AI 原生产品的建设者"
+    language: en
+    role: founder
+    links:
+      x: "https://x.com/amasad"
+
+  - id: b012
+    title: "Guillermo Rauch"
+    url: "https://x.com/rauchg"
+    type: builder
+    topics: [llm, practice, coding, deployment]
+    domain: [llm-app]
+    level: intermediate
+    description: "Vercel CEO，v0.dev 推动者，AI 如何改变前端开发的最好案例"
+    language: en
+    role: founder
+    links:
+      x: "https://x.com/rauchg"
+
+  - id: b013
+    title: "Amanda Askell"
+    url: "https://x.com/AmandaAskell"
+    type: builder
+    topics: [llm, alignment, prompting, philosophy]
+    domain: [research, llm-app]
+    level: intermediate-to-advanced
+    description: "Anthropic Prompt 负责人，系统提示词工程的权威实践者"
+    language: en
+    role: researcher
+    links:
+      x: "https://x.com/AmandaAskell"
+
+  # ── 中文社区 Builders ──────────────────────────────────────────────────────
+
+  - id: b014
+    title: "李沐"
+    url: "https://space.bilibili.com/1567748478"
+    type: builder
+    topics: [deep-learning, research, machine-learning, paper-reading]
+    domain: [research, data-science, general]
+    level: intermediate
+    description: "亚马逊首席科学家，《动手学深度学习》作者，B 站论文精读系列开创者"
+    language: zh
+    role: educator
+    links:
+      bilibili: "https://space.bilibili.com/1567748478"
+      github: "https://github.com/mli"
+      website: "https://d2l.ai/"
+
+  - id: b015
+    title: "苏剑林 (苏神)"
+    url: "https://kexue.fm/"
+    type: builder
+    topics: [research, llm, attention, theory]
+    domain: [research, llm-app]
+    level: advanced
+    description: "追一科技研究员，中文 NLP 社区技术深度天花板，RoPE/GAU 等创新架构提出者"
+    language: zh
+    role: researcher
+    links:
+      website: "https://kexue.fm/"
+      github: "https://github.com/bojone"
+
+  - id: b016
+    title: "刘知远"
+    url: "https://nlp.csai.tsinghua.edu.cn/~lzy/"
+    type: builder
+    topics: [research, llm, knowledge-graph, nlp]
+    domain: [research, llm-app]
+    level: advanced
+    description: "清华大学副教授，ChatGLM 技术负责人，中文大模型研究核心人物"
+    language: zh
+    role: researcher
+    links:
+      website: "https://nlp.csai.tsinghua.edu.cn/~lzy/"
+      github: "https://github.com/thunlp"
+
+  - id: b017
+    title: "张俊林"
+    url: "https://www.zhihu.com/people/zhang-jun-lin-76"
+    type: builder
+    topics: [llm, rag, practice, deployment]
+    domain: [llm-app, ai-agent]
+    level: intermediate-to-advanced
+    description: "新浪微博 AI Lab 负责人，中文 LLM 应用实战经验分享最系统的从业者"
+    language: zh
+    role: engineer
+    links:
+      zhihu: "https://www.zhihu.com/people/zhang-jun-lin-76"
+
+  - id: b018
+    title: "宝玉 (dotey)"
+    url: "https://x.com/dotey"
+    type: builder
+    topics: [overview, llm, agent, practice]
+    domain: [general, llm-app, ai-agent]
+    level: beginner-to-intermediate
+    description: "中文 AI 社区最活跃的信息翻译+转述者，第一时间同步海外 AI 动态"
+    language: zh
+    role: engineer
+    links:
+      x: "https://x.com/dotey"
+
+  - id: b019
+    title: "李rumor"
+    url: "https://www.zhihu.com/people/rumor-lee"
+    type: builder
+    topics: [llm, practice, rag, fine-tuning]
+    domain: [llm-app]
+    level: intermediate
+    description: "知乎 LLM 领域高赞作者，大模型应用实战经验分享，RAG/微调技术详解"
+    language: zh
+    role: engineer
+    links:
+      zhihu: "https://www.zhihu.com/people/rumor-lee"
+
+  - id: b020
+    title: "吴松泽 (Datawhale)"
+    url: "https://github.com/datawhalechina"
+    type: builder
+    topics: [machine-learning, deep-learning, llm, practice]
+    domain: [general, data-science]
+    level: beginner-to-intermediate
+    description: "Datawhale 负责人，中国最大开源学习社区，组队学习+开源教程生态建设者"
+    language: zh
+    role: educator
+    links:
+      github: "https://github.com/datawhalechina"
+      website: "https://datawhale.club/"
+
+  - id: b021
+    title: "面壁智能团队"
+    url: "https://x.com/OpenBMB"
+    type: builder
+    topics: [llm, agent, research, open-source]
+    domain: [llm-app, ai-agent, research]
+    level: intermediate
+    description: "CPM/MiniCPM/ChatDev 背后团队，清华系开源大模型+Agent 研究的中坚力量"
+    language: zh
+    role: researcher
+    links:
+      x: "https://x.com/OpenBMB"
+      github: "https://github.com/OpenBMB"
+
+  - id: b022
+    title: "贾扬清"
+    url: "https://x.com/jiayq"
+    type: builder
+    topics: [mlops, deployment, practice, infrastructure]
+    domain: [mlops, llm-app]
+    level: intermediate-to-advanced
+    description: "Lepton AI CEO，前 Meta AI 平台负责人，Caffe 框架作者，AI Infra 领域顶级专家"
+    language: zh
+    role: founder
+    links:
+      x: "https://x.com/jiayq"
+      github: "https://github.com/Yangqing"
+
+  - id: b023
+    title: "陈丹琦"
+    url: "https://www.cs.princeton.edu/~danqic/"
+    type: builder
+    topics: [research, llm, nlp, rag]
+    domain: [research, llm-app]
+    level: advanced
+    description: "普林斯顿大学助理教授，RAG/In-Context Learning 研究标杆，DSIR 作者"
+    language: zh
+    role: researcher
+    links:
+      website: "https://www.cs.princeton.edu/~danqic/"
+      scholar: "https://scholar.google.com/citations?user=dMVF5MUAAAAJ"
+
+  - id: b024
+    title: "谢赛宁"
+    url: "https://xisainan.github.io/"
+    type: builder
+    topics: [research, multimodal, deep-learning, aigc]
+    domain: [research, aigc]
+    level: advanced
+    description: "NYU 助理教授，ConvNeXt/LLaVA 共同作者，视觉+多模态研究核心贡献者"
+    language: zh
+    role: researcher
+    links:
+      website: "https://xisainan.github.io/"
+      x: "https://x.com/xaboratory"

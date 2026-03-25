@@ -21,14 +21,15 @@ class TestLoadResources:
         assert len(ids) == len(set(ids)), "Duplicate resource IDs found"
 
     def test_required_fields(self):
-        required = {"id", "title", "url", "type", "topics", "level", "duration_hours", "description"}
+        base_required = {"id", "title", "url", "type", "topics", "level", "description"}
         resources = load_resources()
         for r in resources:
+            required = base_required | ({"duration_hours"} if r["type"] != "builder" else set())
             for field in required:
                 assert field in r, f"Resource {r.get('id', '?')} missing field '{field}'"
 
     def test_valid_types(self):
-        valid_types = {"course", "video", "article", "repo", "book", "channel", "newsletter", "tool"}
+        valid_types = {"course", "video", "article", "repo", "book", "channel", "newsletter", "tool", "builder"}
         resources = load_resources()
         for r in resources:
             assert r["type"] in valid_types, f"Resource {r['id']} has unknown type '{r['type']}'"
@@ -65,6 +66,8 @@ class TestLoadResources:
     def test_duration_positive(self):
         resources = load_resources()
         for r in resources:
+            if r["type"] == "builder":
+                continue
             assert r["duration_hours"] > 0, f"Resource {r['id']} has non-positive duration"
 
     def test_topics_are_lists(self):
@@ -88,3 +91,29 @@ class TestLoadResources:
         """Should have at least 50 resources."""
         resources = load_resources()
         assert len(resources) >= 50
+
+    def test_has_builders(self):
+        """Should have builder-type resources for trend radar builders section."""
+        resources = load_resources()
+        builders = [r for r in resources if r["type"] == "builder"]
+        assert len(builders) >= 10, "Need at least 10 builder resources"
+
+    def test_builder_has_role(self):
+        """Every builder must declare a role."""
+        valid_roles = {"researcher", "engineer", "founder", "educator"}
+        resources = load_resources()
+        for r in resources:
+            if r["type"] != "builder":
+                continue
+            assert r.get("role") in valid_roles, f"Builder {r['id']} missing or invalid role"
+
+    def test_builder_has_links(self):
+        """Every builder should have at least one social link."""
+        resources = load_resources()
+        for r in resources:
+            if r["type"] != "builder":
+                continue
+            links = r.get("links", {})
+            assert isinstance(links, dict) and len(links) > 0, (
+                f"Builder {r['id']} missing social links"
+            )
