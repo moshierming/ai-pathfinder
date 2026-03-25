@@ -46,9 +46,25 @@ def render_path(path_data: dict[str, object], resources: list[dict[str, object]]
     total_resources = 0
     done_count = 0
     hours_budget = st.session_state.get("profile", {}).get("hours_per_week")
+    total_weeks = len(path_data.get("weeks", []))
 
     for week in path_data.get("weeks", []):
-        expanded = week["week"] <= 2
+        wn = week["week"]
+        expanded = wn <= 2
+
+        # Milestone marker every 3 weeks
+        if wn > 1 and (wn - 1) % 3 == 0 and total_weeks > 3:
+            phase = (wn - 1) // 3
+            milestone_labels_zh = ["🏁 基础阶段完成", "🏁 进阶阶段完成", "🏁 实战阶段完成", "🏁 阶段检查点"]
+            milestone_labels_en = ["🏁 Foundations done", "🏁 Intermediate done", "🏁 Practice done", "🏁 Checkpoint"]
+            labels = milestone_labels_zh if L == "zh" else milestone_labels_en
+            label = labels[min(phase - 1, len(labels) - 1)]
+            st.markdown(
+                f"<div style='text-align:center;padding:6px;background:linear-gradient(90deg,#fef3c7,#fde68a);"
+                f"border-radius:8px;margin:8px 0;font-size:0.85rem;font-weight:600;color:#92400e;'>"
+                f"{label}</div>",
+                unsafe_allow_html=True,
+            )
         # Calculate weekly hours for header
         w_res = [ridx.get(rid) for rid in week.get("resources", []) if ridx.get(rid)]
         w_hours = sum(r.get("duration_hours", 0) for r in w_res if r.get("type") not in ("channel", "builder"))
