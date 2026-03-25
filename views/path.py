@@ -324,6 +324,19 @@ def render_path_analytics(path_data: dict[str, object], resources: list[dict[str
                 unsafe_allow_html=True,
             )
 
+        # Show improvement tips for low-scoring dimensions
+        tip_map = {
+            "progression": "quality_tip_progression",
+            "diversity": "quality_tip_diversity",
+            "time_balance": "quality_tip_time_balance",
+            "hands_on": "quality_tip_hands_on",
+        }
+        low_dims = [dim for dim, score in scores.items() if score < 60]
+        if low_dims:
+            st.write("")
+            for dim in low_dims:
+                st.info(t(tip_map[dim], L))
+
 
 def _compute_quality_scores(
     weeks: list[dict[str, object]],
