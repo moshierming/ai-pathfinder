@@ -6,7 +6,7 @@ from openai import OpenAI
 
 from config import CHAT_SYSTEM_PROMPT, FOCUS_EMOJI
 from i18n import t
-from llm import get_llm_config, _sanitize_text
+from llm import get_llm_config, _sanitize_text, _strip_thinking
 from logging_config import get_logger
 
 from views import _lang
@@ -134,6 +134,8 @@ def render_chat(resources: list[dict[str, object]]) -> None:
                     for c in stream
                     if c.choices and c.choices[0].delta and c.choices[0].delta.content
                 )
+                # Post-process: strip any <think> blocks that slipped through
+                reply = _strip_thinking(reply) if reply else ""
                 st.session_state.chat_messages.append({"role": "assistant", "content": reply})
             except Exception as e:
                 _log.error("chat_error: %s", e)
