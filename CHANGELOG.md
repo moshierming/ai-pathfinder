@@ -12,15 +12,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 - **"为你推荐"信息筛选**：信息源和大牛按用户方向智能排序，相关内容优先展示
 - **Builders 社交链接卡片**：每位大牛有独立卡片，展示角色标签、简介和多平台快速跳转链接
 - **方向感知缓存**：洞察缓存现按方向+日期双维度区分，切换方向时自动刷新
+- **路径生成 Prompt 质量深化**：SYSTEM_PROMPT 增加 5 条教学规则（逻辑闭环、双重曝光、Builder 融入、具体 Tips、资源描述摘要）
+- **路径 Builder 推荐**：LLM 在每周规划中可选择性推荐相关 builders，路径视图渲染"👤 推荐关注"链接
+- **Chat Builder 知识**：聊天上下文独立呈现 builders 段落（含 role + description），CHAT_SYSTEM_PROMPT 新增推荐大牛规则
+- **Markdown 导出 Builder 信息**：每周末尾输出 `👤 推荐关注: [name](url)` builder 推荐
 
 ### Changed
 - **趋势雷达页面重构**：页面结构从"洞察→信息源→新手指南"升级为"个性化洞察→大牛推荐→信息源→新手指南"
 - **资源过滤器**：`filter_resources_for_direction()` 自动排除 builder 类型，避免大牛条目被当作学习资源推荐给 LLM
 - **资源浏览器兼容**：browser.py 适配无 `duration_hours` 字段的 builder 类型
+- **`_compact_resources()`**：输出增加 `lang` 和 `desc[:30]` 字段，帮助 LLM 更好理解资源内容
+- **Analytics 防御**：`total_hours` / `w_hours` 排除 builder 类型，使用 `.get(duration_hours, 0)` 防御
+- **Export 防御**：Markdown 导出中 `duration_hours` 使用 `.get()` 避免 builder 类型 KeyError
 
 ### Tests
-- 测试数: 209 → 219 (+10)
-- 新增：builder 数据完整性测试（角色/链接/类型）、个性化洞察 Prompt 验证、方向缓存隔离测试、radar 视图 builder 渲染测试
+- 测试数: 209 → 223 (+14)
+- 新增：builder 数据完整性测试、个性化洞察验证、方向缓存隔离、radar 视图渲染、chat builder 集成、export builder 渲染
 
 ## [1.5.0] — 2026-03-24
 

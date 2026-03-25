@@ -29,11 +29,24 @@ def render_path(path_data: dict[str, object], resources: list[dict[str, object]]
 
     total_resources = 0
     done_count = 0
+    hours_budget = st.session_state.get("profile", {}).get("hours_per_week")
 
     for week in path_data.get("weeks", []):
         expanded = week["week"] <= 2
+        # Calculate weekly hours for header
+        w_res = [ridx.get(rid) for rid in week.get("resources", []) if ridx.get(rid)]
+        w_hours = sum(r.get("duration_hours", 0) for r in w_res if r.get("type") not in ("channel", "builder"))
+        hours_tag = ""
+        if w_hours > 0:
+            if hours_budget and hours_budget > 0:
+                ratio = w_hours / hours_budget
+                indicator = "\u2705" if ratio <= 1.1 else "\u26a0\ufe0f"
+                hours_tag = f"  ({w_hours}h/{hours_budget}h {indicator})"
+            else:
+                hours_tag = f"  ({w_hours}h)"
+
         with st.expander(
-            t("path_week", L, n=week['week']) + week['goal'], expanded=expanded
+            t("path_week", L, n=week['week']) + week['goal'] + hours_tag, expanded=expanded
         ):
             if week.get("tip"):
                 st.info(f"💡 {week['tip']}")

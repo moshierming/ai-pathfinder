@@ -64,6 +64,28 @@ def render_chat(resources: list[dict[str, object]]) -> None:
     if "chat_messages" not in st.session_state:
         st.session_state.chat_messages = []
 
+    # Suggested questions when chat is empty
+    if not st.session_state.chat_messages:
+        direction = st.session_state.get("profile", {}).get("direction", "")
+        suggestions_zh = [
+            "我应该从哪里开始学习？",
+            "有哪些大牛值得关注？",
+            f"学习{direction}需要哪些前置知识？" if direction else "学习AI需要哪些前置知识？",
+            "帮我推荐适合练手的项目",
+        ]
+        suggestions_en = [
+            "Where should I start learning?",
+            "Who are the key people to follow?",
+            f"What prerequisites do I need for {direction}?" if direction else "What prerequisites do I need?",
+            "Suggest a hands-on project for practice",
+        ]
+        suggestions = suggestions_zh if L == "zh" else suggestions_en
+        cols = st.columns(len(suggestions))
+        for i, s in enumerate(suggestions):
+            if cols[i].button(s, key=f"suggest_{i}", use_container_width=True):
+                st.session_state.chat_messages.append({"role": "user", "content": s})
+                st.rerun()
+
     for msg in st.session_state.chat_messages:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
