@@ -15,7 +15,7 @@ _log = get_logger("chat")
 
 
 def _build_chat_context(resources: list[dict[str, object]]) -> str:
-    """Build chat context: user profile + current path + resource summary."""
+    """Build chat context: user profile + current path + resource & builder summary."""
     parts = []
     profile = st.session_state.get("profile")
     if profile:
@@ -30,9 +30,21 @@ def _build_chat_context(resources: list[dict[str, object]]) -> str:
         if week_ids:
             parts.append(f"路径中的资源ID：{', '.join(week_ids)}")
 
+    # Learning resources (exclude builders)
+    learning = [r for r in resources if r.get("type") != "builder"]
     summaries = [f"{r['id']}: {r['title']} ({r['type']}, {','.join(r.get('topics',[])[:3])})"
-                 for r in resources[:60]]
+                 for r in learning[:60]]
     parts.append(f"资源库摘要（前60条）:\n" + "\n".join(summaries))
+
+    # Builders
+    builders = [r for r in resources if r.get("type") == "builder"]
+    if builders:
+        builder_lines = [
+            f"{b['id']}: {b['title']} ({b.get('role','')}, {','.join(b.get('topics',[])[:3])}) — {b.get('description','')}"
+            for b in builders
+        ]
+        parts.append(f"AI行业大牛（{len(builders)}位）:\n" + "\n".join(builder_lines))
+
     return "\n\n".join(parts)
 
 

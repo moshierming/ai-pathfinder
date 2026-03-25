@@ -111,7 +111,20 @@ def export_plan_markdown(
             if not r:
                 continue
             typ_emoji = TYPE_EMOJI.get(r["type"], "🔗")
-            lines.append(f"- [ ] {typ_emoji} [{r['title']}]({r['url']}) — {r['level']}, {r['duration_hours']}h")
+            hours = r.get("duration_hours")
+            hours_str = f", {hours}h" if hours else ""
+            lines.append(f"- [ ] {typ_emoji} [{r['title']}]({r['url']}) — {r['level']}{hours_str}")
+
+        # Builder recommendations for this week
+        week_builders = week.get("builders", [])
+        if week_builders:
+            b_names = []
+            for bid in week_builders:
+                b = ridx.get(bid)
+                if b:
+                    b_names.append(f"[{b['title']}]({b['url']})")
+            if b_names:
+                lines.append(f"- 👤 推荐关注: {' · '.join(b_names)}")
         lines.append("")
 
     lines.extend([

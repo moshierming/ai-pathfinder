@@ -158,7 +158,7 @@ def render_path_analytics(path_data: dict[str, object], resources: list[dict[str
     )
 
     all_r = [r for _, r in path_resources]
-    total_hours = sum(r["duration_hours"] for r in all_r if r["type"] != "channel")
+    total_hours = sum(r.get("duration_hours", 0) for r in all_r if r["type"] not in ("channel", "builder"))
     type_counts = Counter(r["type"] for r in all_r)
     focus_counts = Counter(r.get("focus", "both") for r in all_r)
     topic_counts = Counter(tp for r in all_r for tp in r.get("topics", []))
@@ -214,7 +214,7 @@ def render_path_analytics(path_data: dict[str, object], resources: list[dict[str
         st.markdown(t("analytics_weekly_pace", L))
         for w in weeks:
             w_resources = [ridx.get(rid) for rid in w.get("resources", []) if ridx.get(rid)]
-            w_hours = sum(r["duration_hours"] for r in w_resources if r["type"] != "channel")
+            w_hours = sum(r.get("duration_hours", 0) for r in w_resources if r["type"] not in ("channel", "builder"))
             w_count = len(w_resources)
             levels = [LEVEL_ORDER.get(r["level"], 3) for r in w_resources]
             avg_level = sum(levels) / len(levels) if levels else 3

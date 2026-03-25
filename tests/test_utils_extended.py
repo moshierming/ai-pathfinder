@@ -206,3 +206,39 @@ class TestExportEdge:
         )
         for val in ["A", "B", "C", "D", "5", "E"]:
             assert val in md
+
+    def test_markdown_builder_recommendations(self):
+        """Builder references in weekly plan should render in markdown."""
+        builder = {
+            "id": "b001", "title": "Karpathy", "url": "https://karpathy.ai",
+            "type": "builder", "role": "researcher", "topics": ["llm"],
+            "domain": ["deep-learning"], "level": "beginner",
+            "description": "AI researcher",
+        }
+        resources_with_builder = RESOURCES + [builder]
+        path = {
+            "summary": "test builders", "estimated_weeks": 1,
+            "weeks": [{"week": 1, "goal": "g", "resources": ["r01"],
+                       "builders": ["b001"]}],
+        }
+        md = export_plan_markdown(path, PROFILE, resources_with_builder)
+        assert "👤 推荐关注" in md
+        assert "Karpathy" in md
+        assert "karpathy.ai" in md
+
+    def test_markdown_builder_no_duration(self):
+        """Builder without duration_hours should not crash export."""
+        builder = {
+            "id": "b001", "title": "Karpathy", "url": "https://karpathy.ai",
+            "type": "builder", "role": "researcher", "topics": ["llm"],
+            "domain": ["deep-learning"], "level": "beginner",
+            "description": "AI researcher",
+        }
+        path = {
+            "summary": "test", "estimated_weeks": 1,
+            "weeks": [{"week": 1, "goal": "g", "resources": ["b001"]}],
+        }
+        md = export_plan_markdown(path, PROFILE, [builder])
+        assert "Karpathy" in md
+        # Should NOT contain ", h" (no duration)
+        assert ", h" not in md.split("Karpathy")[1].split("\n")[0]

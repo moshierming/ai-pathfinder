@@ -102,6 +102,37 @@ class TestBuildChatContext:
         ctx = _build_chat_context([])
         assert "Empty" in ctx
 
+    def test_includes_builders(self):
+        """Builders are listed separately with role and description."""
+        resources_with_builder = SAMPLE_RESOURCES + [
+            {"id": "b001", "title": "Andrej Karpathy", "type": "builder",
+             "role": "researcher", "topics": ["deep-learning", "llm"],
+             "description": "Former Tesla AI director", "url": "https://karpathy.ai"},
+        ]
+        ctx = _build_chat_context(resources_with_builder)
+        assert "AI行业大牛" in ctx
+        assert "Andrej Karpathy" in ctx
+        assert "researcher" in ctx
+        # Builder should NOT appear in the regular 资源库摘要 section
+        lines = ctx.split("\n")
+        summary_section = [l for l in lines if l.startswith("b001") and "资源库" in ctx]
+        # b001 should only appear in builders section
+        assert any("b001" in l and "researcher" in l for l in lines)
+
+    def test_excludes_builders_from_resource_summary(self):
+        """Builders should not appear in the regular resource summary."""
+        resources_with_builder = SAMPLE_RESOURCES + [
+            {"id": "b001", "title": "Karpathy", "type": "builder",
+             "role": "researcher", "topics": ["llm"],
+             "description": "AI director", "url": "https://karpathy.ai"},
+        ]
+        ctx = _build_chat_context(resources_with_builder)
+        # Split into sections
+        parts = ctx.split("\n\n")
+        resource_part = [p for p in parts if "资源库摘要" in p]
+        assert len(resource_part) == 1
+        assert "b001" not in resource_part[0]
+
 
 # ─── Tests for submit_feedback ───────────────────────────────────────────────
 
