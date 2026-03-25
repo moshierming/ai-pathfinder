@@ -263,6 +263,13 @@ TRANSLATIONS = {
     "freshness_hour_ago": {"zh": "小时前", "en": "h ago"},
     "freshness_over_day": {"zh": "超过1天", "en": ">1 day old"},
     "retry_label": {"zh": "🔄 重试生成", "en": "🔄 Retry"},
+    # ─── Path Quality Score (Round 21) ───
+    "analytics_tab_quality": {"zh": "✅ 路径质量", "en": "✅ Path Quality"},
+    "quality_progression": {"zh": "难度递进", "en": "Difficulty Curve"},
+    "quality_diversity": {"zh": "类型多样性", "en": "Type Diversity"},
+    "quality_time_balance": {"zh": "时间均衡", "en": "Time Balance"},
+    "quality_hands_on": {"zh": "实战覆盖", "en": "Hands-on Coverage"},
+    "quality_overall": {"zh": "综合评分", "en": "Overall Score"},
 }
 
 
