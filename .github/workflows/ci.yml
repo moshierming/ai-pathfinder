@@ -42,12 +42,22 @@ jobs:
               data = yaml.safe_load(f)
           resources = data['resources']
           ids = [r['id'] for r in resources]
-          required = ['id','title','url','type','topics','level','duration_hours','description','language','free']
+          required_all = ['id','title','url','type','topics','level','description','language']
+          required_learning = ['duration_hours', 'free']
+          required_builder = ['role', 'links']
           errors = []
           for r in resources:
-              for k in required:
+              for k in required_all:
                   if k not in r:
                       errors.append(f'{r.get(\"id\",\"?\")} missing {k}')
+              if r.get('type') == 'builder':
+                  for k in required_builder:
+                      if k not in r:
+                          errors.append(f'{r.get(\"id\",\"?\")} builder missing {k}')
+              else:
+                  for k in required_learning:
+                      if k not in r:
+                          errors.append(f'{r.get(\"id\",\"?\")} missing {k}')
           dups = [i for i in ids if ids.count(i) > 1]
           if dups:
               errors.append(f'Duplicate ids: {set(dups)}')
@@ -56,10 +66,12 @@ jobs:
                   print(f'ERROR: {e}')
               sys.exit(1)
           # 统计 domain 覆盖情况
-          testing = [r for r in resources if 'software-testing' in r.get('domain', [])]
-          agent = [r for r in resources if 'ai-agent' in r.get('domain', [])]
-          total_hours = sum(r['duration_hours'] for r in resources)
-          print(f'OK: {len(resources)} resources, {total_hours}h total')
+          learning = [r for r in resources if r.get('type') != 'builder']
+          builders = [r for r in resources if r.get('type') == 'builder']
+          testing = [r for r in learning if 'software-testing' in r.get('domain', [])]
+          agent = [r for r in learning if 'ai-agent' in r.get('domain', [])]
+          total_hours = sum(r['duration_hours'] for r in learning)
+          print(f'OK: {len(resources)} resources ({len(learning)} learning + {len(builders)} builders), {total_hours}h total')
           print(f'   software-testing: {len(testing)} | ai-agent: {len(agent)}')
           "
 
