@@ -80,7 +80,9 @@ def render_chat(resources: list[dict[str, object]]) -> None:
             "Suggest a hands-on project for practice",
         ]
         suggestions = suggestions_zh if L == "zh" else suggestions_en
-        cols = st.columns(len(suggestions))
+        row1 = st.columns(2)
+        row2 = st.columns(2)
+        cols = row1 + row2
         for i, s in enumerate(suggestions):
             if cols[i].button(s, key=f"suggest_{i}", use_container_width=True):
                 st.session_state.chat_messages.append({"role": "user", "content": s})
