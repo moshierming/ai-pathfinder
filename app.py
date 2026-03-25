@@ -128,6 +128,7 @@ def render_sidebar() -> str:
             st.caption(t("sidebar_share_hint", L))
             st.divider()
             if st.button(t("sidebar_replan", L), use_container_width=True):
+                st.session_state.preset_profile = st.session_state.profile
                 st.session_state.path = None
                 st.session_state.profile = None
                 st.query_params.clear()
