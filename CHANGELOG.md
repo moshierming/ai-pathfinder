@@ -32,10 +32,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 ### Fixed
 - **Chat 消息防膨胀**：消息列表超 100 条自动裁剪；UI 只渲染最近 50 条；用户输入超 2000 字截断
 - **空资源降级**：资源过滤结果为空时降级使用全部资源生成路径
+- **CI 资源验证适配 Builder**：验证脚本按 `type` 区分必填字段（builder 需 role/links，learning 需 duration_hours/free），`total_hours` 仅统计 learning 资源
+- **Chat 改为流式响应**：`stream=True` + `st.write_stream()`，文字逐字流出，消除等待黑洞
+- **LLM JSON 容错**：新增 `_extract_json()` 处理 markdown code block 包裹的 JSON；空响应友好报错而非崩溃
+- **`_compact_resources()` 防御**：`duration_hours` 改用 `.get(key, 0)` 防止 KeyError
 
 ### Tests
-- 测试数: 209 → 227 (+18)
-- 新增：builder 完整性、个性化洞察、方向缓存、radar 渲染、chat builder 集成、export builder、_validate_path
+- 测试数: 209 → 232 (+23)
+- 新增：builder 完整性、个性化洞察、方向缓存、radar 渲染、chat builder 集成、export builder、_validate_path、_extract_json 边界情况
 
 ## [1.5.0] — 2026-03-24
 

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from collections import Counter
+from datetime import datetime, timedelta
 from html import escape as html_escape
 
 import streamlit as st
@@ -17,12 +18,19 @@ def render_path(path_data: dict[str, object], resources: list[dict[str, object]]
     L = _lang()
     ridx = {r["id"]: r for r in resources}
 
+    est_weeks = path_data.get('estimated_weeks', '?')
+    finish_tag = ""
+    if isinstance(est_weeks, (int, float)) and est_weeks > 0:
+        finish_date = (datetime.now() + timedelta(weeks=int(est_weeks))).strftime("%Y-%m-%d")
+        finish_label = "预计完成" if L == "zh" else "Target"
+        finish_tag = f" · {finish_label} {finish_date}"
+
     st.markdown(
         f"<div style='padding:20px 24px;background:linear-gradient(135deg,#eef2ff 0%,#e0e7ff 100%);"
         f"border-radius:14px;margin-bottom:16px;'>"
         f"<div style='font-size:1.1rem;font-weight:600;color:#3730a3;'>🧭 {html_escape(str(path_data.get('summary', '')))}</div>"
         f"<div style='font-size:0.85rem;color:#4338ca;margin-top:6px;'>"
-        f"{t('path_weeks', L)} <b>{html_escape(str(path_data.get('estimated_weeks', '?')))}</b> {t('path_weeks_unit', L)}</div></div>",
+        f"{t('path_weeks', L)} <b>{html_escape(str(est_weeks))}</b> {t('path_weeks_unit', L)}{finish_tag}</div></div>",
         unsafe_allow_html=True,
     )
     st.divider()
@@ -50,6 +58,11 @@ def render_path(path_data: dict[str, object], resources: list[dict[str, object]]
         ):
             if week.get("tip"):
                 st.info(f"💡 {week['tip']}")
+
+            week_rids = week.get("resources", [])
+            missing_count = sum(1 for rid in week_rids if rid not in ridx)
+            if missing_count and not w_res:
+                st.warning(t("path_week_no_resources", L) if L == "zh" else "No matching resources found for this week.")
 
             for rid in week.get("resources", []):
                 r = ridx.get(rid)

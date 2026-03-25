@@ -1,6 +1,7 @@
 """Trend radar view — personalised insights + sources + builders."""
 from __future__ import annotations
 
+from datetime import datetime
 from html import escape as html_escape
 
 import streamlit as st
@@ -133,7 +134,24 @@ def _render_insights_section(
 
     date_str = data.get("date", "")
     if date_str:
-        st.caption(t("radar_insights_date", L, date=date_str))
+        freshness = ""
+        gen_at = data.get("generated_at", "")
+        if gen_at:
+            try:
+                gen_dt = datetime.fromisoformat(gen_at)
+                delta_min = int((datetime.now() - gen_dt).total_seconds() / 60)
+                if delta_min < 5:
+                    freshness = " · 🟢 " + ("刚刚生成" if L == "zh" else "Just generated")
+                elif delta_min < 60:
+                    freshness = f" · 🟢 {delta_min} " + ("分钟前" if L == "zh" else "min ago")
+                elif delta_min < 1440:
+                    hours = delta_min // 60
+                    freshness = f" · 🟡 {hours} " + ("小时前" if L == "zh" else "h ago")
+                else:
+                    freshness = " · 🔴 " + ("超过1天" if L == "zh" else ">1 day old")
+            except (ValueError, TypeError):
+                pass
+        st.caption(t("radar_insights_date", L, date=date_str) + freshness)
 
 
 # ─── Builders section ────────────────────────────────────────────────────────

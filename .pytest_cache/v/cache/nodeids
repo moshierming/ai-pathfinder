@@ -207,6 +207,8 @@
   "tests/test_views.py::TestImportPlanLogic::()::test_module_importable",
   "tests/test_views.py::TestImportPlanLogic::()::test_settings_importable",
   "tests/test_views.py::TestImportPlanLogic::()::test_all_views_importable",
+  "tests/test_views.py::TestPathEstimatedDate::()::test_estimated_date_calculated",
+  "tests/test_views.py::TestPathEstimatedDate::()::test_estimated_date_handle_non_int",
   "tests/test_views_extended.py::TestPathRenderSmoke::()::test_render_path_basic",
   "tests/test_views_extended.py::TestPathRenderSmoke::()::test_render_path_empty_weeks",
   "tests/test_views_extended.py::TestPathRenderSmoke::()::test_render_path_missing_resource",

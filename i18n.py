@@ -247,6 +247,10 @@ TRANSLATIONS = {
         "zh": "💡 模型名称可能有误，请在左侧边栏的 **⚙️ API 设置** 中检查模型名称",
         "en": "💡 Model name might be wrong — check it in **⚙️ API Settings** in the sidebar",
     },
+    "path_week_no_resources": {
+        "zh": "本周规划的资源未能匹配到资源库，请尝试重新规划。",
+        "en": "The planned resources for this week couldn't be matched. Try re-planning.",
+    },
 }
 
 
