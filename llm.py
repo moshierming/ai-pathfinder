@@ -367,6 +367,7 @@ def generate_trend_insights(
             ins for ins in result["insights"] if isinstance(ins, dict)
         ]
         result["date"] = datetime.now().strftime("%Y-%m-%d")
+        result["generated_at"] = datetime.now().isoformat()
         result["direction"] = direction
         _save_insights_cache(result)
         _log.info("trend_insights generated insights=%d", len(result.get("insights", [])))

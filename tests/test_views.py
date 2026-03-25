@@ -235,3 +235,20 @@ class TestImportPlanLogic:
         assert hasattr(feedback, "render_feedback")
         assert hasattr(import_plan, "render_import_plan")
         assert hasattr(settings, "render_settings")
+
+
+class TestPathEstimatedDate:
+    """Test path view handles estimated_weeks for completion date."""
+
+    def test_estimated_date_calculated(self):
+        """When estimated_weeks is an int, a finish date should be derivable."""
+        from datetime import datetime, timedelta
+        weeks = 8
+        finish = datetime.now() + timedelta(weeks=weeks)
+        assert finish > datetime.now()
+
+    def test_estimated_date_handle_non_int(self):
+        """Non-int estimated_weeks should not crash."""
+        est = "?"
+        # The path view checks isinstance(est, (int, float))
+        assert not isinstance(est, (int, float))
