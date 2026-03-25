@@ -234,6 +234,10 @@ TRANSLATIONS = {
     "progress_import_restored": {"zh": "✅ 已恢复 {done} 项完成记录和 {chat} 条对话", "en": "✅ Restored {done} completed items and {chat} chat messages"},
     # ─── Errors ───
     "error_generate": {"zh": "生成失败：", "en": "Generation failed: "},
+    "error_no_resources": {
+        "zh": "未找到匹配的资源，将使用全部资源生成路径。",
+        "en": "No matching resources found. Using all resources to generate the path.",
+    },
     "error_api_hint": {
         "zh": "💡 请在左侧边栏的 **⚙️ API 设置** 中输入你的 API Key，或在 `.streamlit/secrets.toml` 中配置 `DASHSCOPE_API_KEY`",
         "en": "💡 Enter your API Key in **⚙️ API Settings** in the sidebar, or set `DASHSCOPE_API_KEY` in `.streamlit/secrets.toml`",

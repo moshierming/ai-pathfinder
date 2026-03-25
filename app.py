@@ -202,6 +202,10 @@ def main() -> None:
                         resources, profile.get("direction", ""), profile.get("language", ""),
                         profile.get("focus", "both"),
                     )
+                    if not filtered:
+                        status.update(label=t("form_generating", L), state="error")
+                        st.warning(t("error_no_resources", L))
+                        filtered = [r for r in resources if r.get("type") != "builder"][:20]
                     # Collect relevant builders for the user's direction
                     from config import DIRECTION_TO_DOMAIN
                     _domains = DIRECTION_TO_DOMAIN.get(profile.get("direction", ""), [])

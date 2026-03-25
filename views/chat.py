@@ -86,13 +86,19 @@ def render_chat(resources: list[dict[str, object]]) -> None:
                 st.session_state.chat_messages.append({"role": "user", "content": s})
                 st.rerun()
 
-    for msg in st.session_state.chat_messages:
+    for msg in st.session_state.chat_messages[-50:]:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
     user_input = st.chat_input(t("chat_input", L))
     if user_input:
+        # Trim excessively long input
+        if len(user_input) > 2000:
+            user_input = user_input[:2000]
         st.session_state.chat_messages.append({"role": "user", "content": user_input})
+        # Prune old messages to prevent unbounded growth
+        if len(st.session_state.chat_messages) > 100:
+            st.session_state.chat_messages = st.session_state.chat_messages[-60:]
         with st.chat_message("user"):
             st.markdown(user_input)
 
