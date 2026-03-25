@@ -187,10 +187,10 @@ PRESET_PROFILES = {
 }
 
 PRESET_DESCRIPTIONS = {
-    "💻 软测 → AI 转型": "有测试经验，想用AI提升效率",
-    "🤖 AI Agent 开发": "搭建多工具调用的智能体",
-    "💬 LLM 应用入门": "从零到RAG问答系统部署",
-    "📊 ML / 数据科学": "系统学习机器学习理论与实践",
+    "💻 软测 → AI 转型": "AI 辅助用例生成、智能回归测试、Agent搭建",
+    "🤖 AI Agent 开发": "LangChain + LangGraph 多工具 Agent 实战",
+    "💬 LLM 应用入门": "Prompt → RAG → 向量数据库 → 部署",
+    "📊 ML / 数据科学": "数学基础 → sklearn → 特征工程 → 端到端项目",
     "🎨 AIGC / 多模态创作": "Stable Diffusion + ComfyUI 全流程",
     "🔧 MLOps / AI 工程化": "模型部署/实验管理/生产化",
     "🔬 AI 研究 / 论文方向": "论文阅读 + 复现，读研准备",
