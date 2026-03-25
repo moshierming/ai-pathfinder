@@ -118,6 +118,7 @@ TRANSLATIONS = {
     "browser_chinese": {"zh": "🇨🇳 中文", "en": "🇨🇳 Chinese"},
     "browser_channels": {"zh": "📡 信息源", "en": "📡 Channels"},
     "browser_repos": {"zh": "💻 实战项目", "en": "💻 Repos"},
+    "browser_builders": {"zh": "👤 大牛", "en": "👤 Builders"},
     "browser_foundational": {"zh": "🧱 打基础", "en": "🧱 Foundational"},
     "browser_applied": {"zh": "🔧 重实战", "en": "🔧 Applied"},
     "browser_search": {"zh": "🔍 搜索资源", "en": "🔍 Search resources"},
