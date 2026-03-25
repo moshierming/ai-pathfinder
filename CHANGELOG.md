@@ -16,30 +16,41 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 - **路径 Builder 推荐**：LLM 在每周规划中可选择性推荐相关 builders，路径视图渲染"👤 推荐关注"链接
 - **Chat Builder 知识**：聊天上下文独立呈现 builders 段落（含 role + description），CHAT_SYSTEM_PROMPT 新增推荐大牛规则
 - **Chat 推荐问题引导**：空聊天时显示 4 个个性化推荐问题按钮
+- **Chat 流式响应**：`stream=True` + `st.write_stream()`，文字逐字流出，消除等待黑洞
+- **Chat 清除 + 导出**：新增清空对话按钮和 Markdown 导出下载
 - **Markdown 导出 Builder 信息**：每周末尾输出 `👤 推荐关注: [name](url)` builder 推荐
 - **路径每周时间预算对比**：expander 标题显示时间小计 + 预算比 (✅/⚠️)
-- **路径 JSON 结构验证**：`_validate_path()` 确保 LLM 返回完整数据结构，自动填充缺失字段
+- **路径预计完成日期**：根据 `estimated_weeks` 自动计算并显示目标完成日期
+- **路径分享链接**：路径顶部显示可复制分享 URL
+- **路径 ID 幻觉清洗**：`generate_path()` 后处理移除 LLM 编造的不存在资源/大牛 ID，并记录日志
+- **路径资源缺失警告**：当整周资源全部无法匹配时显示友好提示
+- **趋势洞察新鲜度指示器**：🟢刚刚/🟢N分钟/🟡N小时/🔴超1天
+- **资源浏览器排序**：5 种排序方式（默认/难度↑↓/时长↑↓）
 - **资源浏览器 Builder 统计**：统计面板新增"👤 大牛"计数卡片
+- **路径 JSON 结构验证**：`_validate_path()` 确保 LLM 返回完整数据结构，自动填充缺失字段
+- **LLM JSON 容错**：`_extract_json()` 处理 markdown code block 包裹的 JSON；空响应友好报错
+- **路径生成重试按钮**：失败后 🔄 重试，保持用户画像
 
 ### Changed
 - **趋势雷达页面重构**：页面结构从"洞察→信息源→新手指南"升级为"个性化洞察→大牛推荐→信息源→新手指南"
-- **资源过滤器**：`filter_resources_for_direction()` 自动排除 builder 类型，避免大牛条目被当作学习资源推荐给 LLM
-- **资源浏览器兼容**：browser.py 适配无 `duration_hours` 字段的 builder 类型
-- **`_compact_resources()`**：输出增加 `lang` 和 `desc[:30]` 字段，帮助 LLM 更好理解资源内容
+- **资源过滤器**：`filter_resources_for_direction()` 自动排除 builder 类型
+- **PRESET_DESCRIPTIONS 去重**：config.py 作为唯一真实来源，form.py 导入使用
+- **侧边栏动态底栏**：资源和大牛数量从实际数据动态计算
+- **i18n 内联字符串迁移**：~12 个 `if L == "zh" else` 模式迁入 i18n.py，含新鲜度/分享/关注/排序等
+- **`_compact_resources()`**：输出增加 `lang` 和 `desc[:30]` 字段
 - **Analytics 防御**：`total_hours` / `w_hours` 排除 builder 类型，使用 `.get(duration_hours, 0)` 防御
 - **Export 防御**：Markdown 导出中 `duration_hours` 使用 `.get()` 避免 builder 类型 KeyError
 
 ### Fixed
+- **i18n bug**：`path_week_no_resources` 在英文模式下绕过 `t()` 函数直接硬编码，已修正
+- **Chat `<think>` 标签泄漏**：流式响应后 `_strip_thinking()` 后处理清理 Qwen-3 思考标签
 - **Chat 消息防膨胀**：消息列表超 100 条自动裁剪；UI 只渲染最近 50 条；用户输入超 2000 字截断
 - **空资源降级**：资源过滤结果为空时降级使用全部资源生成路径
-- **CI 资源验证适配 Builder**：验证脚本按 `type` 区分必填字段（builder 需 role/links，learning 需 duration_hours/free），`total_hours` 仅统计 learning 资源
-- **Chat 改为流式响应**：`stream=True` + `st.write_stream()`，文字逐字流出，消除等待黑洞
-- **LLM JSON 容错**：新增 `_extract_json()` 处理 markdown code block 包裹的 JSON；空响应友好报错而非崩溃
-- **`_compact_resources()` 防御**：`duration_hours` 改用 `.get(key, 0)` 防止 KeyError
+- **CI 资源验证适配 Builder**：验证脚本按 `type` 区分必填字段
 
 ### Tests
-- 测试数: 209 → 232 (+23)
-- 新增：builder 完整性、个性化洞察、方向缓存、radar 渲染、chat builder 集成、export builder、_validate_path、_extract_json 边界情况
+- 测试数: 209 → 236 (+27)
+- 新增：builder 完整性、个性化洞察、方向缓存、radar 渲染、chat builder 集成、export builder、_validate_path、_extract_json、路径 ID 幻觉清洗、路径预计完成日期
 
 ## [1.5.0] — 2026-03-24
 

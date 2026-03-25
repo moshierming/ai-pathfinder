@@ -55,7 +55,7 @@ def render_chat(resources: list[dict[str, object]]) -> None:
 
     if st.session_state.get("profile"):
         p = st.session_state.profile
-        st.caption(f"{'当前画像' if L == 'zh' else 'Profile'}：{p.get('level','')} · {p.get('direction','')} · {FOCUS_EMOJI.get(p.get('focus',''), '')}")
+        st.caption(f"{t('chat_current_profile', L)}：{p.get('level','')} · {p.get('direction','')} · {FOCUS_EMOJI.get(p.get('focus',''), '')}")
     else:
         st.caption(t("chat_no_profile", L))
 
@@ -143,6 +143,24 @@ def render_chat(resources: list[dict[str, object]]) -> None:
 
     if st.session_state.chat_messages:
         st.divider()
+        btn_cols = st.columns(2)
+        with btn_cols[0]:
+            if st.button(t("chat_clear", L), use_container_width=True):
+                st.session_state.chat_messages = []
+                st.rerun()
+        with btn_cols[1]:
+            md_lines = []
+            for m in st.session_state.chat_messages:
+                role = "**You**" if m["role"] == "user" else "**AI**"
+                md_lines.append(f"{role}: {m['content']}\n")
+            chat_md = "\n---\n\n".join(md_lines)
+            st.download_button(
+                t("chat_export", L),
+                data=chat_md,
+                file_name="ai-pathfinder-chat.md",
+                mime="text/markdown",
+                use_container_width=True,
+            )
         if st.button(t("chat_clear", L), use_container_width=True):
             st.session_state.chat_messages = []
             st.rerun()

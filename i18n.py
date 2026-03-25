@@ -251,6 +251,18 @@ TRANSLATIONS = {
         "zh": "本周规划的资源未能匹配到资源库，请尝试重新规划。",
         "en": "The planned resources for this week couldn't be matched. Try re-planning.",
     },
+    # ─── Inline i18n consolidation (Round 18) ───
+    "path_finish_label": {"zh": "预计完成", "en": "Target"},
+    "path_share_label": {"zh": "📋 复制分享链接", "en": "📋 Copy share link"},
+    "path_follow_label": {"zh": "👤 推荐关注", "en": "👤 Follow"},
+    "chat_current_profile": {"zh": "当前画像", "en": "Profile"},
+    "browser_sort": {"zh": "排序", "en": "Sort"},
+    "chat_export": {"zh": "📥 导出对话", "en": "📥 Export Chat"},
+    "freshness_just_now": {"zh": "刚刚生成", "en": "Just generated"},
+    "freshness_min_ago": {"zh": "分钟前", "en": "min ago"},
+    "freshness_hour_ago": {"zh": "小时前", "en": "h ago"},
+    "freshness_over_day": {"zh": "超过1天", "en": ">1 day old"},
+    "retry_label": {"zh": "🔄 重试生成", "en": "🔄 Retry"},
 }
 
 
