@@ -252,3 +252,32 @@ class TestPathEstimatedDate:
         est = "?"
         # The path view checks isinstance(est, (int, float))
         assert not isinstance(est, (int, float))
+
+
+class TestChatFollowUps:
+    """Test _get_follow_ups heuristic suggestion engine."""
+
+    def test_rag_keyword_triggers_rag_suggestions(self):
+        from views.chat import _get_follow_ups
+        result = _get_follow_ups("RAG 是一种检索增强生成技术", "zh")
+        assert len(result) >= 2
+        assert any("RAG" in s for s in result)
+
+    def test_agent_keyword_triggers_agent_suggestions(self):
+        from views.chat import _get_follow_ups
+        result = _get_follow_ups("LangChain is great for building agents", "en")
+        assert len(result) >= 2
+        assert any("Agent" in s or "agent" in s.lower() for s in result)
+
+    def test_no_keyword_returns_generic(self):
+        from views.chat import _get_follow_ups
+        result = _get_follow_ups("你好，有什么需要帮助的吗？", "zh")
+        assert len(result) >= 2
+        # Generic suggestions should be returned
+        assert any("学" in s or "项目" in s for s in result)
+
+    def test_max_three_suggestions(self):
+        from views.chat import _get_follow_ups
+        # Reply mentions many topics
+        result = _get_follow_ups("RAG Agent Transformer 微调 部署", "zh")
+        assert len(result) <= 3
