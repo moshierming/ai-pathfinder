@@ -202,12 +202,25 @@ def main() -> None:
                         resources, profile.get("direction", ""), profile.get("language", ""),
                         profile.get("focus", "both"),
                     )
+                    # Collect relevant builders for the user's direction
+                    from config import DIRECTION_TO_DOMAIN
+                    _domains = DIRECTION_TO_DOMAIN.get(profile.get("direction", ""), [])
+                    _builders = [
+                        r for r in resources
+                        if r.get("type") == "builder"
+                        and _domains
+                        and any(d in r.get("domain", []) for d in _domains)
+                    ][:8]
                     progress_placeholder = st.empty()
 
                     def _show_progress(chars: int) -> None:
                         progress_placeholder.caption(f"⏳ 已接收 {chars} 字符…")
 
-                    path_data = generate_path(profile, filtered, on_progress=_show_progress)
+                    path_data = generate_path(
+                        profile, filtered,
+                        builders=_builders or None,
+                        on_progress=_show_progress,
+                    )
                     progress_placeholder.empty()
                     st.session_state.path = path_data
                     st.session_state.profile = profile
