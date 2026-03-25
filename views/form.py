@@ -5,7 +5,7 @@ import streamlit as st
 
 from config import (
     DIRECTIONS, FOCUS_MAP, FOCUS_OPTIONS, LANGUAGES, LEVELS, PREFERENCES,
-    PRESET_PROFILES,
+    PRESET_DESCRIPTIONS, PRESET_PROFILES,
 )
 from i18n import t
 from views import _lang
@@ -22,16 +22,6 @@ def render_form() -> tuple[bool, dict[str, object]]:
     st.subheader(t("form_quick_start", L))
     st.caption(t("form_quick_hint", L))
 
-    PRESET_DESCRIPTIONS = {
-        "💻 软测 → AI 转型": "AI 辅助用例生成、智能回归测试、Agent搭建",
-        "🤖 AI Agent 开发": "LangChain + LangGraph 多工具 Agent 实战",
-        "💬 LLM 应用入门": "Prompt → RAG → 向量数据库 → 部署",
-        "📊 ML / 数据科学": "数学基础 → sklearn → 特征工程 → 端到端项目",
-        "🎨 AIGC / 多模态创作": "Stable Diffusion + ComfyUI 全流程",
-        "🔧 MLOps / AI 工程化": "模型部署/实验管理/生产化",
-        "🔬 AI 研究 / 论文方向": "论文阅读 + 复现，读研准备",
-        "🌱 零基础入门 AI": "从Python开始，半年建立AI框架",
-    }
     preset_items = list(PRESET_PROFILES.items())
     rows = [preset_items[i:i + 4] for i in range(0, len(preset_items), 4)]
     for row in rows:
