@@ -143,6 +143,7 @@ def render_sidebar() -> str:
         st.markdown("[📦 GitHub](https://github.com/moshierming/ai-pathfinder)")
         st.markdown("[💬 社区讨论](https://github.com/moshierming/ai-pathfinder/discussions)")
         st.markdown("[🐛 反馈问题](https://github.com/moshierming/ai-pathfinder/issues)")
+        st.caption("v1.6.0 · 129 resources · 24 builders")
 
     return page
 
