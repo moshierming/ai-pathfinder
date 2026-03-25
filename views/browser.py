@@ -5,7 +5,7 @@ from collections import Counter
 
 import streamlit as st
 
-from config import FOCUS_EMOJI, LEVEL_EMOJI, TYPE_EMOJI
+from config import FOCUS_EMOJI, LEVEL_EMOJI, LEVEL_ORDER, TYPE_EMOJI
 from i18n import t
 from views import _lang
 
@@ -85,6 +85,22 @@ def render_resource_browser(resources: list[dict[str, object]]) -> None:
         filtered = [r for r in filtered if any(d in r.get("domain", ["general"]) for d in selected_domains)]
     if selected_focuses:
         filtered = [r for r in filtered if r.get("focus", "both") in selected_focuses]
+
+    # Sorting
+    sort_options_zh = ["默认", "难度 ↑", "难度 ↓", "时长 ↑", "时长 ↓"]
+    sort_options_en = ["Default", "Level ↑", "Level ↓", "Hours ↑", "Hours ↓"]
+    sort_opts = sort_options_zh if L == "zh" else sort_options_en
+    sort_label = "排序" if L == "zh" else "Sort"
+    sort_choice = st.selectbox(sort_label, sort_opts, label_visibility="collapsed")
+    sort_idx = sort_opts.index(sort_choice) if sort_choice in sort_opts else 0
+    if sort_idx == 1:
+        filtered.sort(key=lambda r: LEVEL_ORDER.get(r["level"], 3))
+    elif sort_idx == 2:
+        filtered.sort(key=lambda r: LEVEL_ORDER.get(r["level"], 3), reverse=True)
+    elif sort_idx == 3:
+        filtered.sort(key=lambda r: r.get("duration_hours", 0))
+    elif sort_idx == 4:
+        filtered.sort(key=lambda r: r.get("duration_hours", 0), reverse=True)
 
     st.caption(t("browser_showing", L, shown=len(filtered), total=len(resources)))
     st.divider()
