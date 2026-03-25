@@ -141,14 +141,14 @@ def _render_insights_section(
                 gen_dt = datetime.fromisoformat(gen_at)
                 delta_min = int((datetime.now() - gen_dt).total_seconds() / 60)
                 if delta_min < 5:
-                    freshness = " · 🟢 " + ("刚刚生成" if L == "zh" else "Just generated")
+                    freshness = " · 🟢 " + t("freshness_just_now", L)
                 elif delta_min < 60:
-                    freshness = f" · 🟢 {delta_min} " + ("分钟前" if L == "zh" else "min ago")
+                    freshness = f" · 🟢 {delta_min} " + t("freshness_min_ago", L)
                 elif delta_min < 1440:
                     hours = delta_min // 60
-                    freshness = f" · 🟡 {hours} " + ("小时前" if L == "zh" else "h ago")
+                    freshness = f" · 🟡 {hours} " + t("freshness_hour_ago", L)
                 else:
-                    freshness = " · 🔴 " + ("超过1天" if L == "zh" else ">1 day old")
+                    freshness = " · 🔴 " + t("freshness_over_day", L)
             except (ValueError, TypeError):
                 pass
         st.caption(t("radar_insights_date", L, date=date_str) + freshness)

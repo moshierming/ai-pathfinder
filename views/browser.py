@@ -90,7 +90,7 @@ def render_resource_browser(resources: list[dict[str, object]]) -> None:
     sort_options_zh = ["默认", "难度 ↑", "难度 ↓", "时长 ↑", "时长 ↓"]
     sort_options_en = ["Default", "Level ↑", "Level ↓", "Hours ↑", "Hours ↓"]
     sort_opts = sort_options_zh if L == "zh" else sort_options_en
-    sort_label = "排序" if L == "zh" else "Sort"
+    sort_label = t("browser_sort", L)
     sort_choice = st.selectbox(sort_label, sort_opts, label_visibility="collapsed")
     sort_idx = sort_opts.index(sort_choice) if sort_choice in sort_opts else 0
     if sort_idx == 1:

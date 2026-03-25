@@ -250,8 +250,7 @@ def main() -> None:
                     # Preserve profile for retry
                     st.session_state.preset_profile = profile
             if st.session_state.get("preset_profile") and not st.session_state.get("path"):
-                retry_label = "🔄 重试生成" if L == "zh" else "🔄 Retry"
-                if st.button(retry_label, use_container_width=True, type="primary"):
+                if st.button(t("retry_label", L), use_container_width=True, type="primary"):
                     st.rerun()
     else:
         render_path(st.session_state.path, resources)

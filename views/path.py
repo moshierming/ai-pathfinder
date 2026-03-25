@@ -22,7 +22,7 @@ def render_path(path_data: dict[str, object], resources: list[dict[str, object]]
     finish_tag = ""
     if isinstance(est_weeks, (int, float)) and est_weeks > 0:
         finish_date = (datetime.now() + timedelta(weeks=int(est_weeks))).strftime("%Y-%m-%d")
-        finish_label = "预计完成" if L == "zh" else "Target"
+        finish_label = t("path_finish_label", L)
         finish_tag = f" · {finish_label} {finish_date}"
 
     st.markdown(
@@ -37,7 +37,7 @@ def render_path(path_data: dict[str, object], resources: list[dict[str, object]]
     # Share link
     share_param = st.query_params.get("p", "")
     if share_param:
-        share_label = "📋 复制分享链接" if L == "zh" else "📋 Copy share link"
+        share_label = t("path_share_label", L)
         share_url = f"?p={share_param}"
         st.caption(f"{share_label}: `{share_url}`")
 
@@ -70,7 +70,7 @@ def render_path(path_data: dict[str, object], resources: list[dict[str, object]]
             week_rids = week.get("resources", [])
             missing_count = sum(1 for rid in week_rids if rid not in ridx)
             if missing_count and not w_res:
-                st.warning(t("path_week_no_resources", L) if L == "zh" else "No matching resources found for this week.")
+                st.warning(t("path_week_no_resources", L))
 
             for rid in week.get("resources", []):
                 r = ridx.get(rid)
@@ -114,8 +114,7 @@ def render_path(path_data: dict[str, object], resources: list[dict[str, object]]
                         )
                 if builder_names:
                     names_str = " · ".join(builder_names)
-                    follow_label = "推荐关注" if L == "zh" else "Follow"
-                    st.caption(f"👤 {follow_label}: {names_str}")
+                    st.caption(f"{t('path_follow_label', L)}: {names_str}")
 
             st.write("")
 
