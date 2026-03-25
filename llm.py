@@ -197,6 +197,26 @@ def generate_path(
     except json.JSONDecodeError:
         result = json.loads(_extract_json(full))
     result = _validate_path(result)
+
+    # Sanitise: remove resource/builder IDs that don't exist in the given pool
+    valid_ids = {r["id"] for r in resources}
+    if builders:
+        valid_ids.update(b["id"] for b in builders)
+    hallucinated = set()
+    for w in result.get("weeks", []):
+        orig = w.get("resources", [])
+        cleaned = [rid for rid in orig if rid in valid_ids]
+        removed = set(orig) - set(cleaned)
+        if removed:
+            hallucinated.update(removed)
+        w["resources"] = cleaned
+        # Also clean builders field
+        orig_b = w.get("builders", [])
+        if orig_b:
+            w["builders"] = [bid for bid in orig_b if bid in valid_ids]
+    if hallucinated:
+        _log.warning("generate_path hallucinated_ids=%s", sorted(hallucinated))
+
     path_cache[cache_key] = result
     elapsed = time.monotonic() - t0
     _log.info("generate_path completed weeks=%d chars=%d elapsed=%.1fs", len(result.get('weeks', [])), char_count, elapsed)
