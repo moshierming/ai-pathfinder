@@ -205,7 +205,10 @@ def render_path_analytics(path_data: dict[str, object], resources: list[dict[str
     m4.metric(t("analytics_lang", L), lang_label)
 
     st.write("")
-    tab1, tab2, tab3 = st.tabs([t("analytics_tab_dist", L), t("analytics_tab_pace", L), t("analytics_tab_topics", L)])
+    tab1, tab2, tab3, tab4 = st.tabs([
+        t("analytics_tab_dist", L), t("analytics_tab_pace", L),
+        t("analytics_tab_topics", L), t("analytics_tab_quality", L),
+    ])
 
     with tab1:
         col_a, col_b = st.columns(2)
@@ -285,3 +288,113 @@ def render_path_analytics(path_data: dict[str, object], resources: list[dict[str
                     f"<div style='width:30px;text-align:right;font-size:0.75rem;color:#475569;'>{cnt}</div></div>",
                     unsafe_allow_html=True,
                 )
+
+    with tab4:
+        scores = _compute_quality_scores(weeks, ridx, st.session_state.get("profile", {}))
+        overall = sum(scores.values()) // len(scores) if scores else 0
+        grade_color = "#16a34a" if overall >= 80 else "#ca8a04" if overall >= 60 else "#dc2626"
+        grade_emoji = "🟢" if overall >= 80 else "🟡" if overall >= 60 else "🔴"
+
+        st.markdown(
+            f"<div style='text-align:center;padding:16px;background:linear-gradient(135deg,#f8fafc,#e2e8f0);"
+            f"border-radius:12px;margin-bottom:16px;'>"
+            f"<div style='font-size:2rem;font-weight:800;color:{grade_color};'>"
+            f"{grade_emoji} {overall}</div>"
+            f"<div style='font-size:0.85rem;color:#475569;'>{t('quality_overall', L)}</div></div>",
+            unsafe_allow_html=True,
+        )
+
+        score_items = [
+            ("quality_progression", scores.get("progression", 0)),
+            ("quality_diversity", scores.get("diversity", 0)),
+            ("quality_time_balance", scores.get("time_balance", 0)),
+            ("quality_hands_on", scores.get("hands_on", 0)),
+        ]
+        for key, score in score_items:
+            bar_color = "#16a34a" if score >= 80 else "#ca8a04" if score >= 60 else "#dc2626"
+            st.markdown(
+                f"<div style='display:flex;align-items:center;margin-bottom:8px;'>"
+                f"<div style='width:110px;font-size:0.85rem;font-weight:500;color:#334155;'>"
+                f"{t(key, L)}</div>"
+                f"<div style='flex:1;background:#f1f5f9;border-radius:6px;height:24px;position:relative;'>"
+                f"<div style='width:{score}%;background:{bar_color};"
+                f"border-radius:6px;height:100%;transition:width 0.5s;'></div>"
+                f"<span style='position:absolute;right:8px;top:3px;font-size:0.75rem;color:#1e293b;'>"
+                f"{score}/100</span></div></div>",
+                unsafe_allow_html=True,
+            )
+
+
+def _compute_quality_scores(
+    weeks: list[dict[str, object]],
+    ridx: dict[str, dict[str, object]],
+    profile: dict[str, object],
+) -> dict[str, int]:
+    """Compute path quality scores (0-100) across 4 dimensions."""
+    if not weeks:
+        return {"progression": 0, "diversity": 0, "time_balance": 0, "hands_on": 0}
+
+    # 1. Difficulty progression — avg level should increase or stay flat across weeks
+    week_levels: list[float] = []
+    for w in weeks:
+        levels = [
+            LEVEL_ORDER.get(ridx[rid]["level"], 3)
+            for rid in w.get("resources", [])
+            if rid in ridx
+        ]
+        if levels:
+            week_levels.append(sum(levels) / len(levels))
+    if len(week_levels) >= 2:
+        increases = sum(1 for i in range(1, len(week_levels)) if week_levels[i] >= week_levels[i - 1] - 0.5)
+        progression = int(increases / (len(week_levels) - 1) * 100)
+    else:
+        progression = 80  # single week, neutral score
+
+    # 2. Type diversity — count distinct types (excluding channel/builder)
+    all_types: set[str] = set()
+    for w in weeks:
+        for rid in w.get("resources", []):
+            r = ridx.get(rid)
+            if r and r["type"] not in ("channel", "builder"):
+                all_types.add(r["type"])
+    # 4+ types = 100, 3 = 80, 2 = 60, 1 = 40
+    diversity = min(len(all_types) * 25, 100) if all_types else 0
+
+    # 3. Time balance — weeks should be close to budget
+    budget = profile.get("hours_per_week", 0)
+    if budget and budget > 0:
+        deviations: list[float] = []
+        for w in weeks:
+            w_hours = sum(
+                ridx[rid].get("duration_hours", 0)
+                for rid in w.get("resources", [])
+                if rid in ridx and ridx[rid]["type"] not in ("channel", "builder")
+            )
+            if w_hours > 0:
+                deviations.append(abs(w_hours - budget) / budget)
+        if deviations:
+            avg_dev = sum(deviations) / len(deviations)
+            time_balance = max(0, int(100 - avg_dev * 100))
+        else:
+            time_balance = 50
+    else:
+        time_balance = 70  # no budget set, neutral
+
+    # 4. Hands-on coverage — at least 1 repo per 3 weeks
+    total_w = len(weeks)
+    repo_weeks = sum(
+        1 for w in weeks
+        if any(
+            ridx.get(rid, {}).get("type") == "repo"
+            for rid in w.get("resources", [])
+        )
+    )
+    expected = max(1, total_w / 3)
+    hands_on = min(100, int(repo_weeks / expected * 100))
+
+    return {
+        "progression": max(0, min(100, progression)),
+        "diversity": max(0, min(100, diversity)),
+        "time_balance": max(0, min(100, time_balance)),
+        "hands_on": max(0, min(100, hands_on)),
+    }

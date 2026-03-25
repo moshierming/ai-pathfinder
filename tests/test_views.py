@@ -281,3 +281,48 @@ class TestChatFollowUps:
         # Reply mentions many topics
         result = _get_follow_ups("RAG Agent Transformer 微调 部署", "zh")
         assert len(result) <= 3
+
+
+class TestPathQualityScores:
+    """Test _compute_quality_scores path quality analysis."""
+
+    def _make_resources(self):
+        return {
+            "r1": {"id": "r1", "title": "A", "type": "course", "level": "beginner", "duration_hours": 5, "topics": []},
+            "r2": {"id": "r2", "title": "B", "type": "video", "level": "intermediate", "duration_hours": 8, "topics": []},
+            "r3": {"id": "r3", "title": "C", "type": "repo", "level": "advanced", "duration_hours": 10, "topics": []},
+            "r4": {"id": "r4", "title": "D", "type": "article", "level": "intermediate", "duration_hours": 3, "topics": []},
+        }
+
+    def test_good_progression_scores_high(self):
+        from views.path import _compute_quality_scores
+        ridx = self._make_resources()
+        weeks = [
+            {"week": 1, "goal": "", "resources": ["r1"]},
+            {"week": 2, "goal": "", "resources": ["r2"]},
+            {"week": 3, "goal": "", "resources": ["r3"]},
+        ]
+        scores = _compute_quality_scores(weeks, ridx, {"hours_per_week": 10})
+        assert scores["progression"] >= 80
+
+    def test_diverse_types_scores_high(self):
+        from views.path import _compute_quality_scores
+        ridx = self._make_resources()
+        weeks = [{"week": 1, "goal": "", "resources": ["r1", "r2", "r3", "r4"]}]
+        scores = _compute_quality_scores(weeks, ridx, {})
+        assert scores["diversity"] == 100
+
+    def test_hands_on_with_repos(self):
+        from views.path import _compute_quality_scores
+        ridx = self._make_resources()
+        weeks = [
+            {"week": 1, "goal": "", "resources": ["r1"]},
+            {"week": 2, "goal": "", "resources": ["r3"]},  # repo
+        ]
+        scores = _compute_quality_scores(weeks, ridx, {})
+        assert scores["hands_on"] >= 80
+
+    def test_empty_weeks_returns_zeros(self):
+        from views.path import _compute_quality_scores
+        scores = _compute_quality_scores([], {}, {})
+        assert all(v == 0 for v in scores.values())
