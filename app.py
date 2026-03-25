@@ -147,9 +147,9 @@ def render_sidebar(resources: list[dict[str, object]] | None = None) -> str:
         if resources:
             n_learn = sum(1 for r in resources if r.get('type') != 'builder')
             n_build = len(resources) - n_learn
-            st.caption(f"v1.6.0 · {n_learn + n_build} resources · {n_build} builders")
+            st.caption(f"v1.7.0 · {n_learn + n_build} resources · {n_build} builders")
         else:
-            st.caption("v1.6.0")
+            st.caption("v1.7.0")
 
     return page
 

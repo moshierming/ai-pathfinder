@@ -105,14 +105,27 @@ def render_resource_browser(resources: list[dict[str, object]]) -> None:
     st.caption(t("browser_showing", L, shown=len(filtered), total=len(resources)))
     st.divider()
 
+    # Build set of resource IDs in the current path
+    path_ids: set[str] = set()
+    path_data = st.session_state.get("path")
+    if path_data and isinstance(path_data, dict):
+        for w in path_data.get("weeks", []):
+            path_ids.update(w.get("resources", []))
+            path_ids.update(w.get("builders", []))
+
+    in_path_label = "📌 已在路径中" if L == "zh" else "📌 In your path"
+
     for r in filtered:
         lvl_emoji = LEVEL_EMOJI.get(r["level"], "⚪")
         typ_emoji = TYPE_EMOJI.get(r["type"], "🔗")
         lang_tag = "🇨🇳" if r.get("language") == "zh" else "🇬🇧"
         focus_tag = FOCUS_EMOJI.get(r.get("focus", "both"), "")
 
+        in_path = r["id"] in path_ids
+        title_suffix = f"  `{in_path_label}`" if in_path else ""
+
         cols = st.columns([5, 2, 2])
-        cols[0].markdown(f"{typ_emoji} **[{r['title']}]({r['url']})**")
+        cols[0].markdown(f"{typ_emoji} **[{r['title']}]({r['url']})**{title_suffix}")
         cols[0].caption(r.get("description", ""))
         cols[1].caption(f"{lvl_emoji} {r['level']} · {lang_tag}")
         hours = r.get("duration_hours")

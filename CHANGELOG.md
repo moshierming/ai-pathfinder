@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.7.0] — 2026-03-24
+
+### Added
+- **Chat 跟进建议**：每次 AI 回复后显示 2-3 个上下文相关的跟进问题按钮，覆盖 9 类话题 + 通用回退
+- **Chat 清除 + 导出**：新增「🗑️ 清空对话」按钮和「📥 导出对话」Markdown 下载
+- **资源浏览器"已在路径中"标记**：用户已生成路径时，浏览器中属于路径的资源显示 `📌 已在路径中` 标记
+
+### Changed
+- **i18n 内联字符串迁移**：12 个 `if L=="zh" else` 模式统一迁入 i18n.py，含新鲜度/分享/关注/排序/重试等
+- **README 更新**：测试徽章 234→240
+
+### Fixed
+- **i18n bug：`path_week_no_resources`**：英文模式下绕过 `t()` 函数直接硬编码字符串，已修正为正确的 `t()` 调用
+
+### Tests
+- 测试数: 236 → 240 (+4)
+- 新增: `TestChatFollowUps`（关键词匹配、通用回退、数量限制）
+
 ## [1.6.0] — 2026-03-24
 
 ### Added
