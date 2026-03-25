@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import streamlit as st
 
-from config import FOCUS_EMOJI
+from config import DIRECTION_TO_DOMAIN, FOCUS_EMOJI
 from i18n import t
 from llm import generate_path
 from logging_config import get_logger
@@ -209,7 +209,6 @@ def main() -> None:
                         st.warning(t("error_no_resources", L))
                         filtered = [r for r in resources if r.get("type") != "builder"][:20]
                     # Collect relevant builders for the user's direction
-                    from config import DIRECTION_TO_DOMAIN
                     _domains = DIRECTION_TO_DOMAIN.get(profile.get("direction", ""), [])
                     _builders = [
                         r for r in resources
