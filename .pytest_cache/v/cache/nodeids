@@ -104,6 +104,8 @@
   "tests/test_llm.py::TestExtractJson::()::test_markdown_no_lang",
   "tests/test_llm.py::TestExtractJson::()::test_text_around_json",
   "tests/test_llm.py::TestExtractJson::()::test_compact_resources_no_duration",
+  "tests/test_llm.py::TestHallucinatedIdCleaning::()::test_removes_invalid_resource_ids",
+  "tests/test_llm.py::TestHallucinatedIdCleaning::()::test_keeps_valid_builder_ids",
   "tests/test_llm_extended.py::TestGetLlmConfigExtended::()::test_session_key_takes_priority_over_secrets",
   "tests/test_llm_extended.py::TestGetLlmConfigExtended::()::test_secrets_takes_priority_over_env",
   "tests/test_llm_extended.py::TestGetLlmConfigExtended::()::test_empty_key_returns_empty",

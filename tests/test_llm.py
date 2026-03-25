@@ -483,3 +483,60 @@ class TestExtractJson:
                 "topics": ["ml"], "domain": ["general"], "focus": "both"}]
         result = _compact_resources(res)
         assert "0h" in result
+
+
+class TestHallucinatedIdCleaning:
+    """Test generate_path removes hallucinated resource IDs."""
+
+    def setup_method(self):
+        mock_st.session_state = {"settings_api_key": "sk-test"}
+        mock_st.secrets = MagicMock()
+        mock_st.secrets.get = MagicMock(return_value="")
+
+    @patch("llm.OpenAI")
+    def test_removes_invalid_resource_ids(self, MockOpenAI):
+        """IDs not in the resource pool should be stripped from weeks."""
+        path_json = json.dumps({
+            "summary": "test",
+            "weeks": [
+                {"week": 1, "goal": "g", "resources": ["r1", "FAKE_ID", "r2"]},
+            ],
+        })
+        MockOpenAI.return_value.chat.completions.create.return_value = _mock_stream(path_json)
+
+        from llm import generate_path
+        resources = [
+            {"id": "r1", "title": "A", "type": "course", "level": "beginner",
+             "topics": ["ml"], "duration_hours": 5, "domain": ["general"], "focus": "both"},
+            {"id": "r2", "title": "B", "type": "article", "level": "beginner",
+             "topics": ["dl"], "duration_hours": 3, "domain": ["general"], "focus": "both"},
+        ]
+        result = generate_path(
+            {"level": "a", "goal": "b", "hours_per_week": 5, "preference": "c", "language": "d"},
+            resources,
+        )
+        assert result["weeks"][0]["resources"] == ["r1", "r2"]
+
+    @patch("llm.OpenAI")
+    def test_keeps_valid_builder_ids(self, MockOpenAI):
+        """Builder IDs should be retained if passed."""
+        path_json = json.dumps({
+            "summary": "test",
+            "weeks": [
+                {"week": 1, "goal": "g", "resources": ["r1"], "builders": ["b1", "FAKE_B"]},
+            ],
+        })
+        MockOpenAI.return_value.chat.completions.create.return_value = _mock_stream(path_json)
+
+        from llm import generate_path
+        resources = [
+            {"id": "r1", "title": "A", "type": "course", "level": "beginner",
+             "topics": ["ml"], "duration_hours": 5, "domain": ["general"], "focus": "both"},
+        ]
+        builders = [{"id": "b1", "title": "Expert", "type": "builder", "topics": ["ml"]}]
+        result = generate_path(
+            {"level": "a", "goal": "b", "hours_per_week": 5, "preference": "c", "language": "d"},
+            resources,
+            builders=builders,
+        )
+        assert result["weeks"][0]["builders"] == ["b1"]
