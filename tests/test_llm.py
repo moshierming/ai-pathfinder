@@ -238,8 +238,8 @@ class TestHelpers:
                 "duration_hours": 5, "topics": [], "focus": "both"}]
         result = _compact_resources(res)
         assert "r1" in result
-        # focus='both' is omitted from compact format
-        assert result.endswith("5h|")
+        # focus='both' is omitted, language defaults to 'en', format now includes lang + desc
+        assert "5h|en|" in result
 
     def test_multiple_resources(self):
         from llm import _compact_resources

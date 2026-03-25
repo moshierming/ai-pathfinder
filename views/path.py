@@ -56,12 +56,32 @@ def render_path(path_data: dict[str, object], resources: list[dict[str, object]]
                 cols[0].markdown(title_text)
                 cols[0].caption(r.get("description", ""))
                 cols[1].caption(f"{lvl_emoji} {r['level']}")
-                duration_label = f"⏱ ~{r['duration_hours']}h/{'wk' if L == 'en' else '周'}" if is_channel else f"⏱ {r['duration_hours']}h"
-                cols[2].caption(f"{duration_label} · {lang_tag}")
+                hours = r.get("duration_hours")
+                if hours:
+                    unit = "wk" if L == "en" else "周"
+                    duration_label = f"⏱ ~{hours}h/{unit}" if is_channel else f"⏱ {hours}h"
+                else:
+                    duration_label = ""
+                cols[2].caption(f"{duration_label} · {lang_tag}" if duration_label else lang_tag)
                 done_key = f"done_{rid}_{week['week']}"
                 checked = cols[3].checkbox("✓", key=done_key, label_visibility="collapsed")
                 if checked:
                     done_count += 1
+
+            # Recommended builders for this week
+            week_builders = week.get("builders", [])
+            if week_builders:
+                builder_names = []
+                for bid in week_builders:
+                    b = ridx.get(bid)
+                    if b:
+                        builder_names.append(
+                            f"[{b['title']}]({b['url']})"
+                        )
+                if builder_names:
+                    names_str = " · ".join(builder_names)
+                    follow_label = "推荐关注" if L == "zh" else "Follow"
+                    st.caption(f"👤 {follow_label}: {names_str}")
 
             st.write("")
 

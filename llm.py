@@ -63,9 +63,21 @@ def _compact_resources(resources: list[dict[str, object]]) -> str:
         topics = ",".join(r["topics"][:2])
         focus = r.get("focus", "both")
         focus_tag = "" if focus == "both" else f"|{focus}"
+        lang = r.get("language", "en")
+        desc = str(r.get("description", ""))[:30]
         lines.append(
-            f"{r['id']}|{r['title']}|{r['type']}|{r['level']}|{r['duration_hours']}h{focus_tag}|{topics}"
+            f"{r['id']}|{r['title']}|{r['type']}|{r['level']}|{r['duration_hours']}h|{lang}{focus_tag}|{topics}|{desc}"
         )
+    return "\n".join(lines)
+
+
+def _compact_builders(builders: list[dict[str, object]]) -> str:
+    """Compact builder list for inclusion in path generation prompt."""
+    lines = []
+    for b in builders:
+        role = b.get("role", "")
+        topics = ",".join(b.get("topics", [])[:3])
+        lines.append(f"{b['id']}|{b['title']}|{role}|{topics}")
     return "\n".join(lines)
 
 
@@ -83,12 +95,15 @@ def generate_path(
     profile: dict[str, object],
     resources: list[dict[str, object]],
     *,
+    builders: list[dict[str, object]] | None = None,
     on_progress: Callable[[int], None] | None = None,
 ) -> dict[str, object]:
     """Call LLM to generate a personalized learning path (streaming).
 
     Parameters
     ----------
+    builders:
+        Optional relevant builder entries to recommend in the path.
     on_progress:
         Optional callback invoked with accumulated character count during
         streaming so the caller can show progress.
@@ -109,6 +124,15 @@ def generate_path(
 
     compact = _compact_resources(resources)
 
+    builders_section = ""
+    if builders:
+        builders_compact = _compact_builders(builders)
+        builders_section = f"""
+
+推荐大牛（{len(builders)}位，格式: id|姓名|角色|领域）：
+{builders_compact}
+在路径的相关阶段，可在 builders 字段推荐关注。"""
+
     user_msg = f"""用户信息：
 - 当前水平：{profile['level']}
 - 目标方向：{profile.get('direction', '通用AI方向')}
@@ -119,8 +143,8 @@ def generate_path(
 - 偏好学习方式：{profile['preference']}
 - 语言偏好：{profile['language']}
 
-可用资源（{len(resources)}条，格式: id|标题|类型|难度|时长|话题）：
-{compact}
+可用资源（{len(resources)}条，格式: id|标题|类型|难度|时长|语言|话题|简介）：
+{compact}{builders_section}
 
 请生成个性化学习路径。"""
 

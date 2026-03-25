@@ -283,16 +283,16 @@ class TestCompactResourcesEdge:
         res = [{"id": "r1", "title": "No Domain", "type": "article", "level": "beginner",
                 "duration_hours": 3, "topics": ["ml"], "focus": "both"}]
         result = _compact_resources(res)
-        # domain no longer included; focus='both' omitted
-        assert "r1|No Domain|article|beginner|3h|ml" == result
+        # format now: id|title|type|level|hours|lang|topics|desc
+        assert "r1|No Domain|article|beginner|3h|en|ml|" in result
 
     def test_resource_without_focus(self):
         from llm import _compact_resources
         res = [{"id": "r1", "title": "T", "type": "article", "level": "beginner",
                 "duration_hours": 1, "topics": [], "domain": ["general"]}]
         result = _compact_resources(res)
-        # default focus='both' is omitted from compact format
-        assert result == "r1|T|article|beginner|1h|"
+        # default focus='both' is omitted; format includes lang+desc
+        assert result.startswith("r1|T|article|beginner|1h|en|")
 
     def test_large_resource_list(self):
         from llm import _compact_resources
