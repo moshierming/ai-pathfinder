@@ -31,6 +31,7 @@ def render_resource_browser(resources: list[dict[str, object]]) -> None:
                 (t("browser_chinese", L), lang_counts.get("zh", 0), "#fef3c7", "#92400e"),
                 (t("browser_channels", L), type_counts.get("channel", 0), "#dbeafe", "#1e40af"),
                 (t("browser_repos", L), type_counts.get("repo", 0), "#dcfce7", "#166534"),
+                (t("browser_builders", L), type_counts.get("builder", 0), "#fce7f3", "#9d174d"),
                 (t("browser_foundational", L), focus_counts.get("foundational", 0), "#f3e8ff", "#6b21a8"),
                 (t("browser_applied", L), focus_counts.get("applied", 0), "#ffe4e6", "#9f1239"),
             ]

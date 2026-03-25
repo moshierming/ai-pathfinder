@@ -15,7 +15,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 - **路径生成 Prompt 质量深化**：SYSTEM_PROMPT 增加 5 条教学规则（逻辑闭环、双重曝光、Builder 融入、具体 Tips、资源描述摘要）
 - **路径 Builder 推荐**：LLM 在每周规划中可选择性推荐相关 builders，路径视图渲染"👤 推荐关注"链接
 - **Chat Builder 知识**：聊天上下文独立呈现 builders 段落（含 role + description），CHAT_SYSTEM_PROMPT 新增推荐大牛规则
+- **Chat 推荐问题引导**：空聊天时显示 4 个个性化推荐问题按钮
 - **Markdown 导出 Builder 信息**：每周末尾输出 `👤 推荐关注: [name](url)` builder 推荐
+- **路径每周时间预算对比**：expander 标题显示时间小计 + 预算比 (✅/⚠️)
+- **路径 JSON 结构验证**：`_validate_path()` 确保 LLM 返回完整数据结构，自动填充缺失字段
+- **资源浏览器 Builder 统计**：统计面板新增"👤 大牛"计数卡片
 
 ### Changed
 - **趋势雷达页面重构**：页面结构从"洞察→信息源→新手指南"升级为"个性化洞察→大牛推荐→信息源→新手指南"
@@ -25,9 +29,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 - **Analytics 防御**：`total_hours` / `w_hours` 排除 builder 类型，使用 `.get(duration_hours, 0)` 防御
 - **Export 防御**：Markdown 导出中 `duration_hours` 使用 `.get()` 避免 builder 类型 KeyError
 
+### Fixed
+- **Chat 消息防膨胀**：消息列表超 100 条自动裁剪；UI 只渲染最近 50 条；用户输入超 2000 字截断
+- **空资源降级**：资源过滤结果为空时降级使用全部资源生成路径
+
 ### Tests
-- 测试数: 209 → 223 (+14)
-- 新增：builder 数据完整性测试、个性化洞察验证、方向缓存隔离、radar 视图渲染、chat builder 集成、export builder 渲染
+- 测试数: 209 → 227 (+18)
+- 新增：builder 完整性、个性化洞察、方向缓存、radar 渲染、chat builder 集成、export builder、_validate_path
 
 ## [1.5.0] — 2026-03-24
 
