@@ -13,7 +13,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 ![Resources](https://img.shields.io/badge/resources-129条-orange)
 ![Builders](https://img.shields.io/badge/builders-24位-ff69b4)
-![Tests](https://img.shields.io/badge/tests-223-brightgreen)
+![Tests](https://img.shields.io/badge/tests-234-brightgreen)
 ![Providers](https://img.shields.io/badge/LLM_providers-9-blueviolet)
 [![Docker](https://img.shields.io/badge/docker-ready-2496ED?logo=docker&logoColor=white)](Dockerfile)
 
@@ -264,7 +264,7 @@ ai-pathfinder/
 │   ├── import_plan.py  #   导入学习计划
 │   ├── progress.py     #   进度持久化
 │   └── settings.py     #   API 供应商设置
-└── tests/              # 测试套件（128 单元 + 10 E2E = 138 个测试）
+└── tests/              # 测试套件（234 单元 + 10 E2E）
     ├── test_app.py         # 核心功能：编码/筛选/导出/常量
     ├── test_config.py      # 配置完整性：Presets/Emoji/方向映射
     ├── test_i18n.py        # 国际化：翻译覆盖/格式化/回退

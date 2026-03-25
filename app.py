@@ -93,7 +93,7 @@ h1 {
 # ─── 侧边栏 ──────────────────────────────────────────────────────────────────
 
 
-def render_sidebar() -> str:
+def render_sidebar(resources: list[dict[str, object]] | None = None) -> str:
     with st.sidebar:
         lang_col1, lang_col2 = st.columns([3, 1])
         with lang_col1:
@@ -144,7 +144,12 @@ def render_sidebar() -> str:
         st.markdown("[📦 GitHub](https://github.com/moshierming/ai-pathfinder)")
         st.markdown("[💬 社区讨论](https://github.com/moshierming/ai-pathfinder/discussions)")
         st.markdown("[🐛 反馈问题](https://github.com/moshierming/ai-pathfinder/issues)")
-        st.caption("v1.6.0 · 129 resources · 24 builders")
+        if resources:
+            n_learn = sum(1 for r in resources if r.get('type') != 'builder')
+            n_build = len(resources) - n_learn
+            st.caption(f"v1.6.0 · {n_learn + n_build} resources · {n_build} builders")
+        else:
+            st.caption("v1.6.0")
 
     return page
 
@@ -170,7 +175,7 @@ def main() -> None:
                 st.session_state.preset_profile = restored
                 st.session_state.from_shared_url = True
 
-    page = render_sidebar()
+    page = render_sidebar(resources)
 
     if "Chat" in page or "对话" in page:
         render_chat(resources)
