@@ -68,13 +68,15 @@ def render_resource_browser(resources: list[dict[str, object]]) -> None:
 
     filtered = resources
     if search_query:
-        q = search_query.lower()
-        filtered = [
-            r for r in filtered
-            if q in r["title"].lower()
-            or q in r.get("description", "").lower()
-            or any(q in tp for tp in r.get("topics", []))
-        ]
+        words = search_query.lower().split()
+        def _match(r: dict[str, object]) -> bool:
+            haystack = (
+                r["title"].lower() + " "
+                + r.get("description", "").lower() + " "
+                + " ".join(r.get("topics", []))
+            )
+            return all(w in haystack for w in words)
+        filtered = [r for r in filtered if _match(r)]
     if selected_topics:
         filtered = [r for r in filtered if any(tp in r["topics"] for tp in selected_topics)]
     if selected_types:
