@@ -32,16 +32,22 @@ streamlit run app.py
   domain: [llm-app]  # general/data-science/llm-app/ai-agent/software-testing/mlops/aigc/research
   level: intermediate  # beginner/beginner-to-intermediate/intermediate/intermediate-to-advanced/advanced
   duration_hours: 10
-  description: "一句话中文描述"
+  description: "一句话中文描述（≥15字，包含亮点）"
   language: en  # en/zh
   free: true
   focus: applied  # foundational/applied/both
+  verified_date: "2026-04-06"  # 验证日期
 ```
 
-资源质量标准：
-- 内容完整且可访问
-- 优先免费资源
-- 尽量覆盖 `domain` 和 `focus` 中较少的分类
+> Builders（b* 类型）额外需要 `role`（researcher/engineer/founder/educator）和 `links`（社交链接）字段。
+
+添加后运行审计验证：
+
+```bash
+python scripts/audit_content.py
+```
+
+详细质量标准见 [CONTENT_QUALITY.md](CONTENT_QUALITY.md)。
 
 ### 🐛 报告 Bug
 
@@ -70,10 +76,21 @@ config.py       # 常量和预设配置
 llm.py          # LLM 客户端
 utils.py        # 工具函数
 i18n.py         # 国际化翻译
-views/          # 8 个视图模块
-tests/          # 113 个测试
-resources.yaml  # 资源库
+views/          # 9 个视图模块
+tests/          # 244 单元 + 10 E2E 测试
+resources.yaml  # 资源库（128 条）
+scripts/        # 工具脚本（内容审计等）
 ```
+
+## 项目治理
+
+本项目遵循 AI Agent 自进化体系，请了解：
+
+- **不可变原则**（开源免费、资源只增不删等）：见 [EVOLUTION.md](EVOLUTION.md)
+- **变更安全分级**（Safe / Moderate / Dangerous）：见 [EVOLUTION.md](EVOLUTION.md#变更安全分级)
+- **内容质量标准**（六维度管理）：见 [CONTENT_QUALITY.md](CONTENT_QUALITY.md)
+
+新增资源须通过 `python scripts/audit_content.py` 验证。
 
 ## 代码规范
 

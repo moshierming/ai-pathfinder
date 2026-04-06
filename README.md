@@ -2,18 +2,18 @@
 
 # 🧭 AI Pathfinder
 
-**个性化AI学习路径规划工具 — 开源免费**
+**在 AI 时代学习 AI 不应该这么难。**
 
-告诉我你现在的水平和目标，我帮你从 **105 条精选资源 · 24 位 AI 大牛 · 15 个持续信息源**中规划最短最有效的学习路径。
+告诉我你的水平和目标，我帮你从 **104 条精选资源 · 24 位 AI 大牛 · 15 个持续信息源**中规划最短最有效的学习路径。
 
 [![CI](https://github.com/moshierming/ai-pathfinder/actions/workflows/ci.yml/badge.svg)](https://github.com/moshierming/ai-pathfinder/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/moshierming/ai-pathfinder)](https://github.com/moshierming/ai-pathfinder/releases/latest)
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://ai-pathfinder.streamlit.app)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-![Resources](https://img.shields.io/badge/resources-129条-orange)
+![Resources](https://img.shields.io/badge/resources-128条-orange)
 ![Builders](https://img.shields.io/badge/builders-24位-ff69b4)
-![Tests](https://img.shields.io/badge/tests-240-brightgreen)
+![Tests](https://img.shields.io/badge/tests-244-brightgreen)
 ![Providers](https://img.shields.io/badge/LLM_providers-9-blueviolet)
 [![Docker](https://img.shields.io/badge/docker-ready-2496ED?logo=docker&logoColor=white)](Dockerfile)
 
@@ -21,25 +21,36 @@
 
 ---
 
-## 为什么需要这个？
+## 为什么做这个？
 
-| 现状 | 问题 |
-|------|------|
-| 资源太多 | Coursera、YouTube、HuggingFace、B站、论文... 不知道从哪开始 |
-| 难度错配 | 初学者看了进阶内容浪费时间，有基础的人重复学入门 |
-| 路径断裂 | 学了 Python 不知道下一步学什么，学了 sklearn 不知道怎么过渡到 LLM |
-| 冷启动门槛 | 不知道该填什么目标，不知道自己在哪个水平 |
-| 缺少持续来源 | 学完课程后不知道去哪里跟踪 AI 前沿动态 |
-| 基础 vs 实战模糊 | 想直接上手做项目，却被推了一堆理论课 |
+AI 正在重塑每一个行业。无数人想学习 AI——软件工程师想转型、传统算法工程师想升级、AI 从业者想跟上前沿——但他们面对的第一个障碍不是技术本身，而是**不知道从哪里开始**。
 
-**AI Pathfinder** 根据你的**水平 + 目标 + 时间 + 方向 + 学习侧重**，从精选资源库中编排一条刚好合适的学习路径。
+Coursera 上有 2000+ 门 AI 课程，YouTube 上有无穷无尽的教程，GitHub 上每天涌现新项目。**资源不是太少，而是太多。真正稀缺的不是内容，而是一条刚好适合你的路径。**
+
+AI Pathfinder 做的事情很简单：
+1. 了解你是谁（水平、目标、时间、方向、偏好）
+2. 从**人类策展**的精选资源库中，用 AI 编排一条刚好适合你的路径
+3. 帮你持续跟踪 AI 前沿，不在学完课程后迷失
+
+> 📖 完整的产品愿景、设计原则和成功定义见 [VISION.md](VISION.md)
+
+---
+
+## 为谁服务
+
+| 用户类型 | 典型场景 |
+|---------|---------|
+| **软件工程师转 AI** | 有 Python 基础，想学 LLM 应用 / Agent 开发 / AI 辅助测试 |
+| **传统算法转 LLM** | 有 ML 基础，想跟上 LLM 时代的架构和工具链 |
+| **AI 从业者追前沿** | 已在 AI 领域，想系统跟踪论文、工具、行业动态 |
+| **零基础入门** | 想从 Python 开始，逐步建立 AI 知识框架 |
 
 ---
 
 ## 核心功能
 
 ### 🗺️ 个性化路径规划
-填写学习画像（水平、目标、时间、方向、侧重），LLM 从 105 条资源中编排专属周计划，支持进度追踪。
+填写学习画像（水平、目标、时间、方向、侧重），LLM 从 104 条精选资源中编排专属周计划，支持进度追踪。
 
 ### ⚡ 预设模板快速开始
 不知道填什么？点击一个最接近你的方向，自动填入全部表单字段：
@@ -72,7 +83,7 @@
 生成学习路径后，地址栏自动更新为携带参数的 URL（如 `?p=eyJ...`），直接复制分享给朋友或保存为书签，下次打开即可恢复画像重新生成。
 
 ### 📚 资源浏览器
-独立页面浏览全部 105 条资源，支持 5 维筛选（话题/类型/难度/方向/侧重）+ 关键词搜索 + 统计概览。
+独立页面浏览全部资源，支持 5 维筛选（话题/类型/难度/方向/侧重）+ 关键词搜索 + 统计概览。
 
 ### ⚙️ 多供应商 API 支持
 在侧边栏直接切换（均兼容 OpenAI SDK）：
@@ -185,7 +196,9 @@ GITHUB_TOKEN = "ghp_..."   # 可选，用于反馈收集
 
 ## 资源库
 
-当前收录 **105 条精选资源**（90 条学习资源 + 15 个持续信息源），覆盖 8 个方向，中英文兼顾：
+当前收录 **128 条活跃资源**（89 条学习资源 + 15 个持续信息源 + 24 位行业大牛），覆盖 8 个方向，中英文兼顾：
+
+> 📊 内容质量由自动化审计脚本持续监控，详见 [CONTENT_QUALITY.md](CONTENT_QUALITY.md)
 
 | 类型 | 数量 | 说明 |
 |------|------|------|
@@ -217,28 +230,29 @@ GITHUB_TOKEN = "ghp_..."   # 可选，用于反馈收集
 | 🎨 AIGC / 多模态 | Stable Diffusion, ComfyUI, Diffusers, DALL·E |
 | 🌐 通用基础 | Python、数学基础 |
 
-中文资源 26 条（含 6 个中文信息源），优先中文语言偏好时自动排前。
+中文资源 37 条（含中文信息源和 Builders），优先中文语言偏好时自动排前。
+
+---
+
+## 项目治理
+
+本项目由 AI Agent 持续维护，遵循以下治理体系：
+
+| 文档 | 说明 |
+|------|------|
+| [VISION.md](VISION.md) | 产品愿景 — 信念、用户画像、设计原则、成功定义 |
+| [EVOLUTION.md](EVOLUTION.md) | 进化宪法 — 不可变原则、变更安全分级、质量红线 |
+| [CONTENT_QUALITY.md](CONTENT_QUALITY.md) | 内容质量策略 — 六维度管理 + 自动化审计 |
+| [AGENTS.md](AGENTS.md) | AI Agent 操作手册 — 自进化协议 + 约束清单 |
+| [SECURITY.md](SECURITY.md) | 安全政策 — XSS 防护、输入校验、密钥管理 |
 
 ---
 
 ## 贡献资源
 
-欢迎在 `resources.yaml` 中添加高质量免费学习资源：
+欢迎在 `resources.yaml` 中添加高质量免费学习资源。详细贡献指南见 [CONTRIBUTING.md](CONTRIBUTING.md)，内容质量标准见 [CONTENT_QUALITY.md](CONTENT_QUALITY.md)。
 
-```yaml
-- id: r091
-  title: "资源标题"
-  url: "https://..."
-  type: course  # course/video/article/repo/book/channel
-  topics: [llm, rag]
-  domain: [llm-app]  # general/data-science/llm-app/ai-agent/software-testing/mlops/aigc/research
-  level: intermediate  # beginner/beginner-to-intermediate/intermediate/intermediate-to-advanced/advanced
-  duration_hours: 10   # channel 类型填每周推荐投入小时数
-  description: "一句话描述（中文）"
-  language: en  # en/zh
-  free: true
-  focus: applied  # foundational/applied/both
-```
+新增资源须通过审计验证：`python scripts/audit_content.py`
 
 ---
 
@@ -252,7 +266,7 @@ ai-pathfinder/
 ├── utils.py            # 工具函数：资源加载/编码/筛选/导出
 ├── i18n.py             # 国际化：中英文 170+ 翻译条目
 ├── logging_config.py   # 日志配置：RotatingFileHandler
-├── resources.yaml      # 资源库：105 条精选学习资源
+├── resources.yaml      # 资源库：128 条资源（学习+信息源+大牛）
 ├── views/              # 视图模块（9 个独立文件）
 │   ├── __init__.py     #   共享工具函数 (_lang)
 │   ├── path.py         #   路径展示 + 可视化分析
@@ -264,7 +278,11 @@ ai-pathfinder/
 │   ├── import_plan.py  #   导入学习计划
 │   ├── progress.py     #   进度持久化
 │   └── settings.py     #   API 供应商设置
-└── tests/              # 测试套件（240 单元 + 10 E2E）
+├── EVOLUTION.md        # 进化宪法：不可变原则 + 安全分级
+├── CONTENT_QUALITY.md  # 内容质量：六维度管理策略
+├── scripts/            # 工具脚本
+│   └── audit_content.py  # 内容质量审计
+└── tests/              # 测试套件（244 单元 + 10 E2E）
     ├── test_app.py         # 核心功能：编码/筛选/导出/常量
     ├── test_config.py      # 配置完整性：Presets/Emoji/方向映射
     ├── test_i18n.py        # 国际化：翻译覆盖/格式化/回退
@@ -283,8 +301,8 @@ ai-pathfinder/
 # 安装依赖
 pip install -r requirements.txt
 
-# 运行全部 128 个单元测试
-python -m pytest tests/ -v -m "not e2e"
+# 运行全部单元测试
+python -m pytest tests/ --ignore=tests/e2e -v
 
 # 运行 E2E 测试（需要 Python 3.8+ 和 Playwright）
 pip install pytest-playwright && playwright install chromium
