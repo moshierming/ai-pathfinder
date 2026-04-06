@@ -45,7 +45,7 @@ def render_path(path_data: dict[str, object], resources: list[dict[str, object]]
 
     total_resources = 0
     done_count = 0
-    hours_budget = st.session_state.get("profile", {}).get("hours_per_week")
+    hours_budget = (st.session_state.get("profile") or {}).get("hours_per_week")
     total_weeks = len(path_data.get("weeks", []))
 
     for week in path_data.get("weeks", []):

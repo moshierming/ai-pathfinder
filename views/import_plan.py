@@ -38,11 +38,11 @@ def render_import_plan(resources: list[dict[str, object]]) -> None:
             st.success(t("import_success", L))
 
             with st.expander(t("import_profile_preview", L), expanded=True):
-                st.write(f"**水平**: {profile.get('level', '-')}")
-                st.write(f"**方向**: {profile.get('direction', '-')}")
-                st.write(f"**学习重心**: {profile.get('focus', '-')}")
-                st.write(f"**目标**: {profile.get('goal', '-')}")
-                st.write(f"**时间**: {profile.get('hours_per_week', '-')}h/{'wk' if L == 'en' else '周'}")
+                st.write(f"**{t('import_level', L)}**: {profile.get('level', '-')}")
+                st.write(f"**{t('import_direction', L)}**: {profile.get('direction', '-')}")
+                st.write(f"**{t('import_focus', L)}**: {profile.get('focus', '-')}")
+                st.write(f"**{t('import_goal', L)}**: {profile.get('goal', '-')}")
+                st.write(f"**{t('import_time', L)}**: {profile.get('hours_per_week', '-')}h/{'wk' if L == 'en' else '周'}")
 
             # Show progress info if present
             done_data = data.get("done", {})
@@ -51,10 +51,10 @@ def render_import_plan(resources: list[dict[str, object]]) -> None:
                 st.info(t("progress_import_restored", L, done=len(done_data), chat=len(chat_data)))
 
             with st.expander(t("import_path_preview", L)):
-                st.write(f"**总结**: {path_data.get('summary', '-')}")
-                st.write(f"**周数**: {path_data.get('estimated_weeks', '?')}")
+                st.write(f"**{t('import_summary', L)}**: {path_data.get('summary', '-')}")
+                st.write(f"**{t('import_weeks_count', L)}**: {path_data.get('estimated_weeks', '?')}")
                 for week in path_data.get("weeks", [])[:3]:
-                    st.caption(f"第 {week['week']} 周: {week['goal']}")
+                    st.caption(t("import_week_preview", L, n=week['week'], goal=week['goal']))
 
             if st.button(t("import_load", L), type="primary", use_container_width=True):
                 st.session_state.path = path_data

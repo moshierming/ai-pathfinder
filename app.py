@@ -1,11 +1,14 @@
 """AI Pathfinder — Streamlit entry point."""
 from __future__ import annotations
 
+import threading
+import time
+
 import streamlit as st
 
 from config import DIRECTION_TO_DOMAIN, FOCUS_EMOJI
 from i18n import t
-from llm import generate_path
+from llm import generate_path, get_llm_config
 from logging_config import get_logger
 from utils import load_resources as _load_resources_uncached, decode_profile, encode_profile, filter_resources_for_direction
 from views import _lang
@@ -15,7 +18,7 @@ from views.feedback import render_feedback
 from views.form import render_form
 from views.import_plan import render_import_plan
 from views.path import render_path
-from views.progress import render_progress_restore
+from views.progress import render_progress_restore, load_progress_local, restore_progress, save_progress_local
 from views.radar import render_trend_radar
 from views.settings import render_settings
 
@@ -175,6 +178,18 @@ def main() -> None:
                 st.session_state.preset_profile = restored
                 st.session_state.from_shared_url = True
 
+    # 自动恢复上次的学习路径（无 URL 参数且无当前路径时）
+    if (
+        st.session_state.path is None
+        and not st.query_params.get("p", "")
+        and "auto_restore_tried" not in st.session_state
+    ):
+        st.session_state.auto_restore_tried = True
+        saved = load_progress_local()
+        if saved and restore_progress(saved):
+            st.query_params["p"] = encode_profile(saved["profile"])
+            st.rerun()
+
     page = render_sidebar(resources)
 
     if "Chat" in page or "对话" in page:
@@ -193,68 +208,111 @@ def main() -> None:
     # 路径规划页面
     L = _lang()
     if st.session_state.path is None:
-        submitted, profile = render_form()
-        if submitted:
-            goal_text = profile["goal"].strip()
-            if not goal_text:
-                st.error(t("form_empty_goal", L))
-                return
-            if len(goal_text) > 1000:
-                st.error(t("form_goal_too_long", L))
-                return
-            with st.status(t("form_generating", L), expanded=True) as status:
-                try:
-                    status.update(label=t("form_generating", L), state="running")
-                    filtered = filter_resources_for_direction(
-                        resources, profile.get("direction", ""), profile.get("language", ""),
-                        profile.get("focus", "both"),
-                    )
-                    if not filtered:
-                        status.update(label=t("form_generating", L), state="error")
-                        st.warning(t("error_no_resources", L))
-                        filtered = [r for r in resources if r.get("type") != "builder"][:20]
-                    # Collect relevant builders for the user's direction
-                    _domains = DIRECTION_TO_DOMAIN.get(profile.get("direction", ""), [])
-                    _builders = [
-                        r for r in resources
-                        if r.get("type") == "builder"
-                        and _domains
-                        and any(d in r.get("domain", []) for d in _domains)
-                    ][:8]
-                    progress_placeholder = st.empty()
+        gen_status = st.session_state.get("_gen_status")
 
-                    def _show_progress(chars: int) -> None:
-                        progress_placeholder.caption(f"⏳ 已接收 {chars} 字符…")
-
-                    path_data = generate_path(
-                        profile, filtered,
-                        builders=_builders or None,
-                        on_progress=_show_progress,
-                    )
-                    progress_placeholder.empty()
-                    st.session_state.path = path_data
-                    st.session_state.profile = profile
-                    st.query_params["p"] = encode_profile(profile)
-                    get_logger().info("path_generated direction=%s level=%s", profile.get('direction', ''), profile.get('level', ''))
-                    status.update(label=t("form_generating", L), state="complete")
-                    st.rerun()
-                except Exception as e:
-                    err = str(e)
-                    get_logger().error("path_generation_failed: %s", err)
-                    status.update(label=t("form_generating", L), state="error")
-                    st.error(f"{t('error_generate', L)}{err}")
-                    if "api_key" in err.lower() or "apikey" in err.lower() or "请配置" in err:
-                        st.info(t("error_api_hint", L))
-                    elif "404" in err:
-                        st.info(t("error_model_hint", L))
-                    # Preserve profile for retry
-                    st.session_state.preset_profile = profile
+        if gen_status == "running":
+            # ── 后台生成中 — 轮询结果，允许导航 ─────────────────────────
+            container = st.session_state._gen_container
+            if container["status"] == "done":
+                st.session_state.path = container["result"]
+                st.session_state.profile = st.session_state._gen_profile
+                st.query_params["p"] = encode_profile(st.session_state._gen_profile)
+                save_progress_local()
+                get_logger().info(
+                    "path_generated direction=%s level=%s",
+                    st.session_state._gen_profile.get("direction", ""),
+                    st.session_state._gen_profile.get("level", ""),
+                )
+                st.session_state._gen_status = None
+                st.rerun()
+            elif container["status"] == "error":
+                st.session_state._gen_status = None
+                err = container["error"]
+                get_logger().error("path_generation_failed: %s", err)
+                st.error(f"{t('error_generate', L)}{err}")
+                if "api_key" in err.lower() or "apikey" in err.lower() or "请配置" in err:
+                    st.info(t("error_api_hint", L))
+                elif "404" in err:
+                    st.info(t("error_model_hint", L))
+                st.session_state.preset_profile = st.session_state._gen_profile
+            else:
+                # 仍在生成 — 展示进度，1 秒后自动刷新
+                chars = container.get("chars", 0)
+                gen_msg = t("gen_bg_running", L)
+                if chars:
+                    gen_msg += f"（{t('gen_bg_chars', L).format(n=chars)}）"
+                st.info(f"⏳ {gen_msg}")
+                st.caption(f"💡 {t('gen_bg_hint', L)}")
+                time.sleep(1)
+                st.rerun()
+        else:
+            submitted, profile = render_form()
+            if submitted:
+                goal_text = profile["goal"].strip()
+                if not goal_text:
+                    st.error(t("form_empty_goal", L))
+                    return
+                if len(goal_text) > 1000:
+                    st.error(t("form_goal_too_long", L))
+                    return
+                # 预提取配置，启动后台线程生成路径
+                llm_config = get_llm_config()
+                if not llm_config[0]:
+                    st.error(f"{t('error_generate', L)}请配置 DASHSCOPE_API_KEY")
+                    return
+                filtered = filter_resources_for_direction(
+                    resources, profile.get("direction", ""), profile.get("language", ""),
+                    profile.get("focus", "both"),
+                )
+                if not filtered:
+                    st.warning(t("error_no_resources", L))
+                    filtered = [r for r in resources if r.get("type") != "builder"][:20]
+                _domains = DIRECTION_TO_DOMAIN.get(profile.get("direction", ""), [])
+                _builders = [
+                    r for r in resources
+                    if r.get("type") == "builder"
+                    and _domains
+                    and any(d in r.get("domain", []) for d in _domains)
+                ][:8]
+                _start_bg_generation(profile, filtered, _builders, llm_config)
+                st.rerun()
             if st.session_state.get("preset_profile") and not st.session_state.get("path"):
                 if st.button(t("retry_label", L), use_container_width=True, type="primary"):
                     st.rerun()
     else:
         render_path(st.session_state.path, resources)
         render_feedback()
+
+
+def _start_bg_generation(
+    profile: dict, filtered: list, builders: list, llm_config: tuple[str, str, str],
+) -> None:
+    """Kick off path generation in a daemon thread so the UI stays responsive."""
+    container: dict = {"status": "running", "result": None, "error": None, "chars": 0}
+    st.session_state._gen_container = container
+    st.session_state._gen_profile = profile
+    st.session_state._gen_status = "running"
+
+    def _worker() -> None:
+        try:
+            def _progress(chars: int) -> None:
+                container["chars"] = chars
+
+            result = generate_path(
+                profile,
+                filtered,
+                builders=builders or None,
+                on_progress=_progress,
+                _explicit_config=llm_config,
+            )
+            container["result"] = result
+            container["status"] = "done"
+        except Exception as exc:
+            container["error"] = str(exc)
+            container["status"] = "error"
+
+    thread = threading.Thread(target=_worker, daemon=True)
+    thread.start()
 
 
 if __name__ == "__main__":

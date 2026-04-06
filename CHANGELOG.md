@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.7.1] — 2026-04-06
+
+### Added
+- **自进化基建**：搭建 AI Agent 自主进化体系
+  - `EVOLUTION.md`：进化宪法，定义不可变原则、变更安全分级（Safe/Moderate/Dangerous）、质量红线
+  - `AGENTS.md` 增强：自进化协议、周期、流程、安全分级判定标准、约束检查清单
+  - `.github/ISSUE_TEMPLATE/feedback.md`：通用反馈模板，对接 App 内反馈和社区建议
+  - `.github/labels.yml`：标签体系定义（ai-safe/ai-moderate/ai-dangerous/ai-done）
+
+### Fixed
+- **Chat 重复清空按钮** (#3)：`render_chat()` 底部有两个同名 `chat_clear` 按钮，导致 DuplicateWidgetID 错误，删除重复项
+- **Chat 流式响应 AttributeError** (#3)：某些 LLM provider 返回的 delta 无 `content` 属性时，使用 `getattr` 安全访问 + `str()` 防御
+- **Chat 页面 None profile 崩溃** (#3, #12)：`st.session_state.profile` 为 `None` 时，`get("profile", {})` 返回 `None` 而非空字典，导致 `.get("direction")` 抛 AttributeError。修复为 `(get("profile") or {})`
+- **反馈 Issue 来源标识**：GitHub Issues 自动创建的反馈顶部增加 bot 标识，区分自动反馈和维护者操作
+- **路径持久化** (#4)：路径生成后自动保存到本地，下次打开应用自动恢复上次的学习路径和进度
+- **路径生成非阻塞** (#13)：路径生成改为后台线程执行，LLM 流式调用期间用户可自由切换到其他页面（对话、资源浏览等），生成完毕后回到路径页即可查看结果
+- **secrets.toml 缺失崩溃**：`get_llm_config()` 调用 `st.secrets.get()` 在无 `secrets.toml` 文件时抛 `StreamlitSecretNotFoundError`，改为安全的 `_secret()` 包装函数
+
+### Changed
+- **import_plan.py 国际化**：7 处硬编码中文标签迁移到 i18n.py，英文模式下正确显示
+
+> 🤖 由 AI Agent 首轮自进化完成
+
 ## [1.7.0] — 2026-03-24
 
 ### Added
