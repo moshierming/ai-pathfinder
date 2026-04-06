@@ -136,14 +136,15 @@ resources:
     title: "李沐论文精读系列"
     url: "https://space.bilibili.com/1567748478/channel/collectiondetail?sid=32744"
     type: video
-    topics: [deep-learning, research, paper-reading]
-    domain: [research]
+    topics: [deep-learning, research, paper-reading, transformers, vision, nlp]
+    domain: [research, data-science]
     level: intermediate-to-advanced
-    duration_hours: 30
-    description: "手把手带读经典论文，培养阅读论文能力"
+    duration_hours: 40
+    description: "李沐逐篇精读ResNet/Transformer/BERT等经典论文，中文深度讲解，科研/工程必看"
     language: zh
     free: true
     focus: foundational
+    verified_date: "2026-04-06"
 
   # ── NLP & Transformers ────────────────────────────────────────────────────
   - id: r012
@@ -817,6 +818,7 @@ resources:
     language: zh
     free: true
     focus: foundational
+    deprecated: true  # 与 r011 URL 重复，内容已合并到 r011
 
   - id: r063
     title: "LLM 实战手册（DataWhale llm-cookbook）"

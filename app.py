@@ -25,8 +25,9 @@ from views.settings import render_settings
 
 @st.cache_data(show_spinner=False, ttl=3600)
 def load_resources() -> list[dict[str, object]]:
-    """Cached wrapper — YAML is parsed once, refreshed every hour."""
-    return _load_resources_uncached()
+    """Cached wrapper — YAML is parsed once, refreshed every hour.
+    Excludes deprecated resources from active use."""
+    return [r for r in _load_resources_uncached() if not r.get("deprecated")]
 
 
 st.set_page_config(

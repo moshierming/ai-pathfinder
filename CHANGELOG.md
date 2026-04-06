@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.7.2] — 2026-04-06
+
+### Added
+- **产品愿景文档**（`VISION.md`）：系统化定义产品信念、核心用户画像、差异化定位、设计原则（6 条）、成功指标（短中长期）、架构哲学、文档体系
+- **内容质量管理机制**：
+  - `CONTENT_QUALITY.md`：内容质量管理策略（六维度：完整性、新鲜度、准确性、覆盖度、去重、描述质量）
+  - `scripts/audit_content.py`：自动化内容审计脚本，支持字段完整性、URL 去重、描述质量、覆盖度分析、链接检测（`--check-links`）、新鲜度跟踪
+  - `resources.yaml` 新增 `deprecated` 字段支持：弃用资源不再出现在推荐中
+  - `resources.yaml` 新增 `verified_date` 字段支持：追踪资源验证时效性
+  - 进化流程新增内容审计步骤（AGENTS.md 第3步）
+  - EVOLUTION.md 新增"内容质量红线"章节
+
+### Fixed
+- **资源去重**：r062 与 r011 URL 完全相同（李沐论文精读系列），r062 标记 `deprecated: true`，r011 合并更完整的描述和标签
+- **文档数据同步**：README 资源数量、测试数量、项目结构等信息与实际不符（129→128、105→104、240→244 等多处），统一更新
+- **文档信息碎片化**：README 和 CONTRIBUTING.md 缺少对治理体系（EVOLUTION.md / CONTENT_QUALITY.md / AGENTS.md）的交叉引用，已补充
+- **CONTRIBUTING.md 过时信息**：资源 schema 缺少 `verified_date` 字段说明、测试数量/视图模块数量不准确，已更新
+
+### Changed
+- `app.py` 的 `load_resources()` 自动过滤 `deprecated: true` 的资源
+- **README 重构**：从"功能列表优先"改为"Why → Who → What"结构，开头阐述产品信念和用户画像，功能列表后移
+- README 新增"项目治理"章节（含 VISION.md），整合治理文档入口
+- CONTRIBUTING.md 新增"项目治理"章节，指引贡献者了解约束和质量标准
+- AGENTS.md 必读文件新增 `CONTENT_QUALITY.md`
+- AGENTS.md 安全分级表明确标注权威来源为 `EVOLUTION.md`
+- EVOLUTION.md 添加 VISION.md 交叉引用
+
+> 🤖 由 AI Agent 自动维护
+
 ## [1.7.1] — 2026-04-06
 
 ### Added
