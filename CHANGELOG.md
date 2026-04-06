@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.7.3] — 2026-04-06
+
+### Fixed
+- **E2E 测试环境隔离**：`tests/e2e/conftest.py` 启动 Streamlit 子进程时剥离 `GITHUB_TOKEN`，防止 Playwright 测试通过 feedback 表单创建真实 GitHub Issues
+  - 根因：`gh` CLI 注入的 GITHUB_TOKEN 被 `os.environ.copy()` 继承，导致 E2E 跑 feedback 流程时产生垃圾 Issues（#5-#16, #29-#33）
+
+### Changed
+- **AGENTS.md 经验固化**：
+  - 新增"E2E 测试环境隔离"规范章节（含必须剥离的变量清单和教训来源）
+  - Issue 关闭机制新增"逐个检查"强制规则（教训：曾误关用户真实反馈 Issue #28）
+  - 反馈驱动策略反思表新增"测试产生真实副作用"信号行
+
+> 🤖 由 AI Agent 自动维护
+
 ## [1.7.2] — 2026-04-06
 
 ### Added
