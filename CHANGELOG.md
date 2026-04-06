@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.8.0] — 2026-04-06
+
+### Changed
+- **System Prompt 重构**（关联 Issue #28）：
+  - 移除"前1/3基础"固定分配规则，改为根据用户水平动态选择起点
+  - 新增"内容优先级规则"：`priority=supplementary` 资源仅推荐给零基础用户
+  - 非零基础用户路径以 AI 核心技能为主线（LLM→Prompt→RAG/Agent→部署）
+  - 基础补充限制在总路径 15% 以内
+- **resources.yaml 内容策略调整**：
+  - r037（吃瓜教程）、r067（南瓜书）focus 从 `foundational` 改为 `both`（中高级 ML 理论不应被视为"可跳过的基础"）
+  - r001-r007（Python/数学/传统ML入门）新增 `priority: supplementary` 字段，标记为补充性资源
+
+> 🤖 由 AI Agent 自动维护
+
 ## [1.7.3] — 2026-04-06
 
 ### Fixed

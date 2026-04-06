@@ -12,6 +12,7 @@ resources:
     language: en
     free: true
     focus: foundational
+    priority: supplementary
 
   - id: r002
     title: "Python 官方教程（中文版）"
@@ -25,6 +26,7 @@ resources:
     language: zh
     free: true
     focus: foundational
+    priority: supplementary
 
   - id: r003
     title: "3Blue1Brown：线性代数的本质"
@@ -38,6 +40,7 @@ resources:
     language: zh
     free: true
     focus: foundational
+    priority: supplementary
 
   - id: r004
     title: "Khan Academy 微积分"
@@ -51,6 +54,7 @@ resources:
     language: zh
     free: true
     focus: foundational
+    priority: supplementary
 
   # ── ML 基础 ───────────────────────────────────────────────────────────────
   - id: r005
@@ -65,6 +69,7 @@ resources:
     language: en
     free: true
     focus: foundational
+    priority: supplementary
 
   - id: r006
     title: "sklearn 官方教程"
@@ -78,6 +83,7 @@ resources:
     language: en
     free: true
     focus: foundational
+    priority: supplementary
 
   - id: r007
     title: "StatQuest：机器学习可视化讲解（B站）"
@@ -91,6 +97,7 @@ resources:
     language: en
     free: true
     focus: foundational
+    priority: supplementary
 
   # ── 深度学习 ──────────────────────────────────────────────────────────────
   - id: r008
@@ -104,7 +111,7 @@ resources:
     description: "自顶向下，以实战驱动，最实用的深度学习课"
     language: en
     free: true
-    focus: foundational
+    focus: both
 
   - id: r009
     title: "Andrej Karpathy：Neural Networks: Zero to Hero"
@@ -130,7 +137,7 @@ resources:
     description: "李沐主导，中文深度学习教科书，附代码"
     language: zh
     free: true
-    focus: foundational
+    focus: both
 
   - id: r011
     title: "李沐论文精读系列"
@@ -143,7 +150,7 @@ resources:
     description: "李沐逐篇精读ResNet/Transformer/BERT等经典论文，中文深度讲解，科研/工程必看"
     language: zh
     free: true
-    focus: foundational
+    focus: both
     verified_date: "2026-04-06"
 
   # ── NLP & Transformers ────────────────────────────────────────────────────
@@ -171,7 +178,7 @@ resources:
     description: "最好的Transformer可视化解释，必读"
     language: en
     free: true
-    focus: foundational
+    focus: both
 
   - id: r014
     title: "Stanford CS224n：NLP with Deep Learning"
@@ -184,7 +191,7 @@ resources:
     description: "斯坦福NLP旗舰课，讲义+视频全公开"
     language: en
     free: true
-    focus: foundational
+    focus: both
 
   # ── LLM 应用 ──────────────────────────────────────────────────────────────
   - id: r015
@@ -344,7 +351,7 @@ resources:
     description: "LoRA/QLoRA等参数高效微调的官方指南"
     language: en
     free: true
-    focus: foundational
+    focus: both
 
   - id: r027
     title: "Unsloth：快速LLM微调教程"
@@ -411,7 +418,7 @@ resources:
     description: "Sebastian Raschka著，从零实现GPT，代码全开源"
     language: en
     free: true
-    focus: foundational
+    focus: both
 
   - id: r032
     title: "Full Stack LLM Bootcamp"
@@ -490,7 +497,7 @@ resources:
     description: "用数学公式推导ML算法，适合想深入理论的同学"
     language: zh
     free: true
-    focus: foundational
+    focus: both
 
   - id: r038
     title: "HuggingFace Diffusion Models Course"
@@ -516,7 +523,7 @@ resources:
     description: "1小时直觉理解LLM，最好的LLM科普"
     language: en
     free: true
-    focus: foundational
+    focus: both
 
   - id: r040
     title: "吴恩达 MLOps Specialization"
@@ -804,7 +811,7 @@ resources:
     description: "李沐等著，面向中文读者的权威深度学习教材，配套代码与B站视频，从零基础到CV/NLP实战"
     language: zh
     free: true
-    focus: foundational
+    focus: both
 
   - id: r062
     title: "跟李沐学AI：精读经典论文（B站）"
@@ -817,7 +824,7 @@ resources:
     description: "李沐逐篇精读ResNet/Transformer/BERT等经典论文，中文深度讲解，科研/工程必看"
     language: zh
     free: true
-    focus: foundational
+    focus: both
     deprecated: true  # 与 r011 URL 重复，内容已合并到 r011
 
   - id: r063
@@ -857,7 +864,7 @@ resources:
     description: "DAIR.AI出品，系统讲解Prompt工程技巧，中文翻译，覆盖CoT/Few-Shot/ReAct等核心方法"
     language: zh
     free: true
-    focus: foundational
+    focus: both
 
   - id: r066
     title: "HuggingFace NLP 课程（中文）"
@@ -883,7 +890,7 @@ resources:
     description: "配套周志华《机器学习》的数学推导详解，DataWhale出品，夯实ML理论基础必备"
     language: zh
     free: true
-    focus: foundational
+    focus: both
 
   - id: r068
     title: "Qwen-Agent 开发框架与实战示例"
@@ -1002,7 +1009,7 @@ resources:
     description: "OpenAI 研究员 Lilian Weng 的博客，深度解析 Agent/LLM/RL 前沿论文，每篇都是精品综述"
     language: en
     free: true
-    focus: foundational
+    focus: both
 
   - id: r077
     title: "The Batch (Andrew Ng's Newsletter)"
@@ -1015,7 +1022,7 @@ resources:
     description: "吴恩达主编的 AI 周报，每周精选最重要的 AI 新闻和论文，适合保持行业视野"
     language: en
     free: true
-    focus: foundational
+    focus: both
 
   - id: r078
     title: "Hacker News - AI 热帖"
@@ -1106,7 +1113,7 @@ resources:
     description: "前 OpenAI/Tesla AI 负责人，从零实现 GPT/Tokenizer 系列视频，深入浅出讲解底层原理"
     language: en
     free: true
-    focus: foundational
+    focus: both
 
   - id: r085
     title: "DataWhale 公众号/社区"
@@ -1171,7 +1178,7 @@ resources:
     description: "论文精读系列持续更新，兼顾理论深度和工程直觉，中文 AI 教育标杆"
     language: zh
     free: true
-    focus: foundational
+    focus: both
 
   - id: r090
     title: "AI 前线（InfoQ）"
@@ -1343,7 +1350,7 @@ resources:
     description: "从零构建 LLM 全过程：Tokenizer→Transformer→预训练→微调→RLHF"
     language: en
     free: false
-    focus: foundational
+    focus: both
 
   - id: r103
     title: "机器学习实战（第3版）"
@@ -1370,7 +1377,7 @@ resources:
     description: "Karpathy 手把手从零实现 GPT，最受欢迎的 LLM 入门视频"
     language: en
     free: true
-    focus: foundational
+    focus: both
 
   - id: r105
     title: "吴恩达 × DeepLearning.AI 短课合集"
