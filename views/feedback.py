@@ -34,6 +34,7 @@ def submit_feedback(feedback: dict[str, object]) -> str:
     L = _lang()
     profile = feedback.get("profile", {})
     body = (
+        f"> 🤖 此 Issue 由 AI Pathfinder 应用自动创建，代表匿名用户反馈，非仓库维护者本人。\n\n"
         f"**评分**: {feedback['rating']}\n\n"
         f"**意见**: {feedback.get('comment') or '（无）'}\n\n"
         f"**方向**: {profile.get('direction', '-')}\n"

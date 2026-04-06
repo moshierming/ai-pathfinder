@@ -1,0 +1,58 @@
+# GitHub Labels 定义
+#
+# 使用方式：手动在 GitHub 仓库设置中创建，或用 gh CLI 批量导入。
+#
+# gh CLI 示例：
+#   gh label create "ai-safe" --color "22c55e" --description "AI可自主处理的安全变更"
+#   gh label create "ai-moderate" --color "eab308" --description "需要人工review的变更"
+#   gh label create "ai-dangerous" --color "ef4444" --description "需要人工决策的危险变更"
+#   gh label create "ai-done" --color "a78bfa" --description "AI已处理完成"
+#   gh label create "feedback" --color "0ea5e9" --description "用户反馈"
+#   gh label create "improvement" --color "8b5cf6" --description "改进建议"
+
+# ─── 来源分类 ───
+- name: bug
+  color: "d73a4a"
+  description: "Bug 报告"
+
+- name: enhancement
+  color: "a2eeef"
+  description: "功能建议"
+
+- name: feedback
+  color: "0ea5e9"
+  description: "用户反馈"
+
+- name: improvement
+  color: "8b5cf6"
+  description: "改进建议（AI或人工提出）"
+
+- name: resource
+  color: "f97316"
+  description: "资源推荐/更新"
+
+# ─── AI 进化分级 ───
+- name: ai-safe
+  color: "22c55e"
+  description: "🟢 AI可自主处理的安全变更"
+
+- name: ai-moderate
+  color: "eab308"
+  description: "🟡 需要人工review的变更"
+
+- name: ai-dangerous
+  color: "ef4444"
+  description: "🔴 需要人工决策的危险变更"
+
+- name: ai-done
+  color: "a78bfa"
+  description: "✅ AI已处理完成"
+
+# ─── 状态 ───
+- name: wontfix
+  color: "ffffff"
+  description: "不做"
+
+- name: duplicate
+  color: "cfd3d7"
+  description: "重复"

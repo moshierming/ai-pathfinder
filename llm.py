@@ -44,11 +44,19 @@ def _sanitize_text(text: str) -> str:
     return re.sub(r"[\ud800-\udfff\x00]", "", text)
 
 
+def _secret(key: str, default: str = "") -> str:
+    """Read a Streamlit secret without throwing when secrets.toml is missing."""
+    try:
+        return st.secrets.get(key, default)
+    except Exception:
+        return default
+
+
 def get_llm_config() -> tuple[str, str, str]:
     """Return (api_key, base_url, model) from session/secrets/env."""
     api_key = (
         st.session_state.get("settings_api_key", "")
-        or st.secrets.get("DASHSCOPE_API_KEY", "")
+        or _secret("DASHSCOPE_API_KEY")
         or os.environ.get("DASHSCOPE_API_KEY", "")
     )
     provider = st.session_state.get("settings_provider", "DashScope (阿里云百炼)")
@@ -56,11 +64,11 @@ def get_llm_config() -> tuple[str, str, str]:
     if provider == "自定义":
         base_url = (
             st.session_state.get("settings_base_url", "")
-            or st.secrets.get("API_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1")
+            or _secret("API_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1")
         )
         model = (
             st.session_state.get("settings_model_text", "")
-            or st.secrets.get("MODEL", "qwen3.5-plus")
+            or _secret("MODEL", "qwen3.5-plus")
         )
     else:
         base_url = preset["base_url"]
@@ -111,6 +119,7 @@ def generate_path(
     *,
     builders: list[dict[str, object]] | None = None,
     on_progress: Callable[[int], None] | None = None,
+    _explicit_config: tuple[str, str, str] | None = None,
 ) -> dict[str, object]:
     """Call LLM to generate a personalized learning path (streaming).
 
@@ -121,16 +130,26 @@ def generate_path(
     on_progress:
         Optional callback invoked with accumulated character count during
         streaming so the caller can show progress.
+    _explicit_config:
+        Optional ``(api_key, base_url, model)`` tuple.  When provided the
+        function skips ``st.session_state`` access so it can safely run
+        in a background thread.
     """
+    _bg = _explicit_config is not None
+
     # ── cache hit → instant return ──────────────────────────────────────
-    cache_key = _path_cache_key(profile, resources)
-    path_cache: dict[str, dict[str, object]] = st.session_state.setdefault("_path_cache", {})
-    if cache_key in path_cache:
-        _log.info("generate_path cache hit key=%s", cache_key)
-        return path_cache[cache_key]
+    if not _bg:
+        cache_key = _path_cache_key(profile, resources)
+        path_cache: dict[str, dict[str, object]] = st.session_state.setdefault("_path_cache", {})
+        if cache_key in path_cache:
+            _log.info("generate_path cache hit key=%s", cache_key)
+            return path_cache[cache_key]
 
     # ── LLM call ────────────────────────────────────────────────────────
-    api_key, base_url, model = get_llm_config()
+    if _bg:
+        api_key, base_url, model = _explicit_config
+    else:
+        api_key, base_url, model = get_llm_config()
     if not api_key:
         raise ValueError("请配置 DASHSCOPE_API_KEY")
 
@@ -217,7 +236,8 @@ def generate_path(
     if hallucinated:
         _log.warning("generate_path hallucinated_ids=%s", sorted(hallucinated))
 
-    path_cache[cache_key] = result
+    if not _bg:
+        path_cache[cache_key] = result
     elapsed = time.monotonic() - t0
     _log.info("generate_path completed weeks=%d chars=%d elapsed=%.1fs", len(result.get('weeks', [])), char_count, elapsed)
     return result

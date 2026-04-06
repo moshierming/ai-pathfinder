@@ -192,6 +192,21 @@ TRANSLATIONS = {
     "import_json_error": {"zh": "文件不是有效的 JSON 格式", "en": "File is not valid JSON"},
     "import_too_large": {"zh": "文件过大，请上传 2MB 以内的文件", "en": "File too large, max 2MB"},
     "import_parse_error": {"zh": "解析失败：", "en": "Parse error: "},
+    "import_level": {"zh": "水平", "en": "Level"},
+    "import_direction": {"zh": "方向", "en": "Direction"},
+    "import_focus": {"zh": "学习重心", "en": "Focus"},
+    "import_goal": {"zh": "目标", "en": "Goal"},
+    "import_time": {"zh": "时间", "en": "Time"},
+    "import_summary": {"zh": "总结", "en": "Summary"},
+    "import_weeks_count": {"zh": "周数", "en": "Weeks"},
+    "import_week_preview": {"zh": "第 {n} 周: {goal}", "en": "Week {n}: {goal}"},
+    # ─── Background generation ───
+    "gen_bg_running": {"zh": "路径正在后台生成中…", "en": "Generating path in background…"},
+    "gen_bg_hint": {
+        "zh": "生成过程中可以切换到其他页面浏览资源或聊天，完成后回到此页即可查看。",
+        "en": "You can browse other pages while generating. Come back when it's done.",
+    },
+    "gen_bg_chars": {"zh": "已接收 {n} 字符", "en": "Received {n} characters"},
     # ─── Chat ───
     "chat_title": {"zh": "🧠 智能对话", "en": "🧠 AI Chat"},
     "chat_subtitle": {

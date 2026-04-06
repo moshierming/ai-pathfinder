@@ -113,7 +113,7 @@ def render_chat(resources: list[dict[str, object]]) -> None:
 
     # Suggested questions when chat is empty
     if not st.session_state.chat_messages:
-        direction = st.session_state.get("profile", {}).get("direction", "")
+        direction = (st.session_state.get("profile") or {}).get("direction", "")
         suggestions_zh = [
             "我应该从哪里开始学习？",
             "有哪些大牛值得关注？",
@@ -190,10 +190,10 @@ def render_chat(resources: list[dict[str, object]]) -> None:
                 reply = st.write_stream(
                     _sanitize_text(c.choices[0].delta.content or "")
                     for c in stream
-                    if c.choices and c.choices[0].delta and c.choices[0].delta.content
+                    if c.choices and c.choices[0].delta and getattr(c.choices[0].delta, "content", None)
                 )
                 # Post-process: strip any <think> blocks that slipped through
-                reply = _strip_thinking(reply) if reply else ""
+                reply = _strip_thinking(str(reply)) if reply else ""
                 st.session_state.chat_messages.append({"role": "assistant", "content": reply})
             except Exception as e:
                 _log.error("chat_error: %s", e)
@@ -219,6 +219,3 @@ def render_chat(resources: list[dict[str, object]]) -> None:
                 mime="text/markdown",
                 use_container_width=True,
             )
-        if st.button(t("chat_clear", L), use_container_width=True):
-            st.session_state.chat_messages = []
-            st.rerun()
