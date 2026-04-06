@@ -25,6 +25,10 @@ def app_url():
     env = os.environ.copy()
     env["STREAMLIT_SERVER_HEADLESS"] = "true"
     env["STREAMLIT_BROWSER_GATHER_USAGE_STATS"] = "false"
+    # Strip GITHUB_TOKEN to prevent E2E tests from creating real GitHub Issues
+    # via the feedback form. Any token value leaked from gh CLI or CI env would
+    # otherwise trigger live API calls during Playwright testing.
+    env.pop("GITHUB_TOKEN", None)
 
     proc = subprocess.Popen(
         ["streamlit", "run", _APP_FILE, "--server.port", str(port)],
