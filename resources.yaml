@@ -1493,8 +1493,8 @@ resources:
     focus: both
 
   - id: r113
-    title: "阿里云开发者公众号"
-    url: "https://developer.aliyun.com/article/"
+    title: "阿里云开发者社区"
+    url: "https://developer.aliyun.com/"
     type: channel
     topics: [llm, ai-engineering, cloud, deployment, practice]
     domain: [llm-app, mlops]
