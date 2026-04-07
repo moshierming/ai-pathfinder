@@ -130,11 +130,11 @@ resources:
     title: "动手学深度学习（d2l.ai 中文版）"
     url: "https://zh.d2l.ai"
     type: book
-    topics: [deep-learning, nlp, vision]
+    topics: [deep-learning, nlp, vision, pytorch, cnn, rnn, transformers]
     domain: [data-science]
     level: intermediate
-    duration_hours: 60
-    description: "李沐主导，中文深度学习教科书，附代码"
+    duration_hours: 80
+    description: "李沐等著，面向中文读者的权威深度学习教材，配套代码与B站视频，从零基础到CV/NLP实战"
     language: zh
     free: true
     focus: both
@@ -458,6 +458,7 @@ resources:
     language: en
     free: true
     focus: both
+    priority: supplementary
 
   # ── 中文资源 ──────────────────────────────────────────────────────────────
   - id: r035
@@ -498,6 +499,7 @@ resources:
     language: zh
     free: true
     focus: both
+    priority: supplementary
 
   - id: r038
     title: "HuggingFace Diffusion Models Course"
@@ -812,6 +814,7 @@ resources:
     language: zh
     free: true
     focus: both
+    deprecated: true  # 与 r010 URL 重复（zh.d2l.ai），内容已合并到 r010
 
   - id: r062
     title: "跟李沐学AI：精读经典论文（B站）"
@@ -891,6 +894,7 @@ resources:
     language: zh
     free: true
     focus: both
+    priority: supplementary
 
   - id: r068
     title: "Qwen-Agent 开发框架与实战示例"
@@ -1015,11 +1019,11 @@ resources:
     title: "The Batch (Andrew Ng's Newsletter)"
     url: "https://www.deeplearning.ai/the-batch/"
     type: channel
-    topics: [overview, research, machine-learning]
+    topics: [industry-trends, research, llm, ai-news]
     domain: [general]
     level: beginner-to-intermediate
     duration_hours: 1
-    description: "吴恩达主编的 AI 周报，每周精选最重要的 AI 新闻和论文，适合保持行业视野"
+    description: "吴恩达主编的 AI 周报，精选一周最重要论文、产品和行业动态，附简明解读"
     language: en
     free: true
     focus: both
@@ -1132,11 +1136,11 @@ resources:
     title: "Latent Space Podcast"
     url: "https://www.latent.space/podcast"
     type: channel
-    topics: [overview, agent, llm, research]
+    topics: [ai-engineering, llm, agent, industry-trends, interviews]
     domain: [ai-agent, llm-app, research]
     level: intermediate
     duration_hours: 2
-    description: "AI 工程领域最受欢迎的播客，深度采访 OpenAI/Anthropic/开源社区核心人物"
+    description: "AI 工程师社区头部播客，深度采访 OpenAI/Anthropic/开源社区核心人物，跟踪技术演进"
     language: en
     free: true
     focus: both
@@ -1364,6 +1368,7 @@ resources:
     language: en
     free: true
     focus: both
+    priority: supplementary
 
   # ── 视频补充 ───────────────────────────────────────────────────────────────
   - id: r104
@@ -1388,6 +1393,101 @@ resources:
     level: beginner-to-intermediate
     duration_hours: 15
     description: "与 OpenAI/LangChain/AWS 等联合出品的 1 小时短课，覆盖 LLM 全栈"
+    language: en
+    free: true
+    focus: both
+
+  # ── 高级 Prompt Engineering ────────────────────────────────────────────────
+  - id: r106
+    title: "Anthropic Prompt Engineering 官方指南"
+    url: "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview"
+    type: article
+    topics: [prompt-engineering, llm, best-practices, chain-of-thought]
+    domain: [llm-app]
+    level: intermediate
+    duration_hours: 4
+    description: "Anthropic 官方提示工程指南，涵盖思维链、提示缓存、XML 标签、系统提示等高级技巧"
+    language: en
+    free: true
+    focus: applied
+
+  - id: r107
+    title: "DSPy：编程式 Prompt 优化框架"
+    url: "https://dspy.ai/"
+    type: repo
+    topics: [prompt-engineering, prompt-optimization, llm, framework]
+    domain: [llm-app, ai-agent]
+    level: intermediate-to-advanced
+    duration_hours: 12
+    description: "Stanford NLP 团队出品，用代码替代手写 Prompt，自动优化提示管线，LLM 工程新范式"
+    language: en
+    free: true
+    focus: applied
+
+  - id: r108
+    title: "OpenAI Structured Outputs 指南"
+    url: "https://platform.openai.com/docs/guides/structured-outputs"
+    type: article
+    topics: [prompt-engineering, llm, json-mode, structured-output, api]
+    domain: [llm-app]
+    level: intermediate
+    duration_hours: 3
+    description: "JSON Schema 约束 LLM 输出格式，生产级应用必备技能，含函数调用和响应格式化"
+    language: en
+    free: true
+    focus: applied
+
+  # ── 前沿跟踪 / 行业趋势 ──────────────────────────────────────────────────
+  - id: r109
+    title: "Latent Space Podcast"
+    url: "https://www.latent.space/podcast"
+    type: channel
+    topics: [ai-engineering, llm, industry-trends, interviews]
+    domain: [llm-app, ai-agent]
+    level: intermediate-to-advanced
+    duration_hours: 2
+    description: "AI 工程师社区头部播客，每周与 AI 领域核心人物深度对话，跟踪最新技术演进"
+    language: en
+    free: true
+    focus: applied
+    deprecated: true  # 与 r086 重复
+
+  - id: r110
+    title: "Simon Willison's Weblog"
+    url: "https://simonwillison.net/"
+    type: article
+    topics: [llm, ai-engineering, tool-use, prompt-engineering, industry-trends]
+    domain: [llm-app]
+    level: intermediate
+    duration_hours: 2
+    description: "Django 联合创始人的 AI 博客，以工程师视角深度评测每个新模型和工具，实操性极强"
+    language: en
+    free: true
+    focus: applied
+
+  - id: r111
+    title: "The Batch by Andrew Ng（DeepLearning.AI 周报）"
+    url: "https://www.deeplearning.ai/the-batch/"
+    type: article
+    topics: [industry-trends, research, llm, ai-news]
+    domain: [general]
+    level: beginner-to-intermediate
+    duration_hours: 1
+    description: "吴恩达主编的 AI 周报，精选一周最重要论文、产品和行业动态，附简明解读"
+    language: en
+    free: true
+    focus: both
+    deprecated: true  # 与 r077 重复
+
+  - id: r112
+    title: "AI Engineering 路线图（Chip Huyen）"
+    url: "https://huyenchip.com/2025/01/16/ai-engineering.html"
+    type: article
+    topics: [ai-engineering, llm, mlops, system-design, career]
+    domain: [llm-app, ai-agent]
+    level: intermediate
+    duration_hours: 3
+    description: "Chip Huyen（《实时机器学习》作者）对 AI 工程角色的深度定义：技能栈、工具链和职业路径"
     language: en
     free: true
     focus: both
@@ -1730,3 +1830,33 @@ resources:
     links:
       website: "https://xisainan.github.io/"
       x: "https://x.com/xaboratory"
+
+  - id: b025
+    title: "Simon Willison"
+    url: "https://simonwillison.net/"
+    type: builder
+    topics: [llm, ai-engineering, tool-use, open-source]
+    domain: [llm-app]
+    level: intermediate-to-advanced
+    description: "Django 联合创始人，Datasette 作者，以工程师视角最深入跟踪 LLM 工具链演进的博主"
+    language: en
+    role: engineer
+    links:
+      website: "https://simonwillison.net/"
+      x: "https://x.com/simonw"
+      github: "https://github.com/simonw"
+
+  - id: b026
+    title: "Chip Huyen"
+    url: "https://huyenchip.com/"
+    type: builder
+    topics: [mlops, ai-engineering, system-design, llm]
+    domain: [llm-app, data-science]
+    level: intermediate-to-advanced
+    description: "《实时机器学习》《AI 工程》作者，定义了 AI Engineering 角色和 MLOps 最佳实践"
+    language: en
+    role: engineer
+    links:
+      website: "https://huyenchip.com/"
+      x: "https://x.com/chipro"
+      github: "https://github.com/chiphuyen"

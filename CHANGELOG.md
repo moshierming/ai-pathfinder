@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.9.0] — 2026-04-07
+
+### Added
+- **新增 5 个高质量资源**：
+  - r106: Anthropic Prompt Engineering 官方指南（高级提示工程技巧）
+  - r107: DSPy 编程式 Prompt 优化框架（Stanford NLP）
+  - r108: OpenAI Structured Outputs 指南（JSON Schema 约束输出）
+  - r110: Simon Willison's Weblog（工程师视角的 LLM 工具链跟踪）
+  - r112: AI Engineering 路线图（Chip Huyen 对 AI 工程角色的定义）
+- **新增 2 个 Builders**：
+  - b025: Simon Willison（Django 联合创始人，LLM 工具链深度跟踪者）
+  - b026: Chip Huyen（《AI 工程》作者，AI Engineering 角色定义者）
+
+### Changed
+- **内容策略对齐（"前沿跟踪+工程实践"定位）**：
+  - r037（吃瓜教程）、r067（南瓜书）、r103（李航统计学习方法）标记 `priority: supplementary`
+  - r034（Kaggle Learn）标记 `priority: supplementary`（传统 ML 入门）
+  - r077（The Batch）话题更新：overview → industry-trends/ai-news
+  - r086（Latent Space）话题更新：overview → ai-engineering/industry-trends
+  - r010（d2l.ai）合并 r061 的更好描述，扩展 topics，时长 60→80h
+- **全库标签审计**：验证 128 条活跃资源的 focus/priority 准确性
+
+### Fixed
+- r061 标记 `deprecated: true`（与 r010 URL 重复：zh.d2l.ai）
+- r109、r111 标记 `deprecated: true`（与 r086、r077 URL 重复）
+
+> 🤖 由 AI Agent 自动维护（关联 Issue #28 后续）
+
 ## [1.8.0] — 2026-04-06
 
 ### Changed
