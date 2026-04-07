@@ -1492,6 +1492,19 @@ resources:
     free: true
     focus: both
 
+  - id: r113
+    title: "阿里云开发者公众号"
+    url: "https://developer.aliyun.com/article/"
+    type: channel
+    topics: [llm, ai-engineering, cloud, deployment, practice]
+    domain: [llm-app, mlops]
+    level: intermediate
+    duration_hours: 2
+    description: "阿里云官方技术社区，高质量 AI 工程实践文章，涵盖大模型部署、RAG 架构、AI 应用落地案例"
+    language: zh
+    free: true
+    focus: applied
+
   # ── AI Builders / 行业大牛 ─────────────────────────────────────────────────
   # 关注实际在做事的建设者，而非转述信息的博主
   # role: researcher(研究员) / engineer(工程师) / founder(创始人) / educator(教育者)
